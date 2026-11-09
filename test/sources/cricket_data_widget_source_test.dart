@@ -83,6 +83,12 @@ void main() {
       final after = DateTime.now().millisecondsSinceEpoch ~/ 5000;
 
       expect(matches, hasLength(26));
+      // Sorted: the one live match first, then newest start time first.
+      expect(matches.first.isLive, isTrue);
+      final rest = [for (final m in matches.skip(1)) m.startTime!];
+      for (var i = 1; i < rest.length; i++) {
+        expect(rest[i].isAfter(rest[i - 1]), isFalse);
+      }
       expect(requested.origin, 'https://cricketdata.org');
       expect(requested.path, '/apis/prepscores.aspx');
       expect(requested.queryParameters['r'], _referrer);

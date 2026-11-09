@@ -4,6 +4,8 @@
 /// is private.
 library;
 
+export 'src/controller/cricket_score_controller.dart';
+export 'src/controller/cricket_score_state.dart';
 export 'src/models/cricket_match.dart';
 export 'src/models/team_info.dart';
 export 'src/models/team_score.dart';

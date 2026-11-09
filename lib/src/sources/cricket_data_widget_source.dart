@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:cricket_live_score/src/models/cricket_match.dart';
 import 'package:cricket_live_score/src/parsing/cricket_data_html_parser.dart';
+import 'package:cricket_live_score/src/selection/match_sorting.dart';
 import 'package:cricket_live_score/src/sources/cricket_score_source.dart';
 import 'package:http/http.dart' as http;
 
@@ -64,6 +65,7 @@ class CricketDataWidgetSource implements CricketScoreSource {
         },
       );
 
+  /// Fetches the widget's matches, ordered with [sortMatches].
   @override
   Future<List<CricketMatch>> fetchMatches() async {
     final http.Response response;
@@ -85,7 +87,9 @@ class CricketDataWidgetSource implements CricketScoreSource {
 
     try {
       final html = utf8.decode(response.bodyBytes, allowMalformed: true);
-      return CricketDataHtmlParser.parseMultiple(html, onLog: onLog);
+      return sortMatches(
+        CricketDataHtmlParser.parseMultiple(html, onLog: onLog),
+      );
     } on Object catch (e) {
       throw CricketScoreException('Could not parse the response', cause: e);
     }
