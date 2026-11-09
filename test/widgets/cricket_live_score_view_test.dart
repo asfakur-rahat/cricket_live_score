@@ -1,4 +1,5 @@
 import 'package:cricket_live_score/cricket_live_score.dart';
+import 'package:cricket_live_score/src/widgets/score_filter_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -32,14 +33,35 @@ Future<void> _pumpView(
   await tester.pumpWidget(MaterialApp(home: Scaffold(body: view)));
 }
 
-// The view's own list; each card also has a list for its score table.
-final Finder _list = find.byType(ListView).first;
+// The view's own scroll view; each card also has a list for its score
+// table, but that is a ListView.
+final Finder _list = find.byType(CustomScrollView);
 
-Finder _chip(String label) => find.widgetWithText(ChoiceChip, label);
+const Map<String, MatchPhase> _phaseLabels = {
+  'Live': MatchPhase.live,
+  'En direct': MatchPhase.live,
+  'Upcoming': MatchPhase.upcoming,
+  'Done': MatchPhase.finished,
+};
 
-/// The "All" chip of the phase row (first) or the type row (last).
+/// The filter option labelled [label]: a phase if it is one, else a type.
+Finder _chip(String label) => find.byKey(
+      _phaseLabels.containsKey(label)
+          ? phaseFilterKey(_phaseLabels[label])
+          : typeFilterKey(label),
+    );
+
+/// The "All" option of the phases or of the types.
 Finder _allChip({required bool types}) =>
-    types ? _chip('All').last : _chip('All').first;
+    find.byKey(types ? typeFilterKey(null) : phaseFilterKey(null));
+
+/// Lets the slide animations finish; the pulsing Live dot never settles,
+/// so pumpAndSettle would time out.
+Future<void> _settle(WidgetTester tester) async {
+  for (var i = 0; i < 5; i++) {
+    await tester.pump(const Duration(milliseconds: 400));
+  }
+}
 
 void _expectVenues(List<String> shown) {
   for (final venue in [_finishedVenue, _liveVenue, _upcomingVenue]) {
@@ -58,8 +80,13 @@ Future<void> _tapChip(WidgetTester tester, Finder chip) async {
   await tester.pump();
 }
 
-bool _selected(Finder chip) =>
-    (chip.evaluate().single.widget as ChoiceChip).selected;
+/// Whether the filter [option] is marked selected for screen readers.
+bool _selected(WidgetTester tester, Finder option) => tester
+    .widget<Semantics>(
+      find.ancestor(of: option, matching: find.byType(Semantics)).first,
+    )
+    .properties
+    .selected!;
 
 void main() {
   testWidgets('loading, then every match with both chip rows', (tester) async {
@@ -78,15 +105,15 @@ void main() {
     for (final label in ['Live', 'Upcoming', 'Done', 'T20', 'ODI', 'TEST']) {
       expect(_chip(label), findsOneWidget, reason: label);
     }
-    expect(_chip('All'), findsNWidgets(2));
+    expect(find.text('All'), findsNWidgets(2));
     // Phase chips read All, Live, Upcoming, Done from left to right.
     final xs = [
       for (final label in ['Live', 'Upcoming', 'Done'])
         tester.getCenter(_chip(label)).dx,
     ];
     expect(xs, orderedEquals([...xs]..sort()));
-    expect(_selected(_allChip(types: false)), isTrue);
-    expect(_selected(_allChip(types: true)), isTrue);
+    expect(_selected(tester, _allChip(types: false)), isTrue);
+    expect(_selected(tester, _allChip(types: true)), isTrue);
   });
 
   testWidgets('phase chips filter the list, and All clears it', (tester) async {
@@ -95,8 +122,8 @@ void main() {
 
     await _tapChip(tester, _chip('Live'));
     _expectVenues([_liveVenue]);
-    expect(_selected(_chip('Live')), isTrue);
-    expect(_selected(_allChip(types: false)), isFalse);
+    expect(_selected(tester, _chip('Live')), isTrue);
+    expect(_selected(tester, _allChip(types: false)), isFalse);
 
     await _tapChip(tester, _chip('Upcoming'));
     _expectVenues([_upcomingVenue]);
@@ -133,7 +160,7 @@ void main() {
     );
     await tester.pump();
     _expectVenues([_upcomingVenue]);
-    expect(_selected(_chip('T20')), isTrue);
+    expect(_selected(tester, _chip('T20')), isTrue);
   });
 
   testWidgets('a selected type missing from the data keeps its chip',
@@ -146,7 +173,7 @@ void main() {
       ),
     );
     await tester.pump();
-    expect(_selected(_chip('T10')), isTrue);
+    expect(_selected(tester, _chip('T10')), isTrue);
     expect(find.text('No matches for this filter'), findsOneWidget);
   });
 
@@ -207,8 +234,29 @@ void main() {
       ),
     );
     await tester.pump();
-    expect(find.byType(ChoiceChip), findsNothing);
+    expect(_allChip(types: false), findsNothing);
+    expect(_allChip(types: true), findsNothing);
     expect(find.byType(CricketMatchCard), findsNWidgets(3));
+  });
+
+  testWidgets('the filter header hides on scroll down and returns on up',
+      (tester) async {
+    await _pumpView(
+      tester,
+      CricketLiveScoreView(source: FakeSource(_all())),
+      window: const Size(400, 700),
+    );
+    await tester.pump();
+    final all = _allChip(types: false);
+    expect(tester.getRect(all).top, greaterThanOrEqualTo(0));
+
+    await tester.drag(_list, const Offset(0, -500));
+    await _settle(tester);
+    expect(all.hitTestable(), findsNothing);
+
+    await tester.drag(_list, const Offset(0, 150));
+    await _settle(tester);
+    expect(all.hitTestable(), findsOneWidget);
   });
 
   testWidgets('pull to refresh fetches again', (tester) async {
@@ -219,7 +267,7 @@ void main() {
 
     // RefreshIndicator needs a pull of about a quarter of the list height.
     await tester.fling(_list, const Offset(0, 800), 1000);
-    await tester.pumpAndSettle();
+    await _settle(tester);
     expect(source.calls, 2);
   });
 
@@ -235,7 +283,7 @@ void main() {
       const Offset(0, 800),
       1000,
     );
-    await tester.pumpAndSettle();
+    await _settle(tester);
     expect(source.calls, 2);
     expect(find.byType(CricketMatchCard), findsNWidgets(3));
   });
@@ -308,7 +356,7 @@ void main() {
       ),
     );
     await tester.pump();
-    expect(_chip('Tous'), findsNWidgets(2));
+    expect(find.text('Tous'), findsNWidgets(2));
     await _tapChip(tester, _chip('En direct'));
     await _tapChip(tester, _chip('ODI'));
     expect(find.text('Aucun match'), findsOneWidget);

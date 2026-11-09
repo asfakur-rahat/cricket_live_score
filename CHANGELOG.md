@@ -2,8 +2,9 @@
 
 - `CricketMatch.phase` and `MatchPhase`: upcoming, live or finished.
 - `CricketMatchFilter`, `filterMatches` and `matchTypesOf` for filtering matches by phase and match type.
-- `CricketLiveScoreView`: the body of a live score screen, with phase and match-type filter chips and pull to refresh.
-- New theme fields `listGap` and `filterChipStyle`, and new labels for the filter chips.
+- `CricketLiveScoreView`: the body of a live score screen, with a frosted, floating filter header (a sliding-pill phase capsule and match-type tabs) and pull to refresh.
+- New theme fields for the score screen (`listGap`, `filterChipStyle` and the `filter…` colours and sizes), and new labels for the filters.
+- **Breaking:** requires Flutter 3.27 / Dart 3.6 or later (was Flutter 3.24 / Dart 3.5).
 
 ## 0.1.0 — Initial release
 

@@ -65,6 +65,15 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
     this.messageStyle,
     this.listGap,
     this.filterChipStyle,
+    this.filterHeaderColor,
+    this.filterTrackColor,
+    this.filterTrackBorder,
+    this.filterSelectedStart,
+    this.filterSelectedEnd,
+    this.filterSelectedForeground,
+    this.filterForeground,
+    this.filterTrackHeight,
+    this.filterUnderlineHeight,
   });
 
   /// The defaults derived from [theme]'s colour scheme and text theme, with
@@ -130,7 +139,16 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       liveChipStyle: text(tt.labelSmall, 11),
       messageStyle: text(tt.bodyMedium, 14),
       listGap: scale.height(16),
-      filterChipStyle: text(tt.labelLarge, 14),
+      filterChipStyle: text(tt.labelLarge, 14, FontWeight.w600),
+      filterHeaderColor: cs.surface.withValues(alpha: 0.82),
+      filterTrackColor: cs.surfaceContainerHighest.withValues(alpha: 0.6),
+      filterTrackBorder: cs.outlineVariant.withValues(alpha: 0.6),
+      filterSelectedStart: cs.primary,
+      filterSelectedEnd: cs.tertiary,
+      filterSelectedForeground: cs.onPrimary,
+      filterForeground: cs.onSurfaceVariant,
+      filterTrackHeight: w(44),
+      filterUnderlineHeight: w(3),
     );
   }
 
@@ -298,6 +316,34 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
   /// Style of the filter chip labels on the score screen.
   final TextStyle? filterChipStyle;
 
+  /// Background of the frosted filter header on the score screen.
+  final Color? filterHeaderColor;
+
+  /// Background of the capsule holding the phase filter.
+  final Color? filterTrackColor;
+
+  /// Border of the capsule holding the phase filter.
+  final Color? filterTrackBorder;
+
+  /// Start colour of the gradient on the selected filter: the sliding pill
+  /// and the underline.
+  final Color? filterSelectedStart;
+
+  /// End colour of the gradient on the selected filter.
+  final Color? filterSelectedEnd;
+
+  /// Text colour of the selected phase, on the gradient pill.
+  final Color? filterSelectedForeground;
+
+  /// Text colour of the filters that are not selected.
+  final Color? filterForeground;
+
+  /// Height of the capsule holding the phase filter.
+  final double? filterTrackHeight;
+
+  /// Thickness of the underline under the selected match type.
+  final double? filterUnderlineHeight;
+
   /// Returns a copy in which every non-null field of [other] replaces the
   /// field of this theme.
   CricketScoreThemeData merge(CricketScoreThemeData? other) {
@@ -352,6 +398,15 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       messageStyle: other.messageStyle,
       listGap: other.listGap,
       filterChipStyle: other.filterChipStyle,
+      filterHeaderColor: other.filterHeaderColor,
+      filterTrackColor: other.filterTrackColor,
+      filterTrackBorder: other.filterTrackBorder,
+      filterSelectedStart: other.filterSelectedStart,
+      filterSelectedEnd: other.filterSelectedEnd,
+      filterSelectedForeground: other.filterSelectedForeground,
+      filterForeground: other.filterForeground,
+      filterTrackHeight: other.filterTrackHeight,
+      filterUnderlineHeight: other.filterUnderlineHeight,
     );
   }
 
@@ -406,6 +461,15 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
     TextStyle? messageStyle,
     double? listGap,
     TextStyle? filterChipStyle,
+    Color? filterHeaderColor,
+    Color? filterTrackColor,
+    Color? filterTrackBorder,
+    Color? filterSelectedStart,
+    Color? filterSelectedEnd,
+    Color? filterSelectedForeground,
+    Color? filterForeground,
+    double? filterTrackHeight,
+    double? filterUnderlineHeight,
   }) {
     return CricketScoreThemeData(
       cardColor: cardColor ?? this.cardColor,
@@ -459,6 +523,17 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       messageStyle: messageStyle ?? this.messageStyle,
       listGap: listGap ?? this.listGap,
       filterChipStyle: filterChipStyle ?? this.filterChipStyle,
+      filterHeaderColor: filterHeaderColor ?? this.filterHeaderColor,
+      filterTrackColor: filterTrackColor ?? this.filterTrackColor,
+      filterTrackBorder: filterTrackBorder ?? this.filterTrackBorder,
+      filterSelectedStart: filterSelectedStart ?? this.filterSelectedStart,
+      filterSelectedEnd: filterSelectedEnd ?? this.filterSelectedEnd,
+      filterSelectedForeground:
+          filterSelectedForeground ?? this.filterSelectedForeground,
+      filterForeground: filterForeground ?? this.filterForeground,
+      filterTrackHeight: filterTrackHeight ?? this.filterTrackHeight,
+      filterUnderlineHeight:
+          filterUnderlineHeight ?? this.filterUnderlineHeight,
     );
   }
 
@@ -530,6 +605,25 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       listGap: lerpDouble(listGap, other.listGap, t),
       filterChipStyle:
           TextStyle.lerp(filterChipStyle, other.filterChipStyle, t),
+      filterHeaderColor:
+          Color.lerp(filterHeaderColor, other.filterHeaderColor, t),
+      filterTrackColor: Color.lerp(filterTrackColor, other.filterTrackColor, t),
+      filterTrackBorder:
+          Color.lerp(filterTrackBorder, other.filterTrackBorder, t),
+      filterSelectedStart:
+          Color.lerp(filterSelectedStart, other.filterSelectedStart, t),
+      filterSelectedEnd:
+          Color.lerp(filterSelectedEnd, other.filterSelectedEnd, t),
+      filterSelectedForeground: Color.lerp(
+        filterSelectedForeground,
+        other.filterSelectedForeground,
+        t,
+      ),
+      filterForeground: Color.lerp(filterForeground, other.filterForeground, t),
+      filterTrackHeight:
+          lerpDouble(filterTrackHeight, other.filterTrackHeight, t),
+      filterUnderlineHeight:
+          lerpDouble(filterUnderlineHeight, other.filterUnderlineHeight, t),
     );
   }
 
@@ -585,7 +679,16 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
           other.liveChipStyle == liveChipStyle &&
           other.messageStyle == messageStyle &&
           other.listGap == listGap &&
-          other.filterChipStyle == filterChipStyle;
+          other.filterChipStyle == filterChipStyle &&
+          other.filterHeaderColor == filterHeaderColor &&
+          other.filterTrackColor == filterTrackColor &&
+          other.filterTrackBorder == filterTrackBorder &&
+          other.filterSelectedStart == filterSelectedStart &&
+          other.filterSelectedEnd == filterSelectedEnd &&
+          other.filterSelectedForeground == filterSelectedForeground &&
+          other.filterForeground == filterForeground &&
+          other.filterTrackHeight == filterTrackHeight &&
+          other.filterUnderlineHeight == filterUnderlineHeight;
 
   @override
   int get hashCode => Object.hashAll([
@@ -638,5 +741,14 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
         messageStyle,
         listGap,
         filterChipStyle,
+        filterHeaderColor,
+        filterTrackColor,
+        filterTrackBorder,
+        filterSelectedStart,
+        filterSelectedEnd,
+        filterSelectedForeground,
+        filterForeground,
+        filterTrackHeight,
+        filterUnderlineHeight,
       ]);
 }

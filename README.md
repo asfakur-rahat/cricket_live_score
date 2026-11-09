@@ -62,7 +62,7 @@ if (match != null) {
 
 ### A live score screen
 
-`CricketLiveScoreView` is the body of a full score screen: two rows of filter chips (All · Live · Upcoming · Done, then All · T20 · ODI · Test …), the match cards, and pull to refresh. It has no `Scaffold` or route, so put it wherever your app wants:
+`CricketLiveScoreView` is the body of a full score screen: a frosted filter header, the match cards, and pull to refresh. The header has a capsule of phases (All · Live · Upcoming · Done) with a gradient pill that slides to the selection and a dot that pulses while a match is live, then tabs of match types (All · T20 · ODI · Test …) with a sliding underline. It scrolls away as you scroll down and slides back in on the way up. It has no `Scaffold` or route, so put it wherever your app wants:
 
 ```dart
 Navigator.of(context).push(
