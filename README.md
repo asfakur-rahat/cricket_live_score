@@ -11,6 +11,7 @@ Live cricket scores for Flutter apps: a self-refreshing match carousel, a compac
 ## Features
 
 - **`CricketLiveScoreCarousel`** — swipeable match cards that poll for new scores (every 30 s by default), with optional auto-scroll and page dots, and separate loading, empty and error states. A failed poll keeps the last scores on screen.
+- **`CricketScoreTicker`** — a slim strip for the top of a screen that rotates through the live scores and collapses when nothing is live.
 - **`CricketMatchFab`** — a small button with both team logos around "VS" and a LIVE chip, tap and sideways-swipe callbacks.
 - **`CricketScoreSource`** — a one-method interface for your own data, plus `CricketDataWidgetSource`, which reads cricketdata.org's website widget (see [Data source](#data-source)).
 - Polling pauses while the app is in the background and refreshes on resume.
@@ -78,6 +79,19 @@ Navigator.of(context).push(
 ```
 
 On a phone it is one column filling the width. On a tablet, a foldable's inner display or a large landscape window it becomes a grid of as many columns as fit (cards in a row share its height) and the filters move onto one row. Pass `layout: CricketScoreLayout.phone` to keep one centred, phone-width column instead. Start from a filter with `initialFilter`, hide a chip row with `showPhaseFilter` / `showTypeFilter`, or keep the filter in your own state with `filter` and `onFilterChanged`.
+
+### A score ticker
+
+`CricketScoreTicker` is a slim strip for the top of a home screen. It shows one match at a time, with a pulsing LIVE chip, the match type, and both teams with their logos and scores:
+
+```dart
+CricketScoreTicker(
+  source: source,
+  onMatchTap: (match) => openScores(),
+);
+```
+
+Every five seconds (`interval`) the next match slides up into place, and a thin line along the bottom fills until it does. Holding a finger on the strip keeps the current match; lifting after a hold doesn't count as a tap. By default it shows live matches only; pass a `filter` for others (a match without scores shows its status instead). When no match passes the filter, also while loading, it collapses to nothing, unless you pass an `emptyBuilder`. Turn the logos off with `showLogos: false`.
 
 ### A score sheet
 

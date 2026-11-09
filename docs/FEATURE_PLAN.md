@@ -95,6 +95,13 @@ showCricketLiveScoreSheet(context, source: source);   // one-liner
 
 ## 6. Score ticker banner: `CricketScoreTicker`
 
+**Done on 2026-11-09.** The plan, plus:
+
+- A pulsing LIVE chip.
+- Team logos, which `showLogos: false` turns off.
+- A thin progress line that fills until the next match.
+- Lifting a finger after holding the strip is not treated as a tap.
+
 A slim strip for the top of a home screen, showing one live match at a time:
 
 `T20 · Bangladesh 168/6 (20) vs Sri Lanka 131/4 (16)`

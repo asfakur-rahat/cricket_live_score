@@ -129,6 +129,13 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(title: const Text('cricket_live_score')),
       body: ListView(
         children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: CricketScoreTicker(
+              source: _source,
+              onMatchTap: (_) => _openScores(),
+            ),
+          ),
           SwitchListTile(
             title: const Text('Live data from cricketdata.org'),
             subtitle: Text(
