@@ -81,4 +81,79 @@ void main() {
       );
     });
   }
+
+  group('dark', () {
+    // An app's own dark colours, as in the README.
+    final dark = ThemeData(
+      colorSchemeSeed: Colors.green,
+      brightness: Brightness.dark,
+      extensions: const [
+        CricketScoreThemeData(
+          liveColor: Color(0xFFFF6B6B),
+          liveChipColor: Color(0xFFE53935),
+          liveChipForeground: Color(0xFFFFFFFF),
+        ),
+      ],
+    );
+
+    testWidgets('match card at 360 dp', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(360, 720));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(
+        app(
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: CricketLiveScoreCarousel(
+              source: FakeSource([liveMatch(), finishedMatch()]),
+              logoBuilder: fakeLogoBuilder,
+              onClose: () {},
+              showPageIndicator: true,
+            ),
+          ),
+          theme: dark,
+        ),
+      );
+      await tester.pump();
+      await expectLater(
+        find.byType(Scaffold),
+        matchesGoldenFile('goldens/card_360_dark.png'),
+      );
+    });
+
+    testWidgets('match FAB and ticker at 360 dp', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(360, 240));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: dark,
+          home: Scaffold(
+            body: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  CricketScoreTicker(
+                    source: FakeSource([liveMatch()]),
+                    logoBuilder: fakeLogoBuilder,
+                  ),
+                  const SizedBox(height: 24),
+                  CricketMatchFab(
+                    match: liveMatch(),
+                    logoBuilder: fakeLogoBuilder,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      // Let the fetch land and the ticker grow in.
+      for (var i = 0; i < 4; i++) {
+        await tester.pump(const Duration(milliseconds: 150));
+      }
+      await expectLater(
+        find.byType(Scaffold),
+        matchesGoldenFile('goldens/fab_ticker_360_dark.png'),
+      );
+    });
+  });
 }

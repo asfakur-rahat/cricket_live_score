@@ -87,6 +87,23 @@ void main() {
       expect(resolved.closeButtonSize, 40 * 430 / 390);
     });
 
+    test('on a dark scheme, cards are raised off the page', () {
+      final light = ThemeData(colorSchemeSeed: Colors.green);
+      final dark = ThemeData(
+        colorSchemeSeed: Colors.green,
+        brightness: Brightness.dark,
+      );
+      final lightFallback = CricketScoreThemeData.fallback(light);
+      final darkFallback = CricketScoreThemeData.fallback(dark);
+      expect(lightFallback.cardColor, light.colorScheme.surface);
+      expect(darkFallback.cardColor, dark.colorScheme.surfaceContainerHigh);
+      expect(
+        darkFallback.closeButtonBackground,
+        dark.colorScheme.surfaceContainerHighest,
+      );
+      expect(darkFallback.cardColor, isNot(dark.colorScheme.surface));
+    });
+
     test('fallback scales sizes and text sizes with the scale', () {
       const half = CricketScoreScale(canvas: Size(195, 425));
       final small = CricketScoreThemeData.fallback(ThemeData.light(), half);

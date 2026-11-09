@@ -11,13 +11,24 @@ void main() => runApp(const ExampleApp());
 /// switch flips it.
 final _scaling = ValueNotifier<bool>(true);
 
+/// Light, dark or the system's choice; the home page's buttons set it.
+final _themeMode = ValueNotifier<ThemeMode>(ThemeMode.system);
+
 class ExampleApp extends StatelessWidget {
   const ExampleApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: _themeMode,
+      builder: (context, themeMode, _) => _app(themeMode),
+    );
+  }
+
+  Widget _app(ThemeMode themeMode) {
     return MaterialApp(
       title: 'cricket_live_score',
+      themeMode: themeMode,
       theme: ThemeData(
         colorSchemeSeed: Colors.green,
         // A custom theme: every field is optional.
@@ -26,6 +37,19 @@ class ExampleApp extends StatelessWidget {
             liveColor: Color(0xFFD32F2F),
             liveChipColor: Color(0xFFD32F2F),
             cardElevation: 2,
+          ),
+        ],
+      ),
+      // The app's own dark colours; anything left out comes from the dark
+      // colour scheme.
+      darkTheme: ThemeData(
+        colorSchemeSeed: Colors.green,
+        brightness: Brightness.dark,
+        extensions: const [
+          CricketScoreThemeData(
+            liveColor: Color(0xFFFF6B6B),
+            liveChipColor: Color(0xFFE53935),
+            liveChipForeground: Color(0xFFFFFFFF),
           ),
         ],
       ),
@@ -175,6 +199,33 @@ class _HomePageState extends State<HomePage> {
             ),
             value: _live,
             onChanged: (live) => _setLive(live: live),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+            child: ValueListenableBuilder<ThemeMode>(
+              valueListenable: _themeMode,
+              builder: (context, mode, _) => SegmentedButton<ThemeMode>(
+                segments: const [
+                  ButtonSegment(
+                    value: ThemeMode.system,
+                    label: Text('System'),
+                    icon: Icon(Icons.brightness_auto),
+                  ),
+                  ButtonSegment(
+                    value: ThemeMode.light,
+                    label: Text('Light'),
+                    icon: Icon(Icons.light_mode),
+                  ),
+                  ButtonSegment(
+                    value: ThemeMode.dark,
+                    label: Text('Dark'),
+                    icon: Icon(Icons.dark_mode),
+                  ),
+                ],
+                selected: {mode},
+                onSelectionChanged: (modes) => _themeMode.value = modes.single,
+              ),
+            ),
           ),
           ValueListenableBuilder<bool>(
             valueListenable: _scaling,

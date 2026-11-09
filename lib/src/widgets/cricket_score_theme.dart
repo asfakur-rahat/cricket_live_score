@@ -99,11 +99,16 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
   ///
   /// Every field of the result is non-null, except text styles that
   /// [theme]'s text theme leaves null.
+  ///
+  /// On a dark colour scheme, where shadows don't show, the cards and the
+  /// floating button use a raised container colour instead of the page's
+  /// surface, so they stand apart from the page.
   factory CricketScoreThemeData.fallback(
     ThemeData theme, [
     CricketScoreScale scale = const CricketScoreScale(),
   ]) {
     final cs = theme.colorScheme;
+    final dark = cs.brightness == Brightness.dark;
     final tt = theme.textTheme;
     final w = scale.width;
     // With scaling off, text keeps the text theme's own sizes.
@@ -113,13 +118,13 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
           fontWeight: weight,
         );
     return CricketScoreThemeData(
-      cardColor: cs.surface,
+      cardColor: dark ? cs.surfaceContainerHigh : cs.surface,
       shadowColor: cs.shadow,
       accentColor: cs.primary,
       liveColor: cs.error,
       badgeBackground: cs.primary,
       badgeForeground: cs.onPrimary,
-      closeButtonBackground: cs.surface,
+      closeButtonBackground: dark ? cs.surfaceContainerHighest : cs.surface,
       closeButtonBorder: cs.outline,
       closeIconColor: cs.onSurface,
       fabBorderColor: cs.primary,
@@ -177,9 +182,10 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       pageDotSize: w(8),
       pageDotActiveWidth: w(22),
       pageDotGap: w(6),
-      pageDotColor: cs.onSurfaceVariant.withValues(alpha: 0.3),
+      pageDotColor: cs.onSurfaceVariant.withValues(alpha: dark ? 0.45 : 0.3),
       pageDotActiveColor: cs.primary,
-      pageIndicatorBackground: cs.surface.withValues(alpha: 0.9),
+      pageIndicatorBackground: (dark ? cs.surfaceContainerHighest : cs.surface)
+          .withValues(alpha: 0.9),
       tickerHeight: w(44),
       tickerPadding: EdgeInsets.symmetric(horizontal: w(12)),
       tickerBorderRadius: w(12),

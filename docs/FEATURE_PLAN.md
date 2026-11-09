@@ -168,6 +168,14 @@ CricketScoreScaleScope(
 
 ## 8. Dark mode (the app passes its colours)
 
+**Done on 2026-11-09.** On the tablet the cards were invisible in dark mode: they used `surface`, the page colour, and shadows don't show on dark. The dark defaults changed; light is unchanged.
+
+- Cards and the floating button use `surfaceContainerHigh`.
+- The close badge uses `surfaceContainerHighest`.
+- The page-dot capsule is lighter and the inactive dots are stronger.
+
+The example has a System / Light / Dark switch with the app's own dark colours. There are dark golden images, and a "Dark mode" section in the README.
+
 This mostly works already: `CricketScoreThemeData` is a `ThemeExtension`, so an app registers one in `theme` and another in `darkTheme`, and Flutter switches between them. This part:
 
 - adds a light/dark example and a README section showing it,

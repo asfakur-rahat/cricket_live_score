@@ -147,22 +147,6 @@ final choices = matchTypesOf(matches);
 
 Every field of `CricketScoreThemeData` is optional. Each one is resolved from the widget's `theme` argument, then a `CricketScoreThemeData` in your `ThemeData.extensions`, then defaults derived from your `ColorScheme` and `TextTheme`.
 
-The default sizes and text sizes scale with the screen, from a 390 × 850 design: a smaller phone gets smaller cards and a larger phone larger ones. A tablet or unfolded foldable uses a fixed phone-sized canvas (430 × 937), so the cards don't grow into a giant phone. `CricketScoreScale` does the arithmetic; a size you set in the theme is used as given.
-
-To change the scaling, put a `CricketScoreScaleScope` above the widgets. In `MaterialApp.builder` it also reaches dialogs and sheets:
-
-```dart
-MaterialApp(
-  builder: (context, child) => CricketScoreScaleScope(
-    designSize: const Size(375, 812), // the size your design is for
-    wideCanvas: const Size(430, 937), // the canvas on tablets and foldables
-    child: child!,
-  ),
-);
-```
-
-With `enabled: false`, nothing scales: every default size is its plain design value, and text keeps your text theme's own sizes. The widgets follow the scope when it changes.
-
 ```dart
 MaterialApp(
   theme: ThemeData(
@@ -180,6 +164,56 @@ MaterialApp(
 ```
 
 Sizes are logical pixels. If your app scales its layout, pass your scaled values.
+
+### Scaling
+
+The default sizes and text sizes scale with the screen, from a 390 × 850 design: a smaller phone gets smaller cards and a larger phone larger ones. A tablet or unfolded foldable uses a fixed phone-sized canvas (430 × 937), so the cards don't grow into a giant phone. `CricketScoreScale` does the arithmetic; a size you set in the theme is used as given.
+
+To change the scaling, put a `CricketScoreScaleScope` above the widgets. In `MaterialApp.builder` it also reaches dialogs and sheets:
+
+```dart
+MaterialApp(
+  builder: (context, child) => CricketScoreScaleScope(
+    designSize: const Size(375, 812), // the size your design is for
+    wideCanvas: const Size(430, 937), // the canvas on tablets and foldables
+    child: child!,
+  ),
+);
+```
+
+With `enabled: false`, nothing scales: every default size is its plain design value, and text keeps your text theme's own sizes. The widgets follow the scope when it changes.
+
+### Dark mode
+
+The package picks no colours of its own: the defaults come from your `ColorScheme`, so they follow a dark theme by themselves. On a dark scheme, where shadows don't show, the cards and the floating button use a raised container colour (`surfaceContainerHigh`) so they stand apart from the page.
+
+To use your own colours in dark mode, register a second `CricketScoreThemeData` in `darkTheme`; Flutter switches between them with the app's theme mode:
+
+```dart
+MaterialApp(
+  theme: ThemeData(
+    colorSchemeSeed: Colors.green,
+    extensions: const [
+      CricketScoreThemeData(liveColor: Color(0xFFD32F2F)),
+    ],
+  ),
+  darkTheme: ThemeData(
+    colorSchemeSeed: Colors.green,
+    brightness: Brightness.dark,
+    extensions: const [
+      CricketScoreThemeData(
+        liveColor: Color(0xFFFF6B6B),
+        liveChipColor: Color(0xFFE53935),
+        liveChipForeground: Color(0xFFFFFFFF),
+      ),
+    ],
+  ),
+);
+```
+
+Any field you leave out of the dark set comes from the dark colour scheme.
+
+### Logos and badges
 
 Team logos load with `Image.network` and fall back to a flag icon. To use an image cache, pass a `logoBuilder`:
 
