@@ -2,7 +2,7 @@ name: cricket_live_score
 description: >-
   Live cricket score widgets for Flutter: carousels, a score screen and sheet,
   a news-style ticker and a live-match button, with a pluggable data source.
-version: 1.0.0
+version: 1.0.1
 repository: https://github.com/asfakur-rahat/cricket_live_score
 issue_tracker: https://github.com/asfakur-rahat/cricket_live_score/issues
 

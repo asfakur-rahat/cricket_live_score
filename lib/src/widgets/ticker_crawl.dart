@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
@@ -84,7 +82,7 @@ class _TickerCrawlState extends State<TickerCrawl>
     final run = _scrolls && !widget.paused && widget.speed > 0;
     if (run && !_ticker.isActive) {
       _last = Duration.zero;
-      unawaited(_ticker.start());
+      _ticker.start();
     } else if (!run && _ticker.isActive) {
       _ticker.stop();
     }

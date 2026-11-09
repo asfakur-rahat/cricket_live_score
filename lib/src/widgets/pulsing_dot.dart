@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 /// A dot that softly pulses while [pulse] is set and animations are on.
@@ -47,7 +45,7 @@ class _PulsingDotState extends State<PulsingDot>
   void _sync() {
     final animate = widget.pulse && !MediaQuery.disableAnimationsOf(context);
     if (animate && !_controller.isAnimating) {
-      unawaited(_controller.repeat(reverse: true));
+      _controller.repeat(reverse: true);
     } else if (!animate && _controller.isAnimating) {
       _controller
         ..stop()

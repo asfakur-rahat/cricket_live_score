@@ -145,14 +145,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _openScreen() {
-    unawaited(
-      Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (context) => Scaffold(
-            appBar: AppBar(title: const Text('Live scores')),
-            // The package provides the body; the app owns the route.
-            body: CricketLiveScoreView(source: _source),
-          ),
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) => Scaffold(
+          appBar: AppBar(title: const Text('Live scores')),
+          // The package provides the body; the app owns the route.
+          body: CricketLiveScoreView(source: _source),
         ),
       ),
     );

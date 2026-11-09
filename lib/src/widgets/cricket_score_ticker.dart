@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:cricket_live_score/src/controller/cricket_score_controller.dart';
@@ -177,7 +176,7 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
     super.didUpdateWidget(oldWidget);
     if (widget.interval != oldWidget.interval) {
       _progress.duration = widget.interval;
-      if (_progress.isAnimating) unawaited(_progress.forward(from: 0));
+      if (_progress.isAnimating) _progress.forward(from: 0);
     }
   }
 
@@ -232,7 +231,7 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
       _index = (_index + 1) % _ids.length;
       _currentId = _ids[_index];
     });
-    unawaited(_progress.forward(from: 0));
+    _progress.forward(from: 0);
   }
 
   /// Runs the progress while rotating, with something to move to and
@@ -241,7 +240,7 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
     final count = _ids.length;
     final run = !_crawling && count > 1 && !_touched && !inBackground;
     if (run && !_progress.isAnimating) {
-      unawaited(_progress.forward());
+      _progress.forward();
     } else if (!run && _progress.isAnimating) {
       _progress.stop();
     }

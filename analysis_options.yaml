@@ -1,3 +1,6 @@
 # `public_member_api_docs` stays enabled (it is on in very_good_analysis):
 # every public API member of a published package needs a /// doc comment.
+analyzer:
+  exclude:
+    - build/**
 include: package:very_good_analysis/analysis_options.yaml

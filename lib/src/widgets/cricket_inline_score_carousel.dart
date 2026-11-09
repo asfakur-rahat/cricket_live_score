@@ -214,12 +214,10 @@ class _CricketInlineScoreCarouselState extends State<CricketInlineScoreCarousel>
     if (MediaQuery.disableAnimationsOf(context)) {
       _scrollController.jumpTo(offset);
     } else {
-      unawaited(
-        _scrollController.animateTo(
-          offset,
-          duration: duration,
-          curve: Curves.easeInOut,
-        ),
+      _scrollController.animateTo(
+        offset,
+        duration: duration,
+        curve: Curves.easeInOut,
       );
     }
   }

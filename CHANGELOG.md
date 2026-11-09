@@ -1,3 +1,8 @@
+## 1.0.1
+
+- Fixes the static analysis issues pub.dev reports with Flutter 3.47: animation calls that no longer need `unawaited`. No change in behaviour.
+- Developed and tested on Flutter 3.47.9; the minimum stays Flutter 3.27 / Dart 3.6.
+
 ## 1.0.0
 
 First release.

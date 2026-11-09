@@ -207,12 +207,10 @@ class _CricketLiveScoreCarouselState extends State<CricketLiveScoreCarousel>
           matches.isNotEmpty &&
           _pageController.hasClients) {
         _currentPage = (_currentPage + 1) % matches.length;
-        unawaited(
-          _pageController.animateToPage(
-            _currentPage,
-            duration: const Duration(milliseconds: 800),
-            curve: Curves.easeInOut,
-          ),
+        _pageController.animateToPage(
+          _currentPage,
+          duration: const Duration(milliseconds: 800),
+          curve: Curves.easeInOut,
         );
       }
     });
@@ -221,12 +219,10 @@ class _CricketLiveScoreCarouselState extends State<CricketLiveScoreCarousel>
   void _showPage(int page) {
     if (!_pageController.hasClients) return;
     _currentPage = page;
-    unawaited(
-      _pageController.animateToPage(
-        page,
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeOutCubic,
-      ),
+    _pageController.animateToPage(
+      page,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeOutCubic,
     );
     // A tap starts the auto-scroll interval over.
     _startAutoScroll();

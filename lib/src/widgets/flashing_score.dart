@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -68,7 +67,7 @@ class _FlashingScoreState extends State<FlashingScore>
     _pending = false;
     widget.onFlashed?.call();
     if (MediaQuery.disableAnimationsOf(context)) return;
-    unawaited(_controller.forward(from: 0));
+    _controller.forward(from: 0);
   }
 
   @override

@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
@@ -375,9 +374,7 @@ class _UnderlineTabsState extends State<_UnderlineTabs> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final tab = _tabKey(widget.selected).currentContext;
         if (mounted && tab != null) {
-          unawaited(
-            Scrollable.ensureVisible(tab, duration: _slide, curve: _slideCurve),
-          );
+          Scrollable.ensureVisible(tab, duration: _slide, curve: _slideCurve);
         }
       });
     }
