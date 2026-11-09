@@ -1,0 +1,146 @@
+<!--
+  HAND-BUILT FIXTURE — not captured from the live feed.
+
+  The live capture of 2026-11-09 (live_feed_2026-11-09.html) only contained
+  finished matches and one in-progress Test, all using the
+  `white-space: nowrap; overflow: hidden; padding: 5px` team-div format.
+  The slabs below were built by hand from the selectors CricketMatchParser
+  uses, modelled on the captured markup, to cover what the feed did not:
+
+    1. upcoming match (no score table) using the
+       `display:table-cell; width:50%` team-div format, single-digit day
+    2. concluded "tied" match with score rows (must not be live)
+    3. no team divs at all: teams fall back to the score table
+    4. live match with only one team div (second team padded)
+    5. empty slab: every field falls back to its default
+-->
+<div class="slab" data-id="hb-upcoming">
+    <div style="text-align: center;">
+        <div>
+            9 Dec 2026, Wed 09:30 GMT
+        </div>
+        <span style="position: absolute; top: 5px; left: 5px; font-weight: bold; text-transform: uppercase; font-size: 0.7em;">t20</span>
+        <br />
+        At <b>Sher-e-Bangla National Stadium, Mirpur</b>
+        <br />
+        <br />
+        <div class="">
+            <hr />
+            <div style="display:table;width:100%">
+                <div style="display:table-cell;width:50%;text-align:center">
+                    <img class='criclogo' src='https://example.com/logos/ban.webp?w=48' />
+                    Bangladesh
+                </div>
+                <div style="display:table-cell;width:2em;vertical-align:middle">
+                    <div style="background: #eee;">v</div>
+                </div>
+                <div style="display:table-cell;width:50%;text-align:center">
+                    <img class='criclogo' src='https://example.com/logos/sl.webp?w=48' />
+                    Sri Lanka
+                </div>
+            </div>
+            <hr />
+            <div>Match starts at Dec 09, 09:30 GMT</div>
+        </div>
+        <div style="position: absolute; bottom: 5px; right: 5px; left: 5px;">
+            <a onclick="cricapi_setSlide(-1);" href="javascript:;">&laquo;</a>
+            <a onclick="cricapi_setSlide(1);" href="javascript:;">&raquo;</a>
+            <a onclick="cricapi.showModal('https://example.com/scorecard/hb-upcoming');" href="javascript:;">Full Scorecard</a><br />
+            <a href="https://example.com/widget">Get this Widget</a>
+        </div>
+    </div>
+</div>
+
+<div class="slab" data-id="hb-tied">
+    <div style="text-align: center;">
+        <div>
+            10 Nov 2026, Tue 14:00 GMT
+        </div>
+        <span style="position: absolute; top: 5px; left: 5px; font-weight: bold; text-transform: uppercase; font-size: 0.7em;">odi</span>
+        <br />
+        At <b>Harare Sports Club</b>
+        <br />
+        <br />
+        <div class="">
+            <hr />
+            <div style="display:table;width:100%">
+                <div style="display:table-cell;width:50%;text-align:center">
+                    Zimbabwe
+                </div>
+                <div style="display:table-cell;width:2em;vertical-align:middle">
+                    <div style="background: #eee;">v</div>
+                </div>
+                <div style="display:table-cell;width:50%;text-align:center">
+                    Ireland
+                </div>
+            </div>
+            <hr />
+            <div>Match tied</div>
+        </div>
+        <div style="position: absolute; bottom: 5px; right: 5px; left: 5px;">
+            <div>
+                <table style='width: 100%;'> <tr><td>zimbabwe</td><td nowrap>250/9 (50) </td></tr> <tr><td>ireland</td><td nowrap>250/10 (49.5) </td></tr></table>
+            </div>
+            <a onclick="cricapi_setSlide(-1);" href="javascript:;">&laquo;</a>
+            <a onclick="cricapi_setSlide(1);" href="javascript:;">&raquo;</a>
+        </div>
+    </div>
+</div>
+
+<div class="slab" data-id="hb-table-only">
+    <div style="text-align: center;">
+        <div>
+            10 Nov 2026, Tue 03:15 GMT
+        </div>
+        <span style="position: absolute; top: 5px; left: 5px; font-weight: bold; text-transform: uppercase; font-size: 0.7em;">t20</span>
+        <br />
+        At <b>Tribhuvan University Ground</b>
+        <br />
+        <br />
+        <div class="">
+            <hr />
+            <hr />
+            <div>Nepal won by 4 runs</div>
+        </div>
+        <div style="position: absolute; bottom: 5px; right: 5px; left: 5px;">
+            <div>
+                <table style='width: 100%;'> <tr><td>nepal</td><td nowrap>151/7 (20) </td></tr> <tr><td>oman</td><td nowrap>147/9 (20) </td></tr></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="slab" data-id="hb-one-team">
+    <div style="text-align: center;">
+        <div>
+            10 Nov 2026, Tue 08:00 GMT
+        </div>
+        <span style="position: absolute; top: 5px; left: 5px; font-weight: bold; text-transform: uppercase; font-size: 0.7em;">t20</span>
+        <br />
+        At <b>Al Amerat</b>
+        <br />
+        <br />
+        <div class="">
+            <hr />
+            <div>
+                <div style="white-space: nowrap; overflow: hidden; padding: 5px;">
+                    <img class='criclogo' src='https://example.com/logos/sco.webp?w=48' />
+                    Scotland
+                </div>
+                <div style="white-space: nowrap; overflow: hidden; padding: 5px;">
+                    v
+                </div>
+            </div>
+            <hr />
+            <div>Scotland need 20 runs in 12 balls</div>
+        </div>
+        <div style="position: absolute; bottom: 5px; right: 5px; left: 5px;">
+            <div>
+                <table style='width: 100%;'> <tr><td>netherlands</td><td nowrap>170/6 (20) </td></tr> <tr><td>scotland</td><td nowrap>151/4 (18) </td></tr></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="slab" data-id="hb-empty">
+</div>

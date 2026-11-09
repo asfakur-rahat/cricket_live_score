@@ -1,0 +1,782 @@
+[
+  {
+    "id": "03fa5b0e-8c0a-45c7-b998-d2082fa85673",
+    "matchType": "ODI",
+    "venue": "McLean Park",
+    "status": "Canterbury won by 2 wkts",
+    "team1": {
+      "name": "Canterbury",
+      "logoUrl": "https://cdorgapi.b-cdn.net/iapi/15-637993523929449827.webp?w=48",
+      "isWinner": true
+    },
+    "team2": {
+      "name": "Central Stags",
+      "logoUrl": "https://cdorgapi.b-cdn.net/iapi/133-637957472586275153.webp?w=48",
+      "isWinner": false
+    },
+    "startTimeText": "08 Nov 2026, Sun 21:30 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/central-stags-vs-canterbury-12th-match-the-ford-trophy-2026-27-03fa5b0e-8c0a-45c7-b998-d2082fa85673",
+    "teamScores": [
+      {
+        "teamName": "central stags",
+        "scoreText": "129/10 (41.2)"
+      },
+      {
+        "teamName": "canterbury",
+        "scoreText": "130/8 (33.2)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "000cee00-1deb-409b-a5f6-bd44c3d571b7",
+    "matchType": "ODI",
+    "venue": "Cobham Oval",
+    "status": "Northern Districts won by 3 wkts",
+    "team1": {
+      "name": "Northern Districts",
+      "logoUrl": "",
+      "isWinner": true
+    },
+    "team2": {
+      "name": "Otago",
+      "logoUrl": "",
+      "isWinner": false
+    },
+    "startTimeText": "08 Nov 2026, Sun 21:30 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/northern-districts-vs-otago-10th-match-the-ford-trophy-2026-27-000cee00-1deb-409b-a5f6-bd44c3d571b7",
+    "teamScores": [
+      {
+        "teamName": "otago",
+        "scoreText": "258/9 (50)"
+      },
+      {
+        "teamName": "northern districts",
+        "scoreText": "259/7 (50)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "577521e3-11da-4afc-b9cc-48f961d8497c",
+    "matchType": "ODI",
+    "venue": "Basin Reserve",
+    "status": "Wellington won by 28 runs",
+    "team1": {
+      "name": "Auckland",
+      "logoUrl": "https://cdorgapi.b-cdn.net/iapi/5-637993557414710285.webp?w=48",
+      "isWinner": false
+    },
+    "team2": {
+      "name": "Wellington",
+      "logoUrl": "https://cdorgapi.b-cdn.net/iapi/99-637987556014883021.webp?w=48",
+      "isWinner": true
+    },
+    "startTimeText": "08 Nov 2026, Sun 21:30 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/wellington-vs-auckland-11th-match-the-ford-trophy-2026-27-577521e3-11da-4afc-b9cc-48f961d8497c",
+    "teamScores": [
+      {
+        "teamName": "wellington",
+        "scoreText": "205/10 (44.3)"
+      },
+      {
+        "teamName": "auckland",
+        "scoreText": "177/10 (43.4)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "8fab1286-a770-4021-af36-e469c49f9f1b",
+    "matchType": "T10",
+    "venue": "Sheikh Zayed Stadium",
+    "status": "Arabian Aces won by 9 wkts",
+    "team1": {
+      "name": "Arabian Aces",
+      "logoUrl": "",
+      "isWinner": true
+    },
+    "team2": {
+      "name": "Royal Desert Champions",
+      "logoUrl": "",
+      "isWinner": false
+    },
+    "startTimeText": "08 Nov 2026, Sun 16:00 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/arabian-aces-vs-royal-desert-champions-6th-match-abu-dhabi-t10-league-2026-8fab1286-a770-4021-af36-e469c49f9f1b",
+    "teamScores": [
+      {
+        "teamName": "royal desert champions",
+        "scoreText": "112/6 (10)"
+      },
+      {
+        "teamName": "arabian aces",
+        "scoreText": "114/1 (9)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "34fcd8aa-3b5e-4dd8-b520-1595e878ed0b",
+    "matchType": "T10",
+    "venue": "Sheikh Zayed Stadium",
+    "status": "United Tigers won by 25 runs",
+    "team1": {
+      "name": "Uae Bulls",
+      "logoUrl": "",
+      "isWinner": false
+    },
+    "team2": {
+      "name": "United Tigers",
+      "logoUrl": "",
+      "isWinner": true
+    },
+    "startTimeText": "08 Nov 2026, Sun 13:45 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/united-tigers-vs-uae-bulls-5th-match-abu-dhabi-t10-league-2026-34fcd8aa-3b5e-4dd8-b520-1595e878ed0b",
+    "teamScores": [
+      {
+        "teamName": "united tigers",
+        "scoreText": "126/6 (10)"
+      },
+      {
+        "teamName": "uae bulls",
+        "scoreText": "101/4 (10)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "a172aa1d-a718-473e-8df2-5be778936b9d",
+    "matchType": "T10",
+    "venue": "Sheikh Zayed Stadium",
+    "status": "Yas Lions won by 6 wkts",
+    "team1": {
+      "name": "Emirates Eagles",
+      "logoUrl": "",
+      "isWinner": false
+    },
+    "team2": {
+      "name": "Yas Lions",
+      "logoUrl": "",
+      "isWinner": true
+    },
+    "startTimeText": "08 Nov 2026, Sun 11:30 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/yas-lions-vs-emirates-eagles-4th-match-abu-dhabi-t10-league-2026-a172aa1d-a718-473e-8df2-5be778936b9d",
+    "teamScores": [
+      {
+        "teamName": "emirates eagles",
+        "scoreText": "115/4 (10)"
+      },
+      {
+        "teamName": "yas lions",
+        "scoreText": "117/4 (8.4)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "958aa945-930f-4e17-af8a-c8966226ec1e",
+    "matchType": "T20",
+    "venue": "Entebbe Cricket Oval",
+    "status": "Uganda Women won by 7 wkts",
+    "team1": {
+      "name": "Uganda Women",
+      "logoUrl": "https://cdorgapi.b-cdn.net/iapi/1135-637877086844153505.webp?w=48",
+      "isWinner": true
+    },
+    "team2": {
+      "name": "USOAW",
+      "logoUrl": "https://cdorgapi.b-cdn.net/iapi/93-637877085206398451.webp?w=48",
+      "isWinner": false
+    },
+    "startTimeText": "08 Nov 2026, Sun 11:00 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/uganda-women-vs-united-states-of-america-women-6th-match-womens-victoria-t20i-series-2026-958aa945-930f-4e17-af8a-c8966226ec1e",
+    "teamScores": [
+      {
+        "teamName": "united states of america women",
+        "scoreText": "93/7 (20)"
+      },
+      {
+        "teamName": "uganda women",
+        "scoreText": "94/3 (15.2)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "df484f6c-3c1d-4128-9f3e-4520ad03ba3c",
+    "matchType": "T20",
+    "venue": "Entebbe Cricket Oval",
+    "status": "Namibia Women won by 39 runs",
+    "team1": {
+      "name": "Namibia Women",
+      "logoUrl": "https://cdorgapi.b-cdn.net/iapi/1128-637877082812217889.webp?w=48",
+      "isWinner": true
+    },
+    "team2": {
+      "name": "Rwanda Women",
+      "logoUrl": "https://cdorgapi.b-cdn.net/iapi/4218-638101636238742992.webp?w=48",
+      "isWinner": false
+    },
+    "startTimeText": "08 Nov 2026, Sun 06:30 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/namibia-women-vs-rwanda-women-5th-match-womens-victoria-t20i-series-2026-df484f6c-3c1d-4128-9f3e-4520ad03ba3c",
+    "teamScores": [
+      {
+        "teamName": "namibia women",
+        "scoreText": "98/8 (20)"
+      },
+      {
+        "teamName": "rwanda women",
+        "scoreText": "59/10 (17.5)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "6f39b06b-e2b7-4a2b-ad14-88b29a3769f2",
+    "matchType": "T20",
+    "venue": "North Sydney Oval",
+    "status": "Perth Scorchers Women won by 6 wkts",
+    "team1": {
+      "name": "MSW",
+      "logoUrl": "https://cdorgapi.b-cdn.net/iapi/2646-638040168260625211.webp?w=48",
+      "isWinner": false
+    },
+    "team2": {
+      "name": "PSW",
+      "logoUrl": "https://cdorgapi.b-cdn.net/iapi/2656-638040167042932787.webp?w=48",
+      "isWinner": false
+    },
+    "startTimeText": "08 Nov 2026, Sun 06:10 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/perth-scorchers-women-vs-melbourne-stars-women-16th-match-womens-big-bash-league-2026-6f39b06b-e2b7-4a2b-ad14-88b29a3769f2",
+    "teamScores": [
+      {
+        "teamName": "melbourne stars women",
+        "scoreText": "136/6 (20)"
+      },
+      {
+        "teamName": "perth scorchers women",
+        "scoreText": "137/4 (15)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "8d42f9d6-64ba-40b9-80fc-d9b5f3b7c076",
+    "matchType": "ODI",
+    "venue": "Al Amerat Cricket Ground (Ministry Turf 2)",
+    "status": "Pakistan U19 won by 3 wkts",
+    "team1": {
+      "name": "India U19",
+      "logoUrl": "",
+      "isWinner": false
+    },
+    "team2": {
+      "name": "Pakistan U19",
+      "logoUrl": "",
+      "isWinner": true
+    },
+    "startTimeText": "08 Nov 2026, Sun 05:00 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/india-u19-vs-pakistan-u19-8th-match-group-a-acc-mens-u19-asia-cup-2026-8d42f9d6-64ba-40b9-80fc-d9b5f3b7c076",
+    "teamScores": [
+      {
+        "teamName": "india u19",
+        "scoreText": "208/10 (46.3)"
+      },
+      {
+        "teamName": "pakistan u19",
+        "scoreText": "209/7 (48.1)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "322865ca-688c-40d4-a7f0-275bd612abf2",
+    "matchType": "ODI",
+    "venue": "Al Amerat Cricket Ground (Ministry Turf 1)",
+    "status": "United Arab Emirates U19 won by 7 wkts",
+    "team1": {
+      "name": "Nepal U19",
+      "logoUrl": "",
+      "isWinner": false
+    },
+    "team2": {
+      "name": "United Arab Emirates U19",
+      "logoUrl": "",
+      "isWinner": true
+    },
+    "startTimeText": "08 Nov 2026, Sun 05:00 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/united-arab-emirates-u19-vs-nepal-u19-7th-match-group-a-acc-mens-u19-asia-cup-2026-322865ca-688c-40d4-a7f0-275bd612abf2",
+    "teamScores": [
+      {
+        "teamName": "nepal u19",
+        "scoreText": "152/10 (41)"
+      },
+      {
+        "teamName": "united arab emirates u19",
+        "scoreText": "158/3 (34.4)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "f9366950-2ae6-4b00-968c-4c6c8462e489",
+    "matchType": "T20",
+    "venue": "North Sydney Oval",
+    "status": "Sydney Sixers Women won by 9 runs (16 Overs game due to rain, DLS target 168)",
+    "team1": {
+      "name": "SSW",
+      "logoUrl": "https://cdorgapi.b-cdn.net/iapi/2626-638040170781201689.webp?w=48",
+      "isWinner": false
+    },
+    "team2": {
+      "name": "STW",
+      "logoUrl": "https://cdorgapi.b-cdn.net/iapi/2636-638040169751591741.webp?w=48",
+      "isWinner": false
+    },
+    "startTimeText": "08 Nov 2026, Sun 02:40 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/sydney-sixers-women-vs-sydney-thunder-women-15th-match-womens-big-bash-league-2026-f9366950-2ae6-4b00-968c-4c6c8462e489",
+    "teamScores": [
+      {
+        "teamName": "sydney sixers women",
+        "scoreText": "162/2 (16)"
+      },
+      {
+        "teamName": "sydney thunder women",
+        "scoreText": "158/10 (15.3)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "9bdb29a3-e23d-4400-b4d9-86a8f857d0ba",
+    "matchType": "TEST",
+    "venue": "Bert Sutcliffe Oval",
+    "status": "Day 3: Stumps - New Zealand A trail by 428 runs",
+    "team1": {
+      "name": "India A",
+      "logoUrl": "https://cdorgapi.b-cdn.net/iapi/2206-637976248888288069.webp?w=48",
+      "isWinner": false
+    },
+    "team2": {
+      "name": "New Zealand A",
+      "logoUrl": "https://cdorgapi.b-cdn.net/iapi/2180-637982269820638615.webp?w=48",
+      "isWinner": false
+    },
+    "startTimeText": "07 Nov 2026, Sat 21:30 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/new-zealand-a-vs-india-a-3rd-unofficial-test-india-a-tour-of-new-zealand-2026-9bdb29a3-e23d-4400-b4d9-86a8f857d0ba",
+    "teamScores": [
+      {
+        "teamName": "india a",
+        "scoreText": "464/5 (146)"
+      },
+      {
+        "teamName": "new zealand a",
+        "scoreText": "36/2 (14)"
+      }
+    ],
+    "isLive": true
+  },
+  {
+    "id": "d6fd3ae2-02cf-47f1-ae7b-316ec369a44c",
+    "matchType": "T10",
+    "venue": "Sheikh Zayed Stadium",
+    "status": "United Tigers won by 51 runs",
+    "team1": {
+      "name": "Arabian Aces",
+      "logoUrl": "",
+      "isWinner": false
+    },
+    "team2": {
+      "name": "United Tigers",
+      "logoUrl": "",
+      "isWinner": true
+    },
+    "startTimeText": "07 Nov 2026, Sat 16:00 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/united-tigers-vs-arabian-aces-3rd-match-abu-dhabi-t10-league-2026-d6fd3ae2-02cf-47f1-ae7b-316ec369a44c",
+    "teamScores": [
+      {
+        "teamName": "united tigers",
+        "scoreText": "140/6 (10)"
+      },
+      {
+        "teamName": "arabian aces",
+        "scoreText": "89/9 (10)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "217d000e-eaa3-4f72-a11b-cd4260956de3",
+    "matchType": "T10",
+    "venue": "Sheikh Zayed Stadium",
+    "status": "Emirates Eagles won by 16 runs",
+    "team1": {
+      "name": "Emirates Eagles",
+      "logoUrl": "",
+      "isWinner": true
+    },
+    "team2": {
+      "name": "Royal Desert Champions",
+      "logoUrl": "",
+      "isWinner": false
+    },
+    "startTimeText": "07 Nov 2026, Sat 13:45 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/royal-desert-champions-vs-emirates-eagles-2nd-match-abu-dhabi-t10-league-2026-217d000e-eaa3-4f72-a11b-cd4260956de3",
+    "teamScores": [
+      {
+        "teamName": "emirates eagles",
+        "scoreText": "125/2 (10)"
+      },
+      {
+        "teamName": "royal desert champions",
+        "scoreText": "109/7 (10)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "5cd5763c-6470-44a6-a184-c4869454280b",
+    "matchType": "T10",
+    "venue": "Sheikh Zayed Stadium",
+    "status": "UAE Bulls won by 7 wkts",
+    "team1": {
+      "name": "Uae Bulls",
+      "logoUrl": "",
+      "isWinner": true
+    },
+    "team2": {
+      "name": "Yas Lions",
+      "logoUrl": "",
+      "isWinner": false
+    },
+    "startTimeText": "07 Nov 2026, Sat 11:30 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/uae-bulls-vs-yas-lions-1st-match-abu-dhabi-t10-league-2026-5cd5763c-6470-44a6-a184-c4869454280b",
+    "teamScores": [
+      {
+        "teamName": "yas lions",
+        "scoreText": "120/3 (10)"
+      },
+      {
+        "teamName": "uae bulls",
+        "scoreText": "121/3 (9.4)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "1f4f3716-c5f2-44e7-9a35-056e63a2b1cf",
+    "matchType": "T20",
+    "venue": "Allan Border Field",
+    "status": "Brisbane Heat Women won by 4 wkts",
+    "team1": {
+      "name": "BHW",
+      "logoUrl": "https://cdorgapi.b-cdn.net/iapi/2625-638040173617905942.webp?w=48",
+      "isWinner": false
+    },
+    "team2": {
+      "name": "HHW",
+      "logoUrl": "https://cdorgapi.b-cdn.net/iapi/2635-638040172943294988.webp?w=48",
+      "isWinner": false
+    },
+    "startTimeText": "07 Nov 2026, Sat 08:10 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/brisbane-heat-women-vs-hobart-hurricanes-women-14th-match-womens-big-bash-league-2026-1f4f3716-c5f2-44e7-9a35-056e63a2b1cf",
+    "teamScores": [
+      {
+        "teamName": "hobart hurricanes women",
+        "scoreText": "116/9 (20)"
+      },
+      {
+        "teamName": "brisbane heat women",
+        "scoreText": "119/6 (18.2)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "298fc307-6208-44b7-b2ed-b8a73d32627b",
+    "matchType": "ODI",
+    "venue": "Al Amerat Cricket Ground (Ministry Turf 1)",
+    "status": "Bangladesh U19 won by 45 runs",
+    "team1": {
+      "name": "Bangladesh U19",
+      "logoUrl": "",
+      "isWinner": true
+    },
+    "team2": {
+      "name": "Sri Lanka U19",
+      "logoUrl": "",
+      "isWinner": false
+    },
+    "startTimeText": "07 Nov 2026, Sat 05:00 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/sri-lanka-u19-vs-bangladesh-u19-6th-match-group-b-acc-mens-u19-asia-cup-2026-298fc307-6208-44b7-b2ed-b8a73d32627b",
+    "teamScores": [
+      {
+        "teamName": "bangladesh u19",
+        "scoreText": "245/10 (49.4)"
+      },
+      {
+        "teamName": "sri lanka u19",
+        "scoreText": "200/10 (46.1)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "7b6de40a-6d62-4b83-aaaf-3b42e4a81f8a",
+    "matchType": "ODI",
+    "venue": "Al Amerat Cricket Ground (Ministry Turf 2)",
+    "status": "Afghanistan U19 won by 10 wkts",
+    "team1": {
+      "name": "Afghanistan U19",
+      "logoUrl": "",
+      "isWinner": true
+    },
+    "team2": {
+      "name": "Malaysia U19",
+      "logoUrl": "",
+      "isWinner": false
+    },
+    "startTimeText": "07 Nov 2026, Sat 05:00 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/afghanistan-u19-vs-malaysia-u19-5th-match-group-b-acc-mens-u19-asia-cup-2026-7b6de40a-6d62-4b83-aaaf-3b42e4a81f8a",
+    "teamScores": [
+      {
+        "teamName": "malaysia u19",
+        "scoreText": "42/10 (22.3)"
+      },
+      {
+        "teamName": "afghanistan u19",
+        "scoreText": "47/0 (3)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "300f2828-e1c8-44ad-8a74-be0a54ec4e02",
+    "matchType": "T20",
+    "venue": "Junction Oval",
+    "status": "Melbourne Renegades Women won by 36 runs",
+    "team1": {
+      "name": "ASW",
+      "logoUrl": "https://cdorgapi.b-cdn.net/iapi/2645-638040168980778527.webp?w=48",
+      "isWinner": false
+    },
+    "team2": {
+      "name": "MRW",
+      "logoUrl": "https://cdorgapi.b-cdn.net/iapi/2655-638040167731668168.webp?w=48",
+      "isWinner": false
+    },
+    "startTimeText": "07 Nov 2026, Sat 04:40 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/melbourne-renegades-women-vs-adelaide-strikers-women-13th-match-womens-big-bash-league-2026-300f2828-e1c8-44ad-8a74-be0a54ec4e02",
+    "teamScores": [
+      {
+        "teamName": "melbourne renegades women",
+        "scoreText": "188/3 (20)"
+      },
+      {
+        "teamName": "adelaide strikers women",
+        "scoreText": "152/8 (20)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "0e3699f8-43b2-461b-a659-4d38daf9bf35",
+    "matchType": "T20",
+    "venue": "Junction Oval",
+    "status": "Sydney Sixers Women won by 1 run",
+    "team1": {
+      "name": "MSW",
+      "logoUrl": "https://cdorgapi.b-cdn.net/iapi/2646-638040168260625211.webp?w=48",
+      "isWinner": false
+    },
+    "team2": {
+      "name": "SSW",
+      "logoUrl": "https://cdorgapi.b-cdn.net/iapi/2626-638040170781201689.webp?w=48",
+      "isWinner": false
+    },
+    "startTimeText": "06 Nov 2026, Fri 08:10 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/melbourne-stars-women-vs-sydney-sixers-women-12th-match-womens-big-bash-league-2026-0e3699f8-43b2-461b-a659-4d38daf9bf35",
+    "teamScores": [
+      {
+        "teamName": "sydney sixers women",
+        "scoreText": "160/5 (20)"
+      },
+      {
+        "teamName": "melbourne stars women",
+        "scoreText": "159/7 (20)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "8073572e-2b62-4837-ad19-42e9f644276d",
+    "matchType": "ODI",
+    "venue": "Al Amerat Cricket Ground (Ministry Turf 2)",
+    "status": "Pakistan U19 won by 9 wkts",
+    "team1": {
+      "name": "Pakistan U19",
+      "logoUrl": "",
+      "isWinner": true
+    },
+    "team2": {
+      "name": "United Arab Emirates U19",
+      "logoUrl": "",
+      "isWinner": false
+    },
+    "startTimeText": "06 Nov 2026, Fri 05:00 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/pakistan-u19-vs-united-arab-emirates-u19-3rd-match-group-a-acc-mens-u19-asia-cup-2026-8073572e-2b62-4837-ad19-42e9f644276d",
+    "teamScores": [
+      {
+        "teamName": "united arab emirates u19",
+        "scoreText": "224/10 (50)"
+      },
+      {
+        "teamName": "pakistan u19",
+        "scoreText": "225/1 (37.3)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "8cab6ab0-4760-429b-8bc7-1fb8d9d24b9e",
+    "matchType": "ODI",
+    "venue": "Al Amerat Cricket Ground (Ministry Turf 1)",
+    "status": "India U19 won by 10 wkts",
+    "team1": {
+      "name": "India U19",
+      "logoUrl": "https://cdorgapi.b-cdn.net/iapi/32-637877061328728555.webp?w=48",
+      "isWinner": true
+    },
+    "team2": {
+      "name": "Nepal U19",
+      "logoUrl": "https://cdorgapi.b-cdn.net/iapi/54-637877084789981539.webp?w=48",
+      "isWinner": false
+    },
+    "startTimeText": "06 Nov 2026, Fri 05:00 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/india-u19-vs-nepal-u19-4th-match-group-a-acc-mens-u19-asia-cup-2026-8cab6ab0-4760-429b-8bc7-1fb8d9d24b9e",
+    "teamScores": [
+      {
+        "teamName": "nepal u19",
+        "scoreText": "128/10 (42.3)"
+      },
+      {
+        "teamName": "india u19",
+        "scoreText": "129/0 (19.1)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "22508d08-daf1-4a48-a83b-5d3084d2a7bc",
+    "matchType": "T20",
+    "venue": "Tribhuvan University International Cricket Ground",
+    "status": "Kathmandu Gorkhas won by 9 wkts",
+    "team1": {
+      "name": "Biratnagar Kings",
+      "logoUrl": "",
+      "isWinner": false
+    },
+    "team2": {
+      "name": "Kathmandu Gorkhas",
+      "logoUrl": "",
+      "isWinner": true
+    },
+    "startTimeText": "05 Nov 2026, Thu 10:45 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/biratnagar-kings-vs-kathmandu-gorkhas-15th-match-nepal-premier-league-2026-22508d08-daf1-4a48-a83b-5d3084d2a7bc",
+    "teamScores": [
+      {
+        "teamName": "biratnagar kings",
+        "scoreText": "83/10 (18.3)"
+      },
+      {
+        "teamName": "kathmandu gorkhas",
+        "scoreText": "86/1 (9.4)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "f6bfa913-6f79-4fd9-ab8a-fe0b4cf5a456",
+    "matchType": "T20",
+    "venue": "Drummoyne Oval",
+    "status": "Perth Scorchers Women won by 17 runs",
+    "team1": {
+      "name": "PSW",
+      "logoUrl": "https://cdorgapi.b-cdn.net/iapi/2656-638040167042932787.webp?w=48",
+      "isWinner": false
+    },
+    "team2": {
+      "name": "STW",
+      "logoUrl": "https://cdorgapi.b-cdn.net/iapi/2636-638040169751591741.webp?w=48",
+      "isWinner": false
+    },
+    "startTimeText": "05 Nov 2026, Thu 08:10 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/sydney-thunder-women-vs-perth-scorchers-women-11th-match-womens-big-bash-league-2026-f6bfa913-6f79-4fd9-ab8a-fe0b4cf5a456",
+    "teamScores": [
+      {
+        "teamName": "perth scorchers women",
+        "scoreText": "183/2 (20)"
+      },
+      {
+        "teamName": "sydney thunder women",
+        "scoreText": "166/10 (19)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "a8e562f2-154c-4af1-84d1-9b346393678b",
+    "matchType": "T20",
+    "venue": "Tribhuvan University International Cricket Ground",
+    "status": "Lumbini Lions won by 16 runs",
+    "team1": {
+      "name": "Janakpur Bolts",
+      "logoUrl": "",
+      "isWinner": false
+    },
+    "team2": {
+      "name": "Lumbini Lions",
+      "logoUrl": "",
+      "isWinner": true
+    },
+    "startTimeText": "05 Nov 2026, Thu 06:45 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/janakpur-bolts-vs-lumbini-lions-14th-match-nepal-premier-league-2026-a8e562f2-154c-4af1-84d1-9b346393678b",
+    "teamScores": [
+      {
+        "teamName": "lumbini lions",
+        "scoreText": "149/8 (20)"
+      },
+      {
+        "teamName": "janakpur bolts",
+        "scoreText": "133/8 (20)"
+      }
+    ],
+    "isLive": false
+  }
+]

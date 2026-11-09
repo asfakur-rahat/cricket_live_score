@@ -1,0 +1,134 @@
+[
+  {
+    "id": "hb-upcoming",
+    "matchType": "T20",
+    "venue": "Sher-e-Bangla National Stadium, Mirpur",
+    "status": "Match starts at Dec 09, 09:30 GMT",
+    "team1": {
+      "name": "Bangladesh",
+      "logoUrl": "https://example.com/logos/ban.webp?w=48",
+      "isWinner": false
+    },
+    "team2": {
+      "name": "Sri Lanka",
+      "logoUrl": "https://example.com/logos/sl.webp?w=48",
+      "isWinner": false
+    },
+    "startTimeText": "9 Dec 2026, Wed 09:30 GMT",
+    "startTime": null,
+    "fullScorecardUrl": "https://example.com/scorecard/hb-upcoming",
+    "teamScores": [],
+    "isLive": false
+  },
+  {
+    "id": "hb-tied",
+    "matchType": "ODI",
+    "venue": "Harare Sports Club",
+    "status": "Match tied",
+    "team1": {
+      "name": "Zimbabwe",
+      "logoUrl": "",
+      "isWinner": false
+    },
+    "team2": {
+      "name": "Ireland",
+      "logoUrl": "",
+      "isWinner": false
+    },
+    "startTimeText": "10 Nov 2026, Tue 14:00 GMT",
+    "startTime": null,
+    "fullScorecardUrl": null,
+    "teamScores": [
+      {
+        "teamName": "zimbabwe",
+        "scoreText": "250/9 (50)"
+      },
+      {
+        "teamName": "ireland",
+        "scoreText": "250/10 (49.5)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "hb-table-only",
+    "matchType": "T20",
+    "venue": "Tribhuvan University Ground",
+    "status": "Nepal won by 4 runs",
+    "team1": {
+      "name": "nepal",
+      "logoUrl": "",
+      "isWinner": true
+    },
+    "team2": {
+      "name": "oman",
+      "logoUrl": "",
+      "isWinner": false
+    },
+    "startTimeText": "10 Nov 2026, Tue 03:15 GMT",
+    "startTime": null,
+    "fullScorecardUrl": null,
+    "teamScores": [
+      {
+        "teamName": "nepal",
+        "scoreText": "151/7 (20)"
+      },
+      {
+        "teamName": "oman",
+        "scoreText": "147/9 (20)"
+      }
+    ],
+    "isLive": false
+  },
+  {
+    "id": "hb-one-team",
+    "matchType": "T20",
+    "venue": "Al Amerat",
+    "status": "Scotland need 20 runs in 12 balls",
+    "team1": {
+      "name": "Scotland",
+      "logoUrl": "https://example.com/logos/sco.webp?w=48",
+      "isWinner": false
+    },
+    "team2": {
+      "name": "Unknown Team",
+      "logoUrl": "",
+      "isWinner": false
+    },
+    "startTimeText": "10 Nov 2026, Tue 08:00 GMT",
+    "startTime": null,
+    "fullScorecardUrl": null,
+    "teamScores": [
+      {
+        "teamName": "netherlands",
+        "scoreText": "170/6 (20)"
+      },
+      {
+        "teamName": "scotland",
+        "scoreText": "151/4 (18)"
+      }
+    ],
+    "isLive": true
+  },
+  {
+    "id": "hb-empty",
+    "matchType": "",
+    "venue": "",
+    "status": "",
+    "team1": {
+      "name": "Team 1",
+      "logoUrl": "",
+      "isWinner": false
+    },
+    "team2": {
+      "name": "Team 2",
+      "logoUrl": "",
+      "isWinner": false
+    },
+    "startTimeText": "",
+    "startTime": null,
+    "fullScorecardUrl": null,
+    "teamScores": [],
+    "isLive": false
+  }
+]

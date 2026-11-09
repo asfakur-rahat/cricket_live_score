@@ -1,0 +1,2 @@
+# Raw captures from the live feed: keep the bytes exactly as served.
+test/fixtures/live_feed_*.html -text
