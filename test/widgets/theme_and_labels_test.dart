@@ -158,5 +158,13 @@ void main() {
         'India A versus New Zealand A, live',
       );
     });
+
+    test('pagePosition counts from one and can be reworded', () {
+      expect(const CricketScoreLabels().pagePosition(3, 26), 'Match 3 of 26');
+      final labels = const CricketScoreLabels().copyWith(
+        formatPagePosition: (page, count) => '$count এর $page',
+      );
+      expect(labels.pagePosition(3, 26), '26 এর 3');
+    });
   });
 }

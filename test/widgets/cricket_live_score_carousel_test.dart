@@ -1,5 +1,7 @@
 import 'package:cricket_live_score/cricket_live_score.dart';
+import 'package:cricket_live_score/src/widgets/page_dots.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers.dart';
@@ -387,5 +389,155 @@ void main() {
     expect(live.style!.color, const Color(0xFF00FF00));
     expect(find.byKey(const ValueKey('logo:India A')), findsOneWidget);
     expect(find.text('vs'), findsOneWidget);
+  });
+
+  group('page dots', () {
+    List<CricketMatch> matches(int count) => [
+          for (var i = 0; i < count; i++)
+            finishedMatch(id: '$i').copyWith(venue: 'Ground $i'),
+        ];
+
+    Future<void> pumpDots(
+      WidgetTester tester, {
+      int count = 3,
+      bool show = true,
+      CricketScoreLabels labels = const CricketScoreLabels(),
+    }) async {
+      await tester.pumpWidget(
+        app(
+          CricketLiveScoreCarousel(
+            source: FakeSource(matches(count)),
+            showPageIndicator: show,
+            labels: labels,
+          ),
+        ),
+      );
+      await tester.pump();
+    }
+
+    String position(WidgetTester tester) =>
+        tester.getSemantics(find.byType(PageDots)).getSemanticsData().value;
+
+    testWidgets('are off by default', (tester) async {
+      await pumpDots(tester, show: false);
+      expect(find.byType(PageDots), findsNothing);
+    });
+
+    testWidgets('are hidden for a single match', (tester) async {
+      await pumpDots(tester, count: 1);
+      expect(find.byType(PageDots), findsNothing);
+    });
+
+    testWidgets('sit just under the card', (tester) async {
+      await pumpDots(tester);
+      expect(find.byType(PageDots), findsOneWidget);
+      final card = tester.getRect(find.byType(CricketMatchCard));
+      final dots = tester.getRect(find.byType(PageDots));
+      expect(dots.top, greaterThan(card.bottom));
+      expect(dots.top - card.bottom, lessThan(20));
+      expect(dots.center.dx, moreOrLessEquals(card.center.dx));
+    });
+
+    testWidgets('follow swipes and tell screen readers the position',
+        (tester) async {
+      await pumpDots(tester);
+      expect(position(tester), 'Match 1 of 3');
+
+      await tester.fling(find.byType(PageView), const Offset(-300, 0), 1000);
+      await tester.pumpAndSettle();
+      expect(find.text('At Ground 1'), findsOneWidget);
+      expect(find.byType(PageDots), findsOneWidget);
+      expect(position(tester), 'Match 2 of 3');
+    });
+
+    testWidgets('stay in place while the pages slide', (tester) async {
+      await pumpDots(tester);
+      final before = tester.getRect(find.byType(PageDots));
+      final gesture = await tester.startGesture(
+        tester.getCenter(find.byType(PageView)),
+      );
+      await gesture.moveBy(const Offset(-40, 0));
+      await gesture.moveBy(const Offset(-80, 0));
+      await tester.pump();
+      // Both pages' dots are on screen, at the same place.
+      final dots = find.byType(PageDots);
+      expect(dots, findsNWidgets(2));
+      expect(tester.getRect(dots.first).center.dx, before.center.dx);
+      expect(tester.getRect(dots.last).center.dx, before.center.dx);
+      await gesture.up();
+      await tester.pumpAndSettle();
+    });
+
+    testWidgets('a tap on a dot jumps to its match', (tester) async {
+      await pumpDots(tester, count: 5);
+      final dots = tester.getRect(find.byType(PageDots));
+      await tester.tapAt(dots.centerRight - const Offset(2, 0));
+      await tester.pumpAndSettle();
+      expect(find.text('At Ground 4'), findsOneWidget);
+      expect(position(tester), 'Match 5 of 5');
+
+      await tester.tapAt(
+        tester.getRect(find.byType(PageDots)).centerLeft + const Offset(2, 0),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('At Ground 0'), findsOneWidget);
+    });
+
+    testWidgets('screen-reader increase and decrease change the match',
+        (tester) async {
+      await pumpDots(tester);
+      void act(SemanticsAction action) {
+        final node = tester.getSemantics(find.byType(PageDots));
+        node.owner!.performAction(node.id, action);
+      }
+
+      expect(
+        tester
+            .getSemantics(find.byType(PageDots))
+            .getSemanticsData()
+            .increasedValue,
+        'Match 2 of 3',
+      );
+      act(SemanticsAction.increase);
+      await tester.pumpAndSettle();
+      expect(position(tester), 'Match 2 of 3');
+      act(SemanticsAction.decrease);
+      await tester.pumpAndSettle();
+      expect(position(tester), 'Match 1 of 3');
+    });
+
+    testWidgets('show at most seven dots however many matches', (tester) async {
+      await pumpDots(tester, count: 7);
+      final seven = tester.getSize(find.byType(PageDots)).width;
+      await pumpDots(tester, count: 26);
+      expect(tester.getSize(find.byType(PageDots)).width, seven);
+      await pumpDots(tester, count: 4);
+      expect(tester.getSize(find.byType(PageDots)).width, lessThan(seven));
+    });
+
+    testWidgets('with many matches the row reaches the last one',
+        (tester) async {
+      await pumpDots(tester, count: 26);
+      // The last dot showing is the seventh match's.
+      await tester.tapAt(
+        tester.getRect(find.byType(PageDots)).centerRight - const Offset(2, 0),
+      );
+      await tester.pumpAndSettle();
+      expect(position(tester), 'Match 7 of 26');
+      tester.widget<PageView>(find.byType(PageView)).controller!.jumpToPage(25);
+      await tester.pumpAndSettle();
+      expect(position(tester), 'Match 26 of 26');
+      expect(find.text('At Ground 25'), findsOneWidget);
+    });
+
+    testWidgets('use the position formatter', (tester) async {
+      await pumpDots(
+        tester,
+        labels: CricketScoreLabels(
+          formatPagePosition: (page, count) => '$page / $count',
+        ),
+      );
+      expect(position(tester), '1 / 3');
+    });
   });
 }

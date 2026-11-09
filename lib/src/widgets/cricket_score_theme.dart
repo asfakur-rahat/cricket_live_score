@@ -77,6 +77,12 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
     this.filterCapsuleMaxWidth,
     this.gridTileMinWidth,
     this.sheetTitleStyle,
+    this.pageDotSize,
+    this.pageDotActiveWidth,
+    this.pageDotGap,
+    this.pageDotColor,
+    this.pageDotActiveColor,
+    this.pageIndicatorBackground,
   });
 
   /// The defaults derived from [theme]'s colour scheme and text theme, with
@@ -155,6 +161,12 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       filterCapsuleMaxWidth: w(420),
       gridTileMinWidth: w(300),
       sheetTitleStyle: text(tt.titleLarge, 20, FontWeight.w700),
+      pageDotSize: w(8),
+      pageDotActiveWidth: w(22),
+      pageDotGap: w(6),
+      pageDotColor: cs.onSurfaceVariant.withValues(alpha: 0.3),
+      pageDotActiveColor: cs.primary,
+      pageIndicatorBackground: cs.surface.withValues(alpha: 0.9),
     );
   }
 
@@ -360,6 +372,24 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
   /// Style of the title in the score sheet.
   final TextStyle? sheetTitleStyle;
 
+  /// Height of a carousel page dot, and width of an inactive one.
+  final double? pageDotSize;
+
+  /// Width of the page dot for the current match, which stretches into a pill.
+  final double? pageDotActiveWidth;
+
+  /// Space between page dots.
+  final double? pageDotGap;
+
+  /// Colour of the page dots for the other matches.
+  final Color? pageDotColor;
+
+  /// Colour of the page dot for the current match.
+  final Color? pageDotActiveColor;
+
+  /// Background of the capsule behind the page dots.
+  final Color? pageIndicatorBackground;
+
   /// Returns a copy in which every non-null field of [other] replaces the
   /// field of this theme.
   CricketScoreThemeData merge(CricketScoreThemeData? other) {
@@ -426,6 +456,12 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       filterCapsuleMaxWidth: other.filterCapsuleMaxWidth,
       gridTileMinWidth: other.gridTileMinWidth,
       sheetTitleStyle: other.sheetTitleStyle,
+      pageDotSize: other.pageDotSize,
+      pageDotActiveWidth: other.pageDotActiveWidth,
+      pageDotGap: other.pageDotGap,
+      pageDotColor: other.pageDotColor,
+      pageDotActiveColor: other.pageDotActiveColor,
+      pageIndicatorBackground: other.pageIndicatorBackground,
     );
   }
 
@@ -492,6 +528,12 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
     double? filterCapsuleMaxWidth,
     double? gridTileMinWidth,
     TextStyle? sheetTitleStyle,
+    double? pageDotSize,
+    double? pageDotActiveWidth,
+    double? pageDotGap,
+    Color? pageDotColor,
+    Color? pageDotActiveColor,
+    Color? pageIndicatorBackground,
   }) {
     return CricketScoreThemeData(
       cardColor: cardColor ?? this.cardColor,
@@ -560,6 +602,13 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
           filterCapsuleMaxWidth ?? this.filterCapsuleMaxWidth,
       gridTileMinWidth: gridTileMinWidth ?? this.gridTileMinWidth,
       sheetTitleStyle: sheetTitleStyle ?? this.sheetTitleStyle,
+      pageDotSize: pageDotSize ?? this.pageDotSize,
+      pageDotActiveWidth: pageDotActiveWidth ?? this.pageDotActiveWidth,
+      pageDotGap: pageDotGap ?? this.pageDotGap,
+      pageDotColor: pageDotColor ?? this.pageDotColor,
+      pageDotActiveColor: pageDotActiveColor ?? this.pageDotActiveColor,
+      pageIndicatorBackground:
+          pageIndicatorBackground ?? this.pageIndicatorBackground,
     );
   }
 
@@ -655,6 +704,15 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       gridTileMinWidth: lerpDouble(gridTileMinWidth, other.gridTileMinWidth, t),
       sheetTitleStyle:
           TextStyle.lerp(sheetTitleStyle, other.sheetTitleStyle, t),
+      pageDotSize: lerpDouble(pageDotSize, other.pageDotSize, t),
+      pageDotActiveWidth:
+          lerpDouble(pageDotActiveWidth, other.pageDotActiveWidth, t),
+      pageDotGap: lerpDouble(pageDotGap, other.pageDotGap, t),
+      pageDotColor: Color.lerp(pageDotColor, other.pageDotColor, t),
+      pageDotActiveColor:
+          Color.lerp(pageDotActiveColor, other.pageDotActiveColor, t),
+      pageIndicatorBackground:
+          Color.lerp(pageIndicatorBackground, other.pageIndicatorBackground, t),
     );
   }
 
@@ -722,7 +780,13 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
           other.filterUnderlineHeight == filterUnderlineHeight &&
           other.filterCapsuleMaxWidth == filterCapsuleMaxWidth &&
           other.gridTileMinWidth == gridTileMinWidth &&
-          other.sheetTitleStyle == sheetTitleStyle;
+          other.sheetTitleStyle == sheetTitleStyle &&
+          other.pageDotSize == pageDotSize &&
+          other.pageDotActiveWidth == pageDotActiveWidth &&
+          other.pageDotGap == pageDotGap &&
+          other.pageDotColor == pageDotColor &&
+          other.pageDotActiveColor == pageDotActiveColor &&
+          other.pageIndicatorBackground == pageIndicatorBackground;
 
   @override
   int get hashCode => Object.hashAll([
@@ -787,5 +851,11 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
         filterCapsuleMaxWidth,
         gridTileMinWidth,
         sheetTitleStyle,
+        pageDotSize,
+        pageDotActiveWidth,
+        pageDotGap,
+        pageDotColor,
+        pageDotActiveColor,
+        pageIndicatorBackground,
       ]);
 }

@@ -28,6 +28,7 @@ class CricketScoreLabels {
     this.scoresTitle = 'Live scores',
     this.refresh = 'Refresh',
     this.formatVenue,
+    this.formatPagePosition,
   });
 
   /// Marks a live match: the card heading and the floating button's chip.
@@ -94,6 +95,11 @@ class CricketScoreLabels {
   /// Builds the venue line; when `null` it is `'$venuePrefix $venue'`.
   final String Function(String venue)? formatVenue;
 
+  /// Builds the screen-reader description of the carousel's page dots from
+  /// the 1-based page number and the number of matches; when `null` it is
+  /// `'Match $page of $count'`.
+  final String Function(int page, int count)? formatPagePosition;
+
   /// The venue line for [venue].
   String venueLine(String venue) =>
       formatVenue?.call(venue) ?? '$venuePrefix $venue';
@@ -104,6 +110,11 @@ class CricketScoreLabels {
     final teams = '${match.team1.name} $spokenVersus ${match.team2.name}';
     return match.isLive ? '$teams, $spokenLive' : teams;
   }
+
+  /// The screen-reader description of the carousel's page dots, for
+  /// example `"Match 3 of 26"`.
+  String pagePosition(int page, int count) =>
+      formatPagePosition?.call(page, count) ?? 'Match $page of $count';
 
   /// The filter chip label for [phase].
   String phaseLabel(MatchPhase phase) => switch (phase) {
@@ -134,6 +145,7 @@ class CricketScoreLabels {
     String? scoresTitle,
     String? refresh,
     String Function(String venue)? formatVenue,
+    String Function(int page, int count)? formatPagePosition,
   }) {
     return CricketScoreLabels(
       live: live ?? this.live,
@@ -156,6 +168,7 @@ class CricketScoreLabels {
       scoresTitle: scoresTitle ?? this.scoresTitle,
       refresh: refresh ?? this.refresh,
       formatVenue: formatVenue ?? this.formatVenue,
+      formatPagePosition: formatPagePosition ?? this.formatPagePosition,
     );
   }
 }

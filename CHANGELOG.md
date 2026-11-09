@@ -6,7 +6,8 @@
 - `CricketScoreLayout`: the score screen is an adaptive grid on tablets, foldables and large landscape windows by default, or one phone-width column with `CricketScoreLayout.phone`.
 - `showCricketLiveScoreSheet` and `CricketLiveScoreSheet`: the live scores in a draggable bottom sheet, with a pinned title bar and refresh and close buttons. On a wide window it is capped at the dialog width and centred.
 - `CricketLiveScoreView` takes a `scrollController`, a `pinnedHeader` that stays above the filters, and `enablePullToRefresh`.
-- New theme fields for the score screen (`listGap`, `gridTileMinWidth`, `sheetTitleStyle`, `filterChipStyle` and the `filter…` colours and sizes), and new labels for the filters and the sheet (`scoresTitle`, `refresh`).
+- `CricketLiveScoreCarousel(showPageIndicator: true)`: page dots under the card, sliding along when there are more than seven matches. Tap a dot to jump to its match.
+- New theme fields for the score screen (`listGap`, `gridTileMinWidth`, `sheetTitleStyle`, `filterChipStyle` and the `filter…` colours and sizes) and the page dots (`pageDot…` and `pageIndicatorBackground`), and new labels for the filters, the sheet (`scoresTitle`, `refresh`) and the page dots (`formatPagePosition`).
 - **Breaking:** requires Flutter 3.27 / Dart 3.6 or later (was Flutter 3.24 / Dart 3.5).
 
 ## 0.1.0 — Initial release

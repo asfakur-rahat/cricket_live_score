@@ -90,6 +90,7 @@ class _HomePageState extends State<HomePage> {
           child: CricketLiveScoreCarousel(
             source: filter.isAll ? _source : FilteredSource(_source, filter),
             autoScroll: true,
+            showPageIndicator: true,
             onClose: () => Navigator.pop(context),
           ),
         ),

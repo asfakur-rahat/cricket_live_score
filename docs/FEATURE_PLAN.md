@@ -86,6 +86,8 @@ showCricketLiveScoreSheet(context, source: source);   // one-liner
 
 ## 5. Page dots on the carousel
 
+**Done on 2026-11-09.** The dots sit in a small capsule right under each card, so they stay readable over the dialog's dark backdrop. While swiping they stay in place and fade into the next card's dots. Screen readers can step through the matches with them.
+
 - `CricketLiveScoreCarousel(showPageIndicator: true)` shows dots under the card for the current match. Off by default, as in the app.
 - Dot size, gap and colours are new theme fields. The defaults scale with the screen and come from the colour scheme.
 - With many matches (for example 26), show at most about 7 dots, which slide along as you page, so the row never overflows. You can say if you'd rather have simple dots.

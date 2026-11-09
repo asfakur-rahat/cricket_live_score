@@ -9,6 +9,7 @@ import 'package:cricket_live_score/src/widgets/cricket_match_card.dart';
 import 'package:cricket_live_score/src/widgets/cricket_score_labels.dart';
 import 'package:cricket_live_score/src/widgets/cricket_score_scale.dart';
 import 'package:cricket_live_score/src/widgets/cricket_score_theme.dart';
+import 'package:cricket_live_score/src/widgets/page_dots.dart';
 import 'package:cricket_live_score/src/widgets/score_controller_host.dart';
 import 'package:cricket_live_score/src/widgets/score_error_body.dart';
 import 'package:cricket_live_score/src/widgets/team_logo.dart';
@@ -33,6 +34,9 @@ typedef CricketScoreErrorBuilder = Widget Function(
 /// there are no matches, or the first fetch fails, it shows an empty or
 /// error card. A later failed fetch keeps showing the last matches.
 ///
+/// With [showPageIndicator], dots under the card show which match is on
+/// screen; tap one to jump to that match.
+///
 /// The carousel needs a bounded height: pass [maxHeight] or place it where
 /// the height is constrained, such as a dialog.
 class CricketLiveScoreCarousel extends StatefulWidget {
@@ -44,6 +48,7 @@ class CricketLiveScoreCarousel extends StatefulWidget {
     this.source,
     this.autoScroll = false,
     this.autoScrollInterval = const Duration(seconds: 5),
+    this.showPageIndicator = false,
     this.onClose,
     this.maxWidth,
     this.maxHeight,
@@ -73,6 +78,14 @@ class CricketLiveScoreCarousel extends StatefulWidget {
 
   /// Time between automatic page changes.
   final Duration autoScrollInterval;
+
+  /// Whether to show page dots under the card when there is more than one
+  /// match.
+  ///
+  /// The dot for the current match stretches into a pill. With many
+  /// matches, at most seven dots show at once and the row slides along as
+  /// the pages change. Tapping a dot jumps to its match.
+  final bool showPageIndicator;
 
   /// Called by the close button on every card; `null` hides the button.
   final VoidCallback? onClose;
@@ -205,6 +218,20 @@ class _CricketLiveScoreCarouselState extends State<CricketLiveScoreCarousel>
     });
   }
 
+  void _showPage(int page) {
+    if (!_pageController.hasClients) return;
+    _currentPage = page;
+    unawaited(
+      _pageController.animateToPage(
+        page,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeOutCubic,
+      ),
+    );
+    // A tap starts the auto-scroll interval over.
+    _startAutoScroll();
+  }
+
   bool _onScrollNotification(ScrollNotification notification) {
     if (notification is ScrollStartNotification) {
       _isUserInteracting = true;
@@ -266,28 +293,77 @@ class _CricketLiveScoreCarouselState extends State<CricketLiveScoreCarousel>
           itemCount: matches.length,
           itemBuilder: (_, index) {
             final match = matches[index];
+            final card = CricketMatchCard(
+              match: match,
+              onClose: widget.onClose,
+              onTap: widget.onMatchTap == null
+                  ? null
+                  : () => widget.onMatchTap!(match),
+              theme: theme,
+              labels: widget.labels,
+              logoBuilder: widget.logoBuilder,
+              centerBadge: widget.centerBadge,
+            );
             return Center(
               child: Padding(
                 // Room for the close button, which overhangs the card by
                 // closeButtonOffset and would be clipped by the PageView
                 // viewport.
                 padding: EdgeInsets.all(theme.outerPadding!),
-                child: CricketMatchCard(
-                  match: match,
-                  onClose: widget.onClose,
-                  onTap: widget.onMatchTap == null
-                      ? null
-                      : () => widget.onMatchTap!(match),
-                  theme: theme,
-                  labels: widget.labels,
-                  logoBuilder: widget.logoBuilder,
-                  centerBadge: widget.centerBadge,
-                ),
+                child: widget.showPageIndicator && matches.length > 1
+                    ? Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Flexible(child: card),
+                          SizedBox(height: theme.smallVerticalGap),
+                          _pageDots(theme, index, matches.length),
+                        ],
+                      )
+                    : card,
               ),
             );
           },
         ),
       ),
+    );
+  }
+
+  /// The page dots under the card of page [index].
+  ///
+  /// Every page has its own dots, right under its card, which may be
+  /// taller or shorter than its neighbours'. While the pages scroll, each
+  /// page's dots stay put instead of sliding with the page and fade into
+  /// the next page's dots.
+  Widget _pageDots(CricketScoreThemeData theme, int index, int count) {
+    return AnimatedBuilder(
+      animation: _pageController,
+      builder: (context, _) {
+        final position =
+            _pageController.hasClients ? _pageController.position : null;
+        final page = position != null && position.haveDimensions
+            ? _pageController.page!
+            : _currentPage.toDouble();
+        final distance = page - index;
+        return ExcludeSemantics(
+          excluding: distance.abs() >= 0.5,
+          child: Opacity(
+            opacity: (1 - distance.abs()).clamp(0, 1),
+            child: Transform.translate(
+              offset: Offset(
+                distance * (position?.viewportDimension ?? 0),
+                0,
+              ),
+              child: PageDots(
+                count: count,
+                page: page,
+                theme: theme,
+                positionLabel: (i) => widget.labels.pagePosition(i + 1, count),
+                onSelect: _showPage,
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 

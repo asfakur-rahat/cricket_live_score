@@ -10,7 +10,7 @@ Live cricket scores for Flutter apps: a self-refreshing match carousel, a compac
 
 ## Features
 
-- **`CricketLiveScoreCarousel`** — swipeable match cards that poll for new scores (every 30 s by default), with optional auto-scroll, and separate loading, empty and error states. A failed poll keeps the last scores on screen.
+- **`CricketLiveScoreCarousel`** — swipeable match cards that poll for new scores (every 30 s by default), with optional auto-scroll and page dots, and separate loading, empty and error states. A failed poll keeps the last scores on screen.
 - **`CricketMatchFab`** — a small button with both team logos around "VS" and a LIVE chip, tap and sideways-swipe callbacks.
 - **`CricketScoreSource`** — a one-method interface for your own data, plus `CricketDataWidgetSource`, which reads cricketdata.org's website widget (see [Data source](#data-source)).
 - Polling pauses while the app is in the background and refreshes on resume.
@@ -44,6 +44,8 @@ showDialog<void>(
 ```
 
 The carousel needs a bounded height, such as a dialog's; pass `maxHeight` to cap it. Each card is only as tall as its content, centred in that height, and scrolls only when it doesn't fit. On a phone the carousel takes the full width it is given; on a wider window it is capped at the Material dialog width, unless you pass `maxWidth`.
+
+Pass `showPageIndicator: true` to show page dots in a small capsule under the card. The dot for the current match stretches into a pill that glides along as you swipe. With many matches, at most seven dots show and the row slides to keep the current one in view. Tap a dot to jump to its match. Screen readers announce the position ("Match 3 of 26") and can step through the matches; reword it with `CricketScoreLabels.formatPagePosition`.
 
 Feature one match on a floating button:
 
