@@ -42,6 +42,7 @@ class _HomePageState extends State<HomePage> {
   late CricketScoreSource _source = CricketDataWidgetSource();
   CricketMatch? _featured;
   List<CricketMatch> _matches = const [];
+  CricketTickerMode _tickerMode = CricketTickerMode.rotate;
 
   @override
   void initState() {
@@ -133,7 +134,28 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: CricketScoreTicker(
               source: _source,
+              mode: _tickerMode,
               onMatchTap: (_) => _openScores(),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: SegmentedButton<CricketTickerMode>(
+              segments: const [
+                ButtonSegment(
+                  value: CricketTickerMode.rotate,
+                  label: Text('Rotate'),
+                  icon: Icon(Icons.swap_vert),
+                ),
+                ButtonSegment(
+                  value: CricketTickerMode.crawl,
+                  label: Text('News crawl'),
+                  icon: Icon(Icons.double_arrow),
+                ),
+              ],
+              selected: {_tickerMode},
+              onSelectionChanged: (modes) =>
+                  setState(() => _tickerMode = modes.single),
             ),
           ),
           SwitchListTile(

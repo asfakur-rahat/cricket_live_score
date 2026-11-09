@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:cricket_live_score/src/controller/cricket_score_controller.dart';
 import 'package:cricket_live_score/src/models/cricket_match.dart';
@@ -9,21 +10,38 @@ import 'package:cricket_live_score/src/sources/cricket_score_source.dart';
 import 'package:cricket_live_score/src/widgets/cricket_score_labels.dart';
 import 'package:cricket_live_score/src/widgets/cricket_score_scale.dart';
 import 'package:cricket_live_score/src/widgets/cricket_score_theme.dart';
+import 'package:cricket_live_score/src/widgets/flashing_score.dart';
 import 'package:cricket_live_score/src/widgets/pulsing_dot.dart';
 import 'package:cricket_live_score/src/widgets/score_controller_host.dart';
 import 'package:cricket_live_score/src/widgets/team_logo.dart';
+import 'package:cricket_live_score/src/widgets/ticker_crawl.dart';
+import 'package:cricket_live_score/src/widgets/ticker_glass.dart';
 import 'package:flutter/gestures.dart' show kLongPressTimeout;
 import 'package:flutter/material.dart';
 
-/// A slim strip that shows one match at a time and keeps itself up to date,
-/// for example along the top of a home screen:
+/// How [CricketScoreTicker] moves through its matches.
+enum CricketTickerMode {
+  /// One match at a time; the next slides up into place every interval,
+  /// while a thin line along the bottom fills until it does.
+  rotate,
+
+  /// Every match in one line that scrolls sideways without stopping, like
+  /// a TV news ticker.
+  crawl,
+}
+
+/// A slim strip of live scores that keeps itself up to date, for example
+/// along the top of a home screen:
 ///
 /// `LIVE  T20 · Bangladesh 168/6 (20) vs Sri Lanka 131/4 (16)`
 ///
-/// With more than one match it moves to the next every [interval], sliding
-/// the new match up into place, while a thin line along the bottom fills
-/// until the next move. Touching the strip holds the current match until
-/// the finger lifts.
+/// It sits on frosted glass inside a thin glowing gradient edge. In
+/// [CricketTickerMode.rotate], the default, it shows one match at a time
+/// and moves to the next every [interval]. In [CricketTickerMode.crawl] it
+/// scrolls every match past at [crawlSpeed], or falls back to rotating
+/// while the platform asks for reduced motion. Either way, a finger held
+/// on the strip holds it still, and a score that changes glows for a
+/// moment.
 ///
 /// It shows live matches only, unless [filter] says otherwise. When no
 /// match passes the filter (also before the first fetch finishes, and
@@ -41,18 +59,21 @@ class CricketScoreTicker extends StatefulWidget {
     super.key,
     this.controller,
     this.source,
+    this.mode = CricketTickerMode.rotate,
     this.filter = liveOnly,
     this.interval = const Duration(seconds: 5),
+    this.crawlSpeed = 40,
     this.onMatchTap,
     this.emptyBuilder,
     this.showLogos = true,
     this.theme,
     this.labels = const CricketScoreLabels(),
     this.logoBuilder = defaultTeamLogoBuilder,
-  }) : assert(
+  })  : assert(
           (controller == null) != (source == null),
           'Pass exactly one of controller and source.',
-        );
+        ),
+        assert(crawlSpeed >= 0, 'crawlSpeed must not be negative.');
 
   /// The default [filter]: live matches only.
   static const liveOnly = CricketMatchFilter(phases: {MatchPhase.live});
@@ -63,13 +84,22 @@ class CricketScoreTicker extends StatefulWidget {
   /// Supplies the matches through a controller owned by the ticker.
   final CricketScoreSource? source;
 
+  /// Whether to show one match at a time or crawl through them all.
+  final CricketTickerMode mode;
+
   /// Which matches the ticker shows; [liveOnly] by default.
   final CricketMatchFilter filter;
 
-  /// How long each match shows before the next one.
+  /// How long each match shows before the next one, in
+  /// [CricketTickerMode.rotate].
   final Duration interval;
 
-  /// Called with the match on show when the strip is tapped.
+  /// How fast the line moves in [CricketTickerMode.crawl], in logical
+  /// pixels a second on the design screen; it scales with the screen like
+  /// the other sizes.
+  final double crawlSpeed;
+
+  /// Called with the match that was tapped.
   final void Function(CricketMatch match)? onMatchTap;
 
   /// Builds what shows when no match passes the filter; `null` collapses the
@@ -103,8 +133,9 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
   @override
   CricketScoreSource? get widgetSource => widget.source;
 
-  /// Runs once per [CricketScoreTicker.interval]: it draws the line along
-  /// the bottom, and moves to the next match when it completes.
+  /// Runs once per [CricketScoreTicker.interval] while rotating: it draws
+  /// the line along the bottom, and moves to the next match when it
+  /// completes.
   late final AnimationController _progress;
 
   int _index = 0;
@@ -116,6 +147,9 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
   /// The ids of the matches to rotate through, as of the last build.
   List<String> _ids = const [];
 
+  /// Whether the last build crawled rather than rotated.
+  bool _crawling = false;
+
   bool _touched = false;
 
   /// When the current touch went down and how long the last one lasted,
@@ -124,11 +158,19 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
   Duration _touchDown = Duration.zero;
   Duration _touchLength = Duration.zero;
 
+  /// The last scores seen, by [_scoreKey], and the matches they belong to.
+  Map<String, String?> _scores = const {};
+  Set<String> _matchIds = const {};
+
+  /// Scores that changed and haven't flashed yet.
+  final _unflashed = <String>{};
+
   @override
   void initState() {
     super.initState();
     _progress = AnimationController(vsync: this, duration: widget.interval)
       ..addStatusListener(_onProgressStatus);
+    _rememberScores(controller.state.matches);
   }
 
   @override
@@ -142,9 +184,41 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    final wasInBackground = inBackground;
     super.didChangeAppLifecycleState(state);
     _syncProgress();
+    // The crawl reads inBackground when it builds.
+    if (wasInBackground != inBackground && _crawling) setState(() {});
   }
+
+  @override
+  void onScoreStateChanged() {
+    final matches = controller.state.matches;
+    final before = _scores;
+    final known = _matchIds;
+    _rememberScores(matches);
+    for (final entry in _scores.entries) {
+      final matchId = entry.key.substring(0, entry.key.indexOf('|'));
+      if (known.contains(matchId) &&
+          entry.value != null &&
+          before[entry.key] != entry.value) {
+        _unflashed.add(entry.key);
+      }
+    }
+    setState(() {});
+  }
+
+  void _rememberScores(List<CricketMatch> matches) {
+    _scores = {
+      for (final match in matches)
+        for (final score in match.teamScores)
+          _scoreKey(match, score.teamName): score.scoreText,
+    };
+    _matchIds = {for (final match in matches) match.id};
+  }
+
+  static String _scoreKey(CricketMatch match, String teamName) =>
+      '${match.id}|${teamName.toLowerCase()}';
 
   @override
   void dispose() {
@@ -162,17 +236,17 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
     unawaited(_progress.forward(from: 0));
   }
 
-  /// Runs the progress while there is something to move to and nothing
-  /// holds the ticker still.
+  /// Runs the progress while rotating, with something to move to and
+  /// nothing holding the ticker still.
   void _syncProgress() {
     final count = _ids.length;
-    final run = count > 1 && !_touched && !inBackground;
+    final run = !_crawling && count > 1 && !_touched && !inBackground;
     if (run && !_progress.isAnimating) {
       unawaited(_progress.forward());
     } else if (!run && _progress.isAnimating) {
       _progress.stop();
     }
-    if (count <= 1) _progress.value = 0;
+    if (count <= 1 || _crawling) _progress.value = 0;
   }
 
   void _setTouched(PointerEvent event) {
@@ -183,6 +257,8 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
       _touchLength = event.timeStamp - _touchDown;
     }
     _syncProgress();
+    // The crawl reads _touched when it builds.
+    if (_crawling) setState(() {});
   }
 
   void _onTap(CricketMatch match) {
@@ -194,6 +270,8 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
   Widget build(BuildContext context) {
     final theme = CricketScoreThemeData.resolve(context, widget.theme);
     final shown = filterMatches(controller.state.matches, widget.filter);
+    final reduceMotion = MediaQuery.disableAnimationsOf(context);
+    final crawling = widget.mode == CricketTickerMode.crawl && !reduceMotion;
 
     // Keep showing the same match if a refresh moved it.
     final kept = shown.indexWhere((m) => m.id == _currentId);
@@ -202,9 +280,10 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
       _index %= shown.length;
       _currentId = shown[_index].id;
     }
-    final countChanged = shown.length != _ids.length;
+    final changed = shown.length != _ids.length || crawling != _crawling;
     _ids = [for (final match in shown) match.id];
-    if (countChanged) {
+    _crawling = crawling;
+    if (changed) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) _syncProgress();
       });
@@ -215,26 +294,40 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
       child = widget.emptyBuilder?.call(context) ??
           const SizedBox(width: double.infinity);
     } else {
-      child = _strip(context, theme, shown[_index], shown.length);
+      child = Listener(
+        onPointerDown: _setTouched,
+        onPointerUp: _setTouched,
+        onPointerCancel: _setTouched,
+        child: TickerGlassFrame(
+          theme: theme,
+          child: SizedBox(
+            height: theme.tickerHeight,
+            width: double.infinity,
+            child: crawling
+                ? _crawl(context, theme, shown)
+                : _rotate(context, theme, shown),
+          ),
+        ),
+      );
     }
-    final reduceMotion = MediaQuery.disableAnimationsOf(context);
+    // AnimatedSize can't take a zero duration, so reduced motion skips it.
+    if (reduceMotion) return child;
     return AnimatedSize(
-      duration:
-          reduceMotion ? Duration.zero : const Duration(milliseconds: 250),
+      duration: const Duration(milliseconds: 250),
       curve: Curves.easeOutCubic,
       alignment: Alignment.topCenter,
       child: child,
     );
   }
 
-  Widget _strip(
+  Widget _rotate(
     BuildContext context,
     CricketScoreThemeData theme,
-    CricketMatch match,
-    int count,
+    List<CricketMatch> shown,
   ) {
+    final match = shown[_index];
+    final count = shown.length;
     final reduceMotion = MediaQuery.disableAnimationsOf(context);
-    final radius = BorderRadius.circular(theme.tickerBorderRadius!);
     final onTap = widget.onMatchTap;
     final line = AnimatedSwitcher(
       duration:
@@ -242,7 +335,7 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
       switchInCurve: Curves.easeOutCubic,
       switchOutCurve: Curves.easeInCubic,
       layoutBuilder: (current, previous) => Stack(
-        alignment: Alignment.centerLeft,
+        alignment: AlignmentDirectional.centerStart,
         children: [...previous, if (current != null) current],
       ),
       transitionBuilder: (child, animation) {
@@ -261,7 +354,22 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
       },
       child: KeyedSubtree(
         key: ValueKey(match.id),
-        child: _line(context, theme, match),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            // Names can shorten to nothing, but the rest can't; when even
+            // that doesn't fit, scale the whole line down instead.
+            final minNames = theme.largeHorizontalGap! * 3;
+            if (_fixedWidth(context, theme, match) + minNames <=
+                constraints.maxWidth) {
+              return _line(context, theme, match, fill: true);
+            }
+            return FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: AlignmentDirectional.centerStart,
+              child: _line(context, theme, match, fill: false),
+            );
+          },
+        ),
       ),
     );
 
@@ -272,50 +380,71 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
         _spoken(match),
         if (count > 1) widget.labels.pagePosition(_index + 1, count),
       ].join(', '),
-      child: Listener(
-        onPointerDown: _setTouched,
-        onPointerUp: _setTouched,
-        onPointerCancel: _setTouched,
-        child: Material(
-          color: theme.tickerBackground,
-          shape: RoundedRectangleBorder(
-            borderRadius: radius,
-            side: BorderSide(color: theme.tickerBorder!),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: onTap == null ? null : () => _onTap(match),
-            child: SizedBox(
-              height: theme.tickerHeight,
-              width: double.infinity,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: ExcludeSemantics(
-                      child: Padding(
-                        padding: theme.tickerPadding!,
-                        child: ClipRect(child: line),
-                      ),
-                    ),
-                  ),
-                  if (count > 1)
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: _progressLine(context, theme),
-                    ),
-                ],
+      child: InkWell(
+        onTap: onTap == null ? null : () => _onTap(match),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: ExcludeSemantics(
+                child: Padding(
+                  padding: theme.tickerPadding!,
+                  child: ClipRect(child: line),
+                ),
               ),
             ),
-          ),
+            if (count > 1)
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: _progressLine(context, theme),
+              ),
+          ],
         ),
       ),
     );
   }
 
+  Widget _crawl(
+    BuildContext context,
+    CricketScoreThemeData theme,
+    List<CricketMatch> shown,
+  ) {
+    final scale = CricketScoreScale.of(context);
+    final onTap = widget.onMatchTap;
+    final padding = theme.tickerPadding!.resolve(Directionality.of(context));
+    return TickerCrawl(
+      speed: scale.width(widget.crawlSpeed),
+      paused: _touched || inBackground,
+      gap: theme.largeHorizontalGap! * 1.5,
+      fadeWidth: math.max(padding.left, padding.right) * 2,
+      separator: _Diamond(theme: theme),
+      children: [
+        for (final match in shown)
+          Semantics(
+            container: true,
+            button: onTap != null,
+            label: _spoken(match),
+            child: InkWell(
+              onTap: onTap == null ? null : () => _onTap(match),
+              child: ExcludeSemantics(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: theme.smallHorizontalGap!,
+                  ),
+                  child: SizedBox(
+                    height: theme.tickerHeight,
+                    child: _line(context, theme, match, fill: false),
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
   Widget _progressLine(BuildContext context, CricketScoreThemeData theme) {
-    final color = theme.tickerProgressColor!;
     return AnimatedBuilder(
       animation: _progress,
       builder: (context, _) => FractionallySizedBox(
@@ -324,8 +453,11 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
         child: DecoratedBox(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [color.withValues(alpha: 0.15), color],
+              colors: [theme.tickerEdgeStart!, theme.tickerEdgeEnd!],
             ),
+            boxShadow: [
+              BoxShadow(color: theme.tickerGlowColor!, blurRadius: 6),
+            ],
           ),
           child: SizedBox(height: CricketScoreScale.of(context).width(2)),
         ),
@@ -334,8 +466,87 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
   }
 
   /// One line: the LIVE chip, the match type, then both teams with their
-  /// scores, or the status when there are no scores yet.
+  /// logos and scores, or the status when there are no scores yet.
+  ///
+  /// With [fill] it takes the width it is given: when that is too narrow,
+  /// the names (and the status) shorten in proportion to their length,
+  /// while the chip, logos and scores keep their size. Without, it is as
+  /// wide as its content, for the crawl.
   Widget _line(
+    BuildContext context,
+    CricketScoreThemeData theme,
+    CricketMatch match, {
+    required bool fill,
+  }) {
+    final textStyle = theme.tickerTextStyle;
+    final muted = textStyle?.copyWith(
+      color: textStyle.color?.withValues(alpha: 0.6),
+    );
+    final hasScores = match.teamScores.isNotEmpty;
+
+    // Text that may shorten, with a flex of its natural width so that
+    // every such text shortens by the same fraction.
+    Widget shrinkable(String text, TextStyle? style) {
+      final label = Text(
+        text,
+        style: style,
+        maxLines: 1,
+        overflow: fill ? TextOverflow.ellipsis : null,
+      );
+      if (!fill) return label;
+      return Flexible(flex: _naturalWidth(context, text, style), child: label);
+    }
+
+    List<Widget> team(TeamInfo team) {
+      final score = _scoreOf(match, team);
+      final key = _scoreKey(match, team.name);
+      return [
+        if (widget.showLogos && team.logoUrl.isNotEmpty) ...[
+          widget.logoBuilder(context, team, theme.tickerHeight! * 0.22),
+          SizedBox(width: theme.smallHorizontalGap),
+        ],
+        shrinkable(team.name, textStyle),
+        if (score != null) ...[
+          SizedBox(width: theme.smallHorizontalGap! / 2),
+          FlashingScore(
+            text: score,
+            style: theme.tickerScoreStyle,
+            color: theme.tickerFlashColor!,
+            flash: _unflashed.contains(key),
+            onFlashed: () => _unflashed.remove(key),
+          ),
+        ],
+      ];
+    }
+
+    return Row(
+      mainAxisSize: fill ? MainAxisSize.max : MainAxisSize.min,
+      children: [
+        if (match.isLive) ...[
+          _liveChip(theme),
+          SizedBox(width: theme.mediumHorizontalGap),
+        ],
+        if (match.matchType.isNotEmpty) ...[
+          Text(
+            match.matchType.toUpperCase(),
+            style: textStyle?.copyWith(color: theme.accentColor),
+          ),
+          Text(' · ', style: muted),
+        ],
+        ...team(match.team1),
+        Text(' ${widget.labels.versus.toLowerCase()} ', style: muted),
+        ...team(match.team2),
+        if (!hasScores && match.status.isNotEmpty) ...[
+          Text(' · ', style: muted),
+          shrinkable(match.status, muted),
+        ],
+      ],
+    );
+  }
+
+  /// The width of everything on [match]'s line except the names and the
+  /// status, which can shorten.
+  double _fixedWidth(
     BuildContext context,
     CricketScoreThemeData theme,
     CricketMatch match,
@@ -344,69 +555,59 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
     final muted = textStyle?.copyWith(
       color: textStyle.color?.withValues(alpha: 0.6),
     );
-    final gap = SizedBox(width: theme.mediumHorizontalGap);
-    final hasScores = match.teamScores.isNotEmpty;
-    return Row(
-      children: [
-        if (match.isLive) ...[_liveChip(theme), gap],
-        if (match.matchType.isNotEmpty) ...[
-          Text(
-            match.matchType.toUpperCase(),
-            style: textStyle?.copyWith(color: theme.accentColor),
-          ),
-          Text(' · ', style: muted),
-        ],
-        Flexible(child: _team(context, theme, match, match.team1)),
-        Text(' ${widget.labels.versus.toLowerCase()} ', style: muted),
-        Flexible(child: _team(context, theme, match, match.team2)),
-        if (!hasScores && match.status.isNotEmpty) ...[
-          Text(' · ', style: muted),
-          Flexible(
-            child: Text(
-              match.status,
-              style: muted,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ],
-    );
+    double text(String text, TextStyle? style) =>
+        _naturalWidth(context, text, style).toDouble();
+    final small = theme.smallHorizontalGap!;
+    var width = text(' ${widget.labels.versus.toLowerCase()} ', muted);
+    if (match.isLive) {
+      final style = theme.liveChipStyle;
+      final padding =
+          theme.liveChipPadding!.resolve(Directionality.of(context));
+      width += padding.horizontal +
+          (style?.fontSize ?? 11) * 0.55 +
+          small +
+          text(
+            widget.labels.live,
+            style?.copyWith(fontWeight: FontWeight.w700),
+          ) +
+          theme.mediumHorizontalGap!;
+    }
+    if (match.matchType.isNotEmpty) {
+      width +=
+          text(match.matchType.toUpperCase(), textStyle) + text(' · ', muted);
+    }
+    for (final team in [match.team1, match.team2]) {
+      if (widget.showLogos && team.logoUrl.isNotEmpty) {
+        width += theme.tickerHeight! * 0.44 + small;
+      }
+      final score = _scoreOf(match, team);
+      // Half a gap before it, and the flash's padding around it.
+      if (score != null) {
+        width += small / 2 + 4 + text(score, theme.tickerScoreStyle);
+      }
+    }
+    if (match.teamScores.isEmpty && match.status.isNotEmpty) {
+      width += text(' · ', muted);
+    }
+    return width;
   }
 
-  Widget _team(
-    BuildContext context,
-    CricketScoreThemeData theme,
-    CricketMatch match,
-    TeamInfo team,
-  ) {
-    final score = _scoreOf(match, team);
-    final logoRadius = theme.tickerHeight! * 0.22;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (widget.showLogos && team.logoUrl.isNotEmpty) ...[
-          widget.logoBuilder(context, team, logoRadius),
-          SizedBox(width: theme.smallHorizontalGap),
-        ],
-        Flexible(
-          child: Text(
-            team.name,
-            style: theme.tickerTextStyle,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        if (score != null) ...[
-          SizedBox(width: theme.smallHorizontalGap),
-          Text(score, style: theme.tickerScoreStyle),
-        ],
-      ],
-    );
+  /// The width [text] takes on one line, in whole pixels, at least 1.
+  int _naturalWidth(BuildContext context, String text, TextStyle? style) {
+    final painter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      textDirection: Directionality.of(context),
+      textScaler: MediaQuery.textScalerOf(context),
+      maxLines: 1,
+    )..layout();
+    final width = painter.width.ceil();
+    painter.dispose();
+    return math.max(1, width);
   }
 
   Widget _liveChip(CricketScoreThemeData theme) {
     final foreground = theme.liveChipForeground!;
+    final color = theme.liveChipColor!;
     final style = theme.liveChipStyle?.copyWith(
       color: foreground,
       fontWeight: FontWeight.w700,
@@ -414,8 +615,13 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
     final dot = (style?.fontSize ?? 11) * 0.55;
     return DecoratedBox(
       decoration: ShapeDecoration(
-        color: theme.liveChipColor,
+        gradient: LinearGradient(
+          colors: [color, Color.lerp(color, const Color(0xFF000000), 0.18)!],
+        ),
         shape: const StadiumBorder(),
+        shadows: [
+          BoxShadow(color: color.withValues(alpha: 0.45), blurRadius: 8),
+        ],
       ),
       child: Padding(
         padding: theme.liveChipPadding!,
@@ -453,5 +659,29 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
       if (match.isLive) labels.spokenLive,
       if (match.teamScores.isEmpty && match.status.isNotEmpty) match.status,
     ].join(', ');
+  }
+}
+
+/// The small glowing diamond between matches in the crawl.
+class _Diamond extends StatelessWidget {
+  const _Diamond({required this.theme});
+
+  final CricketScoreThemeData theme;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = theme.smallHorizontalGap! * 1.6;
+    return Transform.rotate(
+      angle: math.pi / 4,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [theme.tickerEdgeStart!, theme.tickerEdgeEnd!],
+          ),
+          boxShadow: [BoxShadow(color: theme.tickerGlowColor!, blurRadius: 6)],
+        ),
+        child: SizedBox.square(dimension: size),
+      ),
+    );
   }
 }

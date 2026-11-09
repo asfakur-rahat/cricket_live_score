@@ -82,16 +82,22 @@ On a phone it is one column filling the width. On a tablet, a foldable's inner d
 
 ### A score ticker
 
-`CricketScoreTicker` is a slim strip for the top of a home screen. It shows one match at a time, with a pulsing LIVE chip, the match type, and both teams with their logos and scores:
+`CricketScoreTicker` is a slim strip of frosted glass for the top of a home screen, inside a thin glowing gradient edge. Each match shows a pulsing LIVE chip, the match type, and both teams with their logos and scores:
 
 ```dart
 CricketScoreTicker(
   source: source,
+  mode: CricketTickerMode.crawl, // or .rotate, the default
   onMatchTap: (match) => openScores(),
 );
 ```
 
-Every five seconds (`interval`) the next match slides up into place, and a thin line along the bottom fills until it does. Holding a finger on the strip keeps the current match; lifting after a hold doesn't count as a tap. By default it shows live matches only; pass a `filter` for others (a match without scores shows its status instead). When no match passes the filter, also while loading, it collapses to nothing, unless you pass an `emptyBuilder`. Turn the logos off with `showLogos: false`.
+It has two modes:
+
+- **`rotate`** shows one match at a time. Every five seconds (`interval`) the next match slides up into place, and a thin gradient line along the bottom fills until it does.
+- **`crawl`** scrolls every match past in one line, like a TV news ticker. The matches are separated by small glowing diamonds, and the line loops seamlessly and fades out at both ends. `crawlSpeed` sets the speed (logical pixels a second, scaled with the screen). The line moves the other way in right-to-left languages, and stays still when everything fits. When the platform asks for reduced motion, it rotates instead.
+
+In both modes, holding a finger on the strip holds it still, and lifting after a hold doesn't count as a tap; a quick tap calls `onMatchTap` with the match under the finger. When a refresh changes a score, the new score glows for a moment. In `rotate` mode a match that isn't on show glows when it comes round. On a narrow screen, long team names shorten so the scores always show in full. By default it shows live matches only; pass a `filter` for others (a match without scores shows its status instead). When no match passes the filter, also while loading, it collapses to nothing, unless you pass an `emptyBuilder`. Turn the logos off with `showLogos: false`.
 
 ### A score sheet
 

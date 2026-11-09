@@ -112,6 +112,41 @@ A slim strip for the top of a home screen, showing one live match at a time:
 - When nothing matches, it **collapses to nothing** by default. A builder can show something instead.
 - Height, padding, colours and text style are new theme fields.
 
+## 6b. Ticker styles and a glass design
+
+**Done on 2026-11-09.** Differences from the plan:
+
+- `tickerProgressColor` is gone too; the progress line uses the edge gradient.
+- On a narrow screen the team names shorten in proportion to their length, so the chip, logos and scores always fit. If even those don't fit, for example with very large text, the line scales down.
+
+Asked for after Part 6. The choices made were: news crawl and rotate modes, the glass design, a flash when a score changes, and crawl speed control.
+
+**Modes.** A `mode:` option takes a `CricketTickerMode`:
+
+- `rotate` (the default, as in Part 6): one match at a time slides up, with the progress line.
+- `crawl`: every match in one line that scrolls sideways without stopping, like a TV news ticker.
+  - The matches are separated by a small glowing diamond, and the line loops seamlessly.
+  - Holding pauses it, and tapping calls `onMatchTap` with the match under the finger.
+  - The left and right edges fade out softly.
+  - `crawlSpeed` sets the speed in logical pixels per second (default 40, scaled with the screen). It scrolls the other way in right-to-left languages.
+  - If every match fits, it stays still.
+  - With "reduce motion" on, it falls back to `rotate`.
+
+**Glass design, for both modes:**
+
+- A frosted, see-through background (a backdrop blur).
+- A thin gradient edge from primary to tertiary, with a soft outer glow.
+- A LIVE chip that glows as it pulses.
+- A gradient progress line in rotate mode.
+- Theme changes:
+  - `tickerBorder` is replaced by `tickerEdgeStart`, `tickerEdgeEnd` and `tickerGlowColor`.
+  - `tickerBackground` becomes translucent by default.
+  - New field `tickerBlur`.
+
+**Flash on score change.** When a refresh changes a match's score, the new score glows briefly (about 1.5 s) in `tickerFlashColor`, in both modes. A rotating ticker doesn't jump to the changed match; the flash shows when it comes round. Flashes don't show while "reduce motion" is on.
+
+**Tests and device check:** both modes, crawl looping and pausing, tapping a match in the crawl, flash on change, right-to-left, reduce motion; then on the tablet.
+
 ## 7. Scaling control
 
 `CricketScoreScaleScope` sits above the widgets (for example in `MaterialApp.builder`):
