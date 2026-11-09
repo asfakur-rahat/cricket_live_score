@@ -4,9 +4,7 @@ Live cricket scores for Flutter apps: a self-refreshing match carousel, a compac
 
 | Carousel in a dialog | Floating live-match button |
 |---|---|
-| <img src="https://raw.githubusercontent.com/TODO-owner/cricket_live_score/main/screenshots/carousel.png" width="270" alt="Match card carousel showing a live T20 score"> | <img src="https://raw.githubusercontent.com/TODO-owner/cricket_live_score/main/screenshots/fab.png" width="270" alt="Floating button with both team logos and a LIVE chip"> |
-
-<!-- TODO(G4): replace TODO-owner once the GitHub repository exists. -->
+| <img src="https://raw.githubusercontent.com/asfakur-rahat/cricket_live_score/main/screenshots/carousel.png" width="270" alt="Match card carousel showing a live T20 score"> | <img src="https://raw.githubusercontent.com/asfakur-rahat/cricket_live_score/main/screenshots/fab.png" width="270" alt="Floating button with both team logos and a LIVE chip"> |
 
 ## Features
 
@@ -318,3 +316,7 @@ This package is not affiliated with cricketdata.org.
 ## Example
 
 See [`example/`](example/) for a runnable app with live scores, the carousel in a dialog, the floating button, a custom theme, and a switch to offline sample data.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
