@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -8,14 +9,16 @@ String _fixture(String name) => File('test/fixtures/$name').readAsStringSync();
 
 // The `.expected.json` files were produced by running the app's original
 // `CricketMatchParser` over the same fixtures, with its fields renamed to the
-// package model (`matchId` → `id`, `dateTime` → `startTimeText`).
+// package model (`matchId` → `id`, `dateTime` → `startTimeText`). The only
+// intended difference since is `startTime`, which the original did not have;
+// its expected values were computed independently with Python's `strptime`.
 List<CricketMatch> _expected(String name) => [
       for (final json in jsonDecode(_fixture(name)) as List<dynamic>)
         CricketMatch.fromJson(json as Map<String, dynamic>),
     ];
 
 void main() {
-  group('parseMultiple matches the original parser', () {
+  group('parseMultiple matches the original parser plus startTime', () {
     for (final name in ['live_feed_2026-11-09', 'hand_built_states']) {
       test(name, () {
         final matches = CricketDataHtmlParser.parseMultiple(
@@ -38,26 +41,27 @@ void main() {
     test('finished match with logos and a starred winner', () {
       expect(
         matches.first,
-        const CricketMatch(
+        CricketMatch(
           id: '03fa5b0e-8c0a-45c7-b998-d2082fa85673',
           matchType: 'ODI',
           venue: 'McLean Park',
           status: 'Canterbury won by 2 wkts',
-          team1: TeamInfo(
+          team1: const TeamInfo(
             name: 'Canterbury',
             logoUrl:
                 'https://cdorgapi.b-cdn.net/iapi/15-637993523929449827.webp?w=48',
             isWinner: true,
           ),
-          team2: TeamInfo(
+          team2: const TeamInfo(
             name: 'Central Stags',
             logoUrl:
                 'https://cdorgapi.b-cdn.net/iapi/133-637957472586275153.webp?w=48',
           ),
           startTimeText: '08 Nov 2026, Sun 21:30 GMT',
+          startTime: DateTime.utc(2026, 11, 8, 21, 30),
           fullScorecardUrl:
               'https://cricketdata.org/cricket-data-formats/matches/central-stags-vs-canterbury-12th-match-the-ford-trophy-2026-27-03fa5b0e-8c0a-45c7-b998-d2082fa85673',
-          teamScores: [
+          teamScores: const [
             TeamScore(teamName: 'central stags', scoreText: '129/10 (41.2)'),
             TeamScore(teamName: 'canterbury', scoreText: '130/8 (33.2)'),
           ],
@@ -172,5 +176,31 @@ void main() {
 
   test('parseMultiple returns nothing for HTML without slabs', () {
     expect(CricketDataHtmlParser.parseMultiple('<p>maintenance</p>'), isEmpty);
+  });
+
+  test('startTime is parsed from startTimeText, null when absent', () {
+    final matches = CricketDataHtmlParser.parseMultiple(
+      _fixture('hand_built_states.html'),
+    );
+    expect(matches.first.startTimeText, '9 Dec 2026, Wed 09:30 GMT');
+    expect(matches.first.startTime, DateTime.utc(2026, 12, 9, 9, 30));
+    expect(matches.last.startTimeText, isEmpty);
+    expect(matches.last.startTime, isNull);
+  });
+
+  test('parseMultiple reports to onLog and never prints', () {
+    final printed = <String>[];
+    final logged = <String>[];
+    runZoned(
+      () => CricketDataHtmlParser.parseMultiple(
+        _fixture('live_feed_2026-11-09.html'),
+        onLog: logged.add,
+      ),
+      zoneSpecification: ZoneSpecification(
+        print: (_, __, ___, line) => printed.add(line),
+      ),
+    );
+    expect(printed, isEmpty);
+    expect(logged, ['Parsed 26 of 26 matches']);
   });
 }

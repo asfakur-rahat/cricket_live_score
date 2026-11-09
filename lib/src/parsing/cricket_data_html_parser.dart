@@ -1,17 +1,16 @@
 import 'package:cricket_live_score/src/models/cricket_match.dart';
 import 'package:cricket_live_score/src/models/team_info.dart';
 import 'package:cricket_live_score/src/models/team_score.dart';
-import 'package:flutter/foundation.dart';
+import 'package:cricket_live_score/src/parsing/match_date_parser.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart' as html_parser;
 
 /// Parses the HTML of cricketdata.org's website score widget into
 /// [CricketMatch] values.
+///
+/// The parser reads the widget's markup, not a documented API, so a change
+/// upstream can break it; unrecognised parts fall back to empty values.
 abstract final class CricketDataHtmlParser {
-  /// Image used when a team has no logo.
-  static const defaultFlag =
-      'https://p7.hiclipart.com/preview/819/757/139/flag-computer-icons-pictogram-clip-art-green-flags-icon-png.jpg';
-
   /// Parses the HTML of a single match slab.
   static CricketMatch parse(String htmlString) {
     final document = html_parser.parse(htmlString);
@@ -23,17 +22,18 @@ abstract final class CricketDataHtmlParser {
     final status = _extractStatus(document);
     final fullScorecardUrl = _extractFullScorecardUrl(document);
 
-    // Extract teams info with scores
-    final teams = _extractTeams(document, status);
-
     final teamScores = _extractTeamScores(document);
 
-    final isLive = _extractIsLive(document);
+    // Extract teams info with scores
+    final teams = _extractTeams(document, status, teamScores);
+
+    final isLive = _extractIsLive(document, status);
 
     return CricketMatch(
       id: matchId,
       matchType: matchType,
       startTimeText: dateTime,
+      startTime: parseMatchStartTime(dateTime),
       venue: venue,
       status: status,
       team1: teams.isNotEmpty
@@ -50,8 +50,12 @@ abstract final class CricketDataHtmlParser {
 
   /// Parses every `.slab` match in [htmlString].
   ///
-  /// A slab that fails to parse is skipped.
-  static List<CricketMatch> parseMultiple(String htmlString) {
+  /// A slab that fails to parse is skipped and reported to [onLog], which
+  /// also receives a summary line; nothing is printed.
+  static List<CricketMatch> parseMultiple(
+    String htmlString, {
+    void Function(String message)? onLog,
+  }) {
     final document = html_parser.parse(htmlString);
     final slabDivs = document.querySelectorAll('.slab');
 
@@ -63,13 +67,12 @@ abstract final class CricketDataHtmlParser {
         final match = parse(matchHtml);
         matches.add(match);
       } on Object catch (e) {
-        if (kDebugMode) {
-          print('Error parsing match: $e');
-        }
+        onLog?.call('Error parsing match: $e');
         continue;
       }
     }
 
+    onLog?.call('Parsed ${matches.length} of ${slabDivs.length} matches');
     return matches;
   }
 
@@ -84,7 +87,7 @@ abstract final class CricketDataHtmlParser {
     return matchTypeSpan?.text.trim().toUpperCase() ?? '';
   }
 
-  static bool _extractIsLive(Document document) {
+  static bool _extractIsLive(Document document, String status) {
     // The upstream widget embeds a red "LIVE" span in every slab regardless of
     // actual state, so it can't be trusted. Treat a match as live only when
     // the score table has rows and the status doesn't indicate a concluded
@@ -93,9 +96,9 @@ abstract final class CricketDataHtmlParser {
     final hasScoreRows = scoreTable?.querySelectorAll('tr').isNotEmpty ?? false;
     if (!hasScoreRows) return false;
 
-    final status = _extractStatus(document).toLowerCase();
+    final lowerStatus = status.toLowerCase();
     const concluded = ['won', 'tied', 'drawn', 'no result', 'abandoned'];
-    return !concluded.any(status.contains);
+    return !concluded.any(lowerStatus.contains);
   }
 
   // Matches "19 Jul 2026, Sun 10:00 GMT" (day can be 1 or 2 digits).
@@ -179,22 +182,12 @@ abstract final class CricketDataHtmlParser {
     return teamScores;
   }
 
-  static List<TeamInfo> _extractTeams(Document document, String status) {
+  static List<TeamInfo> _extractTeams(
+    Document document,
+    String status,
+    List<TeamScore> teamScores,
+  ) {
     final teams = <TeamInfo>[];
-
-    // First, try to extract scores from table
-    final scoreTable = document.querySelector('table');
-    final scoreRows = scoreTable?.querySelectorAll('tr') ?? [];
-    final teamScores = <TeamScore>[];
-
-    for (final row in scoreRows) {
-      final cells = row.querySelectorAll('td');
-      if (cells.length >= 2) {
-        final teamName = cells[0].text.trim();
-        final scoreText = cells[1].text.trim();
-        teamScores.add(TeamScore(teamName: teamName, scoreText: scoreText));
-      }
-    }
 
     // Try to find team divs (both formats)
     final allDivs = document.querySelectorAll('div');
