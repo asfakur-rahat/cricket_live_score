@@ -83,6 +83,8 @@ class _HomePageState extends State<HomePage> {
           child: CricketLiveScoreCarousel(
             source: _source,
             autoScroll: true,
+            // Phones use the full dialog width; wider windows cap it.
+            maxWidth: 480,
             maxHeight: MediaQuery.sizeOf(context).height * 0.45,
             onClose: () => Navigator.pop(context),
           ),
@@ -112,7 +114,10 @@ class _HomePageState extends State<HomePage> {
                 _referrer.isEmpty ? null : (live) => _setLive(live: live),
           ),
           ListTile(
-            leading: const Icon(Icons.sports_cricket),
+            leading: CricketBatsIcon(
+              color: Theme.of(context).colorScheme.primary,
+              size: 24,
+            ),
             title: const Text('Open the score carousel'),
             onTap: _openScores,
           ),

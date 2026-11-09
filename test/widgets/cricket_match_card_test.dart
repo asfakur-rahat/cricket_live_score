@@ -62,9 +62,23 @@ void main() {
     expect(find.byIcon(Icons.flag_outlined), findsNWidgets(2));
   });
 
-  testWidgets('the default centre badge is a cricket icon', (tester) async {
-    await tester.pumpWidget(app(CricketMatchCard(match: finishedMatch())));
-    expect(find.byIcon(Icons.sports_cricket), findsOneWidget);
+  testWidgets('the default centre badge is crossed bats filling the badge',
+      (tester) async {
+    await tester.pumpWidget(
+      app(
+        CricketMatchCard(
+          match: finishedMatch(),
+          theme: const CricketScoreThemeData(
+            badgeRadius: 20,
+            badgeForeground: Color(0xFFFFFFFF),
+          ),
+        ),
+      ),
+    );
+    final icon = tester.widget<CricketBatsIcon>(find.byType(CricketBatsIcon));
+    expect(icon.size, 40);
+    expect(icon.color, const Color(0xFFFFFFFF));
+    expect(tester.getSize(find.byType(CricketBatsIcon)), const Size(40, 40));
 
     await tester.pumpWidget(
       app(
@@ -74,7 +88,7 @@ void main() {
         ),
       ),
     );
-    expect(find.byIcon(Icons.sports_cricket), findsNothing);
+    expect(find.byType(CricketBatsIcon), findsNothing);
     expect(find.text('badge'), findsOneWidget);
   });
 

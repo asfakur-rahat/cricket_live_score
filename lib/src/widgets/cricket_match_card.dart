@@ -1,6 +1,7 @@
 import 'package:cricket_live_score/src/models/cricket_match.dart';
 import 'package:cricket_live_score/src/models/team_info.dart';
 import 'package:cricket_live_score/src/widgets/close_badge.dart';
+import 'package:cricket_live_score/src/widgets/cricket_bats_icon.dart';
 import 'package:cricket_live_score/src/widgets/cricket_score_labels.dart';
 import 'package:cricket_live_score/src/widgets/cricket_score_theme.dart';
 import 'package:cricket_live_score/src/widgets/team_logo.dart';
@@ -43,7 +44,8 @@ class CricketMatchCard extends StatelessWidget {
   /// Builds the team logos. A team without a logo URL shows no logo.
   final TeamLogoBuilder logoBuilder;
 
-  /// Shown inside the badge between the teams; defaults to a cricket icon.
+  /// Shown inside the badge between the teams; defaults to a
+  /// [CricketBatsIcon] filling the badge.
   final Widget? centerBadge;
 
   @override
@@ -105,9 +107,9 @@ class CricketMatchCard extends StatelessWidget {
                     radius: theme.badgeRadius,
                     backgroundColor: theme.badgeBackground,
                     child: centerBadge ??
-                        Icon(
-                          Icons.sports_cricket,
-                          color: theme.badgeForeground,
+                        CricketBatsIcon(
+                          color: theme.badgeForeground!,
+                          size: theme.badgeRadius! * 2,
                         ),
                   ),
                   SizedBox(width: theme.largeHorizontalGap),

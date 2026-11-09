@@ -149,7 +149,7 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
   /// Background of the round badge between the two teams.
   final Color? badgeBackground;
 
-  /// Colour of the default icon inside the centre badge.
+  /// Colour of the default crossed-bats icon inside the centre badge.
   final Color? badgeForeground;
 
   /// Background of the round close button.

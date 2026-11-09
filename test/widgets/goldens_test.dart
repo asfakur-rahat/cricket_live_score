@@ -11,6 +11,23 @@ import 'package:flutter_test/flutter_test.dart';
 import '../helpers.dart';
 
 void main() {
+  testWidgets('crossed bats icon', (tester) async {
+    await tester.pumpWidget(
+      const Center(
+        child: RepaintBoundary(
+          child: ColoredBox(
+            color: Color(0xFF2E7D32),
+            child: CricketBatsIcon(color: Color(0xFFFFFFFF), size: 128),
+          ),
+        ),
+      ),
+    );
+    await expectLater(
+      find.byType(RepaintBoundary).first,
+      matchesGoldenFile('goldens/bats_icon.png'),
+    );
+  });
+
   for (final width in [360.0, 600.0]) {
     final size = width.toInt();
 
