@@ -150,6 +150,8 @@ Asked for after Part 6. The choices made were: news crawl and rotate modes, the 
 
 ## 7. Scaling control
 
+**Done on 2026-11-09.** As planned. `CricketScoreScale` also gains `design` and `enabled`, so code that uses the scale directly can see the scope's settings.
+
 `CricketScoreScaleScope` sits above the widgets (for example in `MaterialApp.builder`):
 
 ```dart

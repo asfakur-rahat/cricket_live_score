@@ -7,6 +7,10 @@ import 'package:flutter/material.dart';
 
 void main() => runApp(const ExampleApp());
 
+/// Whether the cricket widgets scale with the screen; the home page's
+/// switch flips it.
+final _scaling = ValueNotifier<bool>(true);
+
 class ExampleApp extends StatelessWidget {
   const ExampleApp({super.key});
 
@@ -24,6 +28,12 @@ class ExampleApp extends StatelessWidget {
             cardElevation: 2,
           ),
         ],
+      ),
+      // A scope in the builder reaches dialogs and sheets too.
+      builder: (context, child) => ValueListenableBuilder<bool>(
+        valueListenable: _scaling,
+        builder: (context, scaling, _) =>
+            CricketScoreScaleScope(enabled: scaling, child: child!),
       ),
       home: const HomePage(),
     );
@@ -165,6 +175,19 @@ class _HomePageState extends State<HomePage> {
             ),
             value: _live,
             onChanged: (live) => _setLive(live: live),
+          ),
+          ValueListenableBuilder<bool>(
+            valueListenable: _scaling,
+            builder: (context, scaling, _) => SwitchListTile(
+              title: const Text('Scale with the screen'),
+              subtitle: Text(
+                scaling
+                    ? 'Sizes scale from a 390 × 850 design'
+                    : 'Plain design sizes and text theme sizes',
+              ),
+              value: scaling,
+              onChanged: (value) => _scaling.value = value,
+            ),
           ),
           ListTile(
             leading: CricketBatsIcon(

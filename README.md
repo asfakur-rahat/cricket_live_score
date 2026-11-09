@@ -149,6 +149,20 @@ Every field of `CricketScoreThemeData` is optional. Each one is resolved from th
 
 The default sizes and text sizes scale with the screen, from a 390 × 850 design: a smaller phone gets smaller cards and a larger phone larger ones. A tablet or unfolded foldable uses a fixed phone-sized canvas (430 × 937), so the cards don't grow into a giant phone. `CricketScoreScale` does the arithmetic; a size you set in the theme is used as given.
 
+To change the scaling, put a `CricketScoreScaleScope` above the widgets. In `MaterialApp.builder` it also reaches dialogs and sheets:
+
+```dart
+MaterialApp(
+  builder: (context, child) => CricketScoreScaleScope(
+    designSize: const Size(375, 812), // the size your design is for
+    wideCanvas: const Size(430, 937), // the canvas on tablets and foldables
+    child: child!,
+  ),
+);
+```
+
+With `enabled: false`, nothing scales: every default size is its plain design value, and text keeps your text theme's own sizes. The widgets follow the scope when it changes.
+
 ```dart
 MaterialApp(
   theme: ThemeData(

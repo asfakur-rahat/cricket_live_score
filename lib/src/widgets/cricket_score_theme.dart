@@ -106,8 +106,12 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
     final cs = theme.colorScheme;
     final tt = theme.textTheme;
     final w = scale.width;
+    // With scaling off, text keeps the text theme's own sizes.
     TextStyle? text(TextStyle? style, double size, [FontWeight? weight]) =>
-        style?.copyWith(fontSize: scale.fontSize(size), fontWeight: weight);
+        style?.copyWith(
+          fontSize: scale.enabled ? scale.fontSize(size) : null,
+          fontWeight: weight,
+        );
     return CricketScoreThemeData(
       cardColor: cs.surface,
       shadowColor: cs.shadow,
