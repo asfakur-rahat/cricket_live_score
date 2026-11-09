@@ -60,6 +60,23 @@ if (match != null) {
 
 `pickFeaturedMatch` prefers a live match with both logos, then any live match, then the first match — so check `match.isLive` before calling it live.
 
+### A live score screen
+
+`CricketLiveScoreView` is the body of a full score screen: two rows of filter chips (All · Live · Upcoming · Done, then All · T20 · ODI · Test …), the match cards, and pull to refresh. It has no `Scaffold` or route, so put it wherever your app wants:
+
+```dart
+Navigator.of(context).push(
+  MaterialPageRoute<void>(
+    builder: (context) => Scaffold(
+      appBar: AppBar(title: const Text('Live scores')),
+      body: CricketLiveScoreView(source: source),
+    ),
+  ),
+);
+```
+
+On a phone it fills the width; on a tablet or unfolded foldable the list is a centred, phone-width column. Start from a filter with `initialFilter`, hide a chip row with `showPhaseFilter` / `showTypeFilter`, or keep the filter in your own state with `filter` and `onFilterChanged`.
+
 ### Controlling polling yourself
 
 Pass a `source` and the carousel owns its controller. To share one controller, or to start and stop polling yourself, pass a `controller` instead:

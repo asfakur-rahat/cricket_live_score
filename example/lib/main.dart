@@ -107,6 +107,20 @@ class _HomePageState extends State<HomePage> {
         '${count(MatchPhase.finished)} finished';
   }
 
+  void _openScreen() {
+    unawaited(
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (context) => Scaffold(
+            appBar: AppBar(title: const Text('Live scores')),
+            // The package provides the body; the app owns the route.
+            body: CricketLiveScoreView(source: _source),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final featured = _featured;
@@ -129,6 +143,11 @@ class _HomePageState extends State<HomePage> {
             ),
             title: const Text('Open the score carousel'),
             onTap: _openScores,
+          ),
+          ListTile(
+            leading: const Icon(Icons.list_alt),
+            title: const Text('Open the live score screen'),
+            onTap: _openScreen,
           ),
           ListTile(
             leading: const Icon(Icons.filter_alt_outlined),

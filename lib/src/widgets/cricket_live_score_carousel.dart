@@ -9,6 +9,8 @@ import 'package:cricket_live_score/src/widgets/cricket_match_card.dart';
 import 'package:cricket_live_score/src/widgets/cricket_score_labels.dart';
 import 'package:cricket_live_score/src/widgets/cricket_score_scale.dart';
 import 'package:cricket_live_score/src/widgets/cricket_score_theme.dart';
+import 'package:cricket_live_score/src/widgets/score_controller_host.dart';
+import 'package:cricket_live_score/src/widgets/score_error_body.dart';
 import 'package:cricket_live_score/src/widgets/team_logo.dart';
 import 'package:flutter/material.dart';
 
@@ -117,37 +119,32 @@ class CricketLiveScoreCarousel extends StatefulWidget {
 }
 
 class _CricketLiveScoreCarouselState extends State<CricketLiveScoreCarousel>
-    with WidgetsBindingObserver {
-  late CricketScoreController _controller;
-  bool _ownsController = false;
+    with WidgetsBindingObserver, ScoreControllerHost {
+  @override
+  CricketScoreController? get widgetController => widget.controller;
+
+  @override
+  CricketScoreSource? get widgetSource => widget.source;
 
   final _pageController = PageController();
   Timer? _autoScrollTimer;
   int _currentPage = 0;
-  bool _inBackground = false;
 
   // Read only by the auto-scroll timer, never by build, so changing it must
   // not trigger a rebuild.
   bool _isUserInteracting = false;
 
-  List<CricketMatch> get _matches => _controller.state.matches;
+  List<CricketMatch> get _matches => controller.state.matches;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    _attachController();
     _startAutoScroll();
   }
 
   @override
   void didUpdateWidget(CricketLiveScoreCarousel oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.controller != oldWidget.controller ||
-        widget.source != oldWidget.source) {
-      _detachController();
-      _attachController();
-    }
     if (widget.autoScroll != oldWidget.autoScroll ||
         widget.autoScrollInterval != oldWidget.autoScrollInterval) {
       _startAutoScroll();
@@ -156,46 +153,24 @@ class _CricketLiveScoreCarouselState extends State<CricketLiveScoreCarousel>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch (state) {
-      case AppLifecycleState.paused:
-        _inBackground = true;
-        _autoScrollTimer?.cancel();
-        if (_ownsController) _controller.pause();
-      case AppLifecycleState.resumed:
-        if (!_inBackground) return;
-        _inBackground = false;
-        if (_ownsController) _controller.start();
-        _startAutoScroll();
-      case AppLifecycleState.detached:
-      case AppLifecycleState.inactive:
-      case AppLifecycleState.hidden:
-        break;
+    final wasInBackground = inBackground;
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.paused) {
+      _autoScrollTimer?.cancel();
+    } else if (state == AppLifecycleState.resumed && wasInBackground) {
+      _startAutoScroll();
     }
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     _autoScrollTimer?.cancel();
-    _detachController();
     _pageController.dispose();
     super.dispose();
   }
 
-  void _attachController() {
-    final injected = widget.controller;
-    _ownsController = injected == null;
-    _controller = injected ?? CricketScoreController(source: widget.source!);
-    _controller.addListener(_onStateChanged);
-    if (_ownsController && !_inBackground) _controller.start();
-  }
-
-  void _detachController() {
-    _controller.removeListener(_onStateChanged);
-    if (_ownsController) _controller.dispose();
-  }
-
-  void _onStateChanged() {
+  @override
+  void onScoreStateChanged() {
     final count = _matches.length;
     if (count > 0 && _currentPage >= count) {
       // The list shrank under the current page: move to the new last page.
@@ -212,7 +187,7 @@ class _CricketLiveScoreCarouselState extends State<CricketLiveScoreCarousel>
   void _startAutoScroll() {
     _autoScrollTimer?.cancel();
     _autoScrollTimer = null;
-    if (!widget.autoScroll || _inBackground) return;
+    if (!widget.autoScroll || inBackground) return;
     _autoScrollTimer = Timer.periodic(widget.autoScrollInterval, (_) {
       final matches = _matches;
       if (!_isUserInteracting &&
@@ -243,7 +218,7 @@ class _CricketLiveScoreCarouselState extends State<CricketLiveScoreCarousel>
   @override
   Widget build(BuildContext context) {
     final theme = CricketScoreThemeData.resolve(context, widget.theme);
-    final state = _controller.state;
+    final state = controller.state;
     final matches = state.matches;
 
     if (matches.isEmpty) {
@@ -253,12 +228,12 @@ class _CricketLiveScoreCarouselState extends State<CricketLiveScoreCarousel>
           CricketScoreFailure(:final error) => widget.errorBuilder?.call(
                 context,
                 error,
-                _controller.refresh,
+                controller.refresh,
               ) ??
-              _ErrorBody(
+              ScoreErrorBody(
                 labels: widget.labels,
                 style: theme.messageStyle,
-                onRetry: _controller.refresh,
+                onRetry: controller.refresh,
               ),
           CricketScoreEmpty() => widget.emptyBuilder?.call(context) ??
               Text(
@@ -341,29 +316,6 @@ class _CricketLiveScoreCarouselState extends State<CricketLiveScoreCarousel>
             theme: theme,
             label: widget.labels.close,
           ),
-      ],
-    );
-  }
-}
-
-class _ErrorBody extends StatelessWidget {
-  const _ErrorBody({
-    required this.labels,
-    required this.style,
-    required this.onRetry,
-  });
-
-  final CricketScoreLabels labels;
-  final TextStyle? style;
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(labels.loadFailed, style: style, textAlign: TextAlign.center),
-        TextButton(onPressed: onRetry, child: Text(labels.retry)),
       ],
     );
   }

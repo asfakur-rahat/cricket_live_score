@@ -63,6 +63,8 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
     this.versusStyle,
     this.liveChipStyle,
     this.messageStyle,
+    this.listGap,
+    this.filterChipStyle,
   });
 
   /// The defaults derived from [theme]'s colour scheme and text theme, with
@@ -127,6 +129,8 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       versusStyle: text(tt.labelMedium, 13, FontWeight.w900),
       liveChipStyle: text(tt.labelSmall, 11),
       messageStyle: text(tt.bodyMedium, 14),
+      listGap: scale.height(16),
+      filterChipStyle: text(tt.labelLarge, 14),
     );
   }
 
@@ -288,6 +292,12 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
   /// Style of the message on the empty and error cards.
   final TextStyle? messageStyle;
 
+  /// Space between the match cards on the score screen.
+  final double? listGap;
+
+  /// Style of the filter chip labels on the score screen.
+  final TextStyle? filterChipStyle;
+
   /// Returns a copy in which every non-null field of [other] replaces the
   /// field of this theme.
   CricketScoreThemeData merge(CricketScoreThemeData? other) {
@@ -340,6 +350,8 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       versusStyle: other.versusStyle,
       liveChipStyle: other.liveChipStyle,
       messageStyle: other.messageStyle,
+      listGap: other.listGap,
+      filterChipStyle: other.filterChipStyle,
     );
   }
 
@@ -392,6 +404,8 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
     TextStyle? versusStyle,
     TextStyle? liveChipStyle,
     TextStyle? messageStyle,
+    double? listGap,
+    TextStyle? filterChipStyle,
   }) {
     return CricketScoreThemeData(
       cardColor: cardColor ?? this.cardColor,
@@ -443,6 +457,8 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       versusStyle: versusStyle ?? this.versusStyle,
       liveChipStyle: liveChipStyle ?? this.liveChipStyle,
       messageStyle: messageStyle ?? this.messageStyle,
+      listGap: listGap ?? this.listGap,
+      filterChipStyle: filterChipStyle ?? this.filterChipStyle,
     );
   }
 
@@ -511,6 +527,9 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       versusStyle: TextStyle.lerp(versusStyle, other.versusStyle, t),
       liveChipStyle: TextStyle.lerp(liveChipStyle, other.liveChipStyle, t),
       messageStyle: TextStyle.lerp(messageStyle, other.messageStyle, t),
+      listGap: lerpDouble(listGap, other.listGap, t),
+      filterChipStyle:
+          TextStyle.lerp(filterChipStyle, other.filterChipStyle, t),
     );
   }
 
@@ -564,7 +583,9 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
           other.scoreStyle == scoreStyle &&
           other.versusStyle == versusStyle &&
           other.liveChipStyle == liveChipStyle &&
-          other.messageStyle == messageStyle;
+          other.messageStyle == messageStyle &&
+          other.listGap == listGap &&
+          other.filterChipStyle == filterChipStyle;
 
   @override
   int get hashCode => Object.hashAll([
@@ -615,5 +636,7 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
         versusStyle,
         liveChipStyle,
         messageStyle,
+        listGap,
+        filterChipStyle,
       ]);
 }

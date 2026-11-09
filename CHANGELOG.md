@@ -2,6 +2,8 @@
 
 - `CricketMatch.phase` and `MatchPhase`: upcoming, live or finished.
 - `CricketMatchFilter`, `filterMatches` and `matchTypesOf` for filtering matches by phase and match type.
+- `CricketLiveScoreView`: the body of a live score screen, with phase and match-type filter chips and pull to refresh.
+- New theme fields `listGap` and `filterChipStyle`, and new labels for the filter chips.
 
 ## 0.1.0 — Initial release
 
