@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cricket_live_score/cricket_live_score.dart';
 import 'package:cricket_live_score_example/fake_source.dart';
+import 'package:cricket_live_score_example/filtered_source.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(const ExampleApp());
@@ -40,6 +41,7 @@ class _HomePageState extends State<HomePage> {
   bool _live = true;
   late CricketScoreSource _source = CricketDataWidgetSource();
   CricketMatch? _featured;
+  List<CricketMatch> _matches = const [];
 
   @override
   void initState() {
@@ -49,10 +51,20 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _loadFeatured() async {
     try {
-      final match = pickFeaturedMatch(await _source.fetchMatches());
-      if (mounted) setState(() => _featured = match);
+      final matches = await _source.fetchMatches();
+      if (mounted) {
+        setState(() {
+          _matches = matches;
+          _featured = pickFeaturedMatch(matches);
+        });
+      }
     } on CricketScoreException {
-      if (mounted) setState(() => _featured = null);
+      if (mounted) {
+        setState(() {
+          _matches = const [];
+          _featured = null;
+        });
+      }
     }
   }
 
@@ -63,11 +75,12 @@ class _HomePageState extends State<HomePage> {
       _live = live;
       _source = live ? CricketDataWidgetSource() : FakeSource();
       _featured = null;
+      _matches = const [];
     });
     unawaited(_loadFeatured());
   }
 
-  void _openScores() {
+  void _openScores({CricketMatchFilter filter = CricketMatchFilter.all}) {
     unawaited(
       showDialog<void>(
         context: context,
@@ -75,13 +88,23 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           child: CricketLiveScoreCarousel(
-            source: _source,
+            source: filter.isAll ? _source : FilteredSource(_source, filter),
             autoScroll: true,
             onClose: () => Navigator.pop(context),
           ),
         ),
       ),
     );
+  }
+
+  String _phaseSummary() {
+    String count(MatchPhase phase) => filterMatches(
+          _matches,
+          CricketMatchFilter(phases: {phase}),
+        ).length.toString();
+    return '${count(MatchPhase.live)} live · '
+        '${count(MatchPhase.upcoming)} upcoming · '
+        '${count(MatchPhase.finished)} finished';
   }
 
   @override
@@ -106,6 +129,18 @@ class _HomePageState extends State<HomePage> {
             ),
             title: const Text('Open the score carousel'),
             onTap: _openScores,
+          ),
+          ListTile(
+            leading: const Icon(Icons.filter_alt_outlined),
+            title: const Text('Open live matches only'),
+            onTap: () => _openScores(
+              filter: const CricketMatchFilter(phases: {MatchPhase.live}),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.bar_chart),
+            title: Text(_phaseSummary()),
+            subtitle: Text('Types: ${matchTypesOf(_matches).join(', ')}'),
           ),
         ],
       ),
