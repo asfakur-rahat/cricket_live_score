@@ -11,6 +11,7 @@ Live cricket scores for Flutter apps: a self-refreshing match carousel, a compac
 ## Features
 
 - **`CricketLiveScoreCarousel`** — swipeable match cards that poll for new scores (every 30 s by default), with optional auto-scroll and page dots, and separate loading, empty and error states. A failed poll keeps the last scores on screen.
+- **`CricketInlineScoreCarousel`** — the same cards in a sideways-scrolling row for a section of a page, sized to its tallest card, snapping card by card or scrolling freely.
 - **`CricketScoreTicker`** — a slim strip for the top of a screen that rotates through the live scores and collapses when nothing is live.
 - **`CricketMatchFab`** — a small button with both team logos around "VS" and a LIVE chip, tap and sideways-swipe callbacks.
 - **`CricketScoreSource`** — a one-method interface for your own data, plus `CricketDataWidgetSource`, which reads cricketdata.org's website widget (see [Data source](#data-source)).
@@ -98,6 +99,31 @@ It has two modes:
 - **`crawl`** scrolls every match past in one line, like a TV news ticker. The matches are separated by small diamonds, and the line loops seamlessly and fades out at both ends. `crawlSpeed` sets the speed (logical pixels a second, scaled with the screen). The line moves the other way in right-to-left languages, and stays still when everything fits. When the platform asks for reduced motion, it rotates instead.
 
 In both modes, holding a finger on the strip holds it still, and lifting after a hold doesn't count as a tap; a quick tap calls `onMatchTap` with the match under the finger. When a refresh changes a score, the new score is highlighted for a moment. In `rotate` mode a match that isn't on show is highlighted when it comes round. On a narrow screen, long team names shorten so the scores always show in full. By default it shows live matches only; pass a `filter` for others (a match without scores shows its status instead). When no match passes the filter, also while loading, it collapses to nothing, unless you pass an `emptyBuilder`. Turn the logos off with `showLogos: false`.
+
+### A carousel in a page section
+
+`CricketInlineScoreCarousel` puts the match cards in a row that scrolls sideways inside a normal page. You don't give it a height: it is as tall as its tallest card, and shorter cards stretch to match. Put it straight into a `ListView` or `Column`, or into a `CustomScrollView` through a `SliverToBoxAdapter`:
+
+```dart
+ListView(
+  children: [
+    const ListTile(title: Text('Live now')),
+    CricketInlineScoreCarousel(
+      source: source,
+      showPageIndicator: true,
+      autoScroll: true,
+      onMatchTap: (match) => openScores(),
+    ),
+    // the rest of the page
+  ],
+);
+```
+
+- **Snapping**, the default: one card at a time snaps into place, and the next card peeks in at the edge. On tablets and foldables cards keep about a phone card's width (`cardWidth`), so two or three show at once and a swipe moves one card.
+- **Free scrolling** with `snap: false`: cards exactly `cardWidth` wide that scroll freely and stop anywhere, like a shelf in an app store.
+- `padding` (16 at the sides by default) lines the first card up with the rest of the page, while the cards scroll edge to edge. `spacing` sets the gap between cards.
+- With snapping, `showPageIndicator` adds page dots under the cards, and `autoScroll` moves on one card every `autoScrollInterval`. Auto-scroll waits while a finger is on the cards.
+- Cards have no close button. Loading, empty and error states show in one full-width card, with the same builders as the popup carousel.
 
 ### A score sheet
 

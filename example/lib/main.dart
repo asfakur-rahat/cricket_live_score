@@ -77,6 +77,7 @@ class _HomePageState extends State<HomePage> {
   CricketMatch? _featured;
   List<CricketMatch> _matches = const [];
   CricketTickerMode _tickerMode = CricketTickerMode.rotate;
+  bool _snap = true;
 
   @override
   void initState() {
@@ -191,6 +192,36 @@ class _HomePageState extends State<HomePage> {
               onSelectionChanged: (modes) =>
                   setState(() => _tickerMode = modes.single),
             ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 8, 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Live now',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+                SegmentedButton<bool>(
+                  segments: const [
+                    ButtonSegment(value: true, label: Text('Snap')),
+                    ButtonSegment(value: false, label: Text('Free')),
+                  ],
+                  selected: {_snap},
+                  onSelectionChanged: (values) =>
+                      setState(() => _snap = values.single),
+                ),
+              ],
+            ),
+          ),
+          // A carousel inside the page; it sizes itself to its cards.
+          CricketInlineScoreCarousel(
+            source: _source,
+            snap: _snap,
+            showPageIndicator: true,
+            autoScroll: true,
+            onMatchTap: (_) => _openScores(),
           ),
           SwitchListTile(
             title: const Text('Live data from cricketdata.org'),

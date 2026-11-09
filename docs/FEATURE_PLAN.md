@@ -182,6 +182,66 @@ This mostly works already: `CricketScoreThemeData` is a `ThemeExtension`, so an 
 - adds a dark golden test so it doesn't break,
 - fixes any default that looks wrong on a dark colour scheme. The package picks no brand colours itself.
 
+## 9. Inline score carousel: `CricketInlineScoreCarousel`
+
+**Done on 2026-11-09.** As planned, with two details settled while building. Page dots show one dot for each place the row stops, so several cards on screen mean fewer dots than cards. After a rotation or a change in the matches, the row settles on the nearest card.
+
+Asked for after Part 8: a carousel that sits in a section of a normal page instead of a dialog. The choices made were: snapping and free scrolling as an option, page dots, auto-scroll, and a height that fits the tallest card.
+
+```dart
+CricketInlineScoreCarousel(
+  source: source,            // or controller:
+  snap: true,                // false = free scrolling shelf
+  showPageIndicator: true,
+  autoScroll: true,
+  onMatchTap: (match) => ...,
+)
+```
+
+**Layout:**
+
+- A horizontal row of match cards with no close button. It goes straight into a `ListView`, `Column` or `CustomScrollView` (through `SliverToBoxAdapter`) with no height to set.
+- The height is the tallest card's height, and shorter cards stretch to match. It follows the cards as scores change and as the screen is resized.
+- `padding` (default 16 at the sides, scaled) lines the first card up with the rest of the page. Cards scroll edge to edge through it, and cards sit `spacing` apart.
+- The card shadows aren't clipped at the top and bottom.
+
+**`snap: true`, the default:**
+
+- One card at a time snaps into place, with the next card peeking in at the edge so people can see there's more.
+- On a phone a card takes about 85% of the width. On tablets and foldables cards keep a phone card's width, so two or three show at once and a swipe moves one card.
+
+**`snap: false`:** fixed-width cards (`cardWidth`, default a phone card's width) that scroll freely with no snapping, like an app store shelf.
+
+**Page dots (`showPageIndicator`):**
+
+- The Part 5 dots under the cards, one per card, including the sliding window and tap to jump.
+- When several cards show at once, the first card on screen is the current one.
+- Snap mode only.
+
+**Auto-scroll (`autoScroll`, `autoScrollInterval`):**
+
+- Moves on one card every few seconds (default 5 s) and wraps to the start. It works like the dialog carousel: it waits while the user is touching or scrolling, and stops while the app is in the background.
+- Snap mode only.
+- With "reduce motion" on it jumps instead of sliding.
+
+**Loading, empty and error:** shown in a single full-width card at the section's place, using the same `loadingBuilder`, `emptyBuilder` and `errorBuilder` as the other widgets. The error card has a retry button.
+
+**Everything else** is the same as the dialog carousel: `theme`, `labels`, `logoBuilder`, `centerBadge`, and lifecycle handling through `ScoreControllerHost`. It is right-to-left aware: the first card starts at the right, and swipes and auto-scroll go the other way. Dots and cards have screen reader labels.
+
+**Example:** a "Live now" section on the home page, under the ticker, with a Snap / Free switch.
+
+**Tests and device check:**
+
+- The height fits the tallest card and updates when the matches change.
+- Snapping, peeking, and several cards on wide screens.
+- Free scrolling.
+- Dots and tap to jump.
+- Auto-scroll: pausing while touched and wrapping.
+- Loading, empty and error states, right-to-left, reduce motion, and inside a `ListView`.
+- Then on the tablet in portrait and landscape, light and dark.
+
+**Version:** 0.2.0 isn't published yet, so this goes into 0.2.0 too.
+
 ---
 
 ## Proposed order
@@ -196,5 +256,6 @@ This mostly works already: `CricketScoreThemeData` is a `ThemeExtension`, so an 
 | 6 | Ticker banner | 1 |
 | 7 | Scaling control | – |
 | 8 | Dark mode | – |
+| 9 | Inline score carousel | 5 |
 
 Parts 5, 7 and 8 stand alone and can move anywhere in the order.
