@@ -1,15 +1,29 @@
 name: cricket_live_score
 description: >-
-  Live cricket score widgets for Flutter: an auto-refreshing match carousel,
-  a compact live-match FAB, and a pluggable score source with an HTML parser.
-version: 0.2.0
+  Live cricket score widgets for Flutter: carousels, a score screen and sheet,
+  a news-style ticker and a live-match button, with a pluggable data source.
+version: 1.0.0
 repository: https://github.com/asfakur-rahat/cricket_live_score
 issue_tracker: https://github.com/asfakur-rahat/cricket_live_score/issues
 
 screenshots:
-  - description: Match card carousel showing a live T20 score.
+  - description: A home page with a live score ticker, an inline match carousel and a live-match button.
+    path: screenshots/home.png
+  - description: The live score screen with phase and match-type filters.
+    path: screenshots/screen.png
+  - description: The live score screen as an adaptive grid on a tablet.
+    path: screenshots/screen_tablet.png
+  - description: The match carousel in a dialog, with page dots.
     path: screenshots/carousel.png
-  - description: Floating button with both team logos and a LIVE chip.
+  - description: Live scores in a draggable bottom sheet.
+    path: screenshots/sheet.png
+  - description: The inline carousel showing several cards at once on a tablet.
+    path: screenshots/inline_tablet.png
+  - description: The score ticker in rotate and news-crawl modes.
+    path: screenshots/ticker.png
+  - description: The home page in dark mode.
+    path: screenshots/home_dark.png
+  - description: The floating live-match button.
     path: screenshots/fab.png
 
 topics:

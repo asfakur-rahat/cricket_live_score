@@ -1,26 +1,28 @@
-## 0.2.0 — Unreleased
+## 1.0.0
 
-- `CricketMatch.phase` and `MatchPhase`: upcoming, live or finished.
-- `CricketMatchFilter`, `filterMatches` and `matchTypesOf` for filtering matches by phase and match type.
-- `CricketLiveScoreView`: the body of a live score screen, with a frosted, floating filter header (a sliding-pill phase capsule and match-type tabs) and pull to refresh.
-- `CricketScoreLayout`: the score screen is an adaptive grid on tablets, foldables and large landscape windows by default, or one phone-width column with `CricketScoreLayout.phone`.
-- `showCricketLiveScoreSheet` and `CricketLiveScoreSheet`: the live scores in a draggable bottom sheet, with a pinned title bar and refresh and close buttons. On a wide window it is capped at the dialog width and centred.
-- `CricketLiveScoreView` takes a `scrollController`, a `pinnedHeader` that stays above the filters, and `enablePullToRefresh`.
-- `CricketLiveScoreCarousel(showPageIndicator: true)`: page dots under the card, sliding along when there are more than seven matches. Tap a dot to jump to its match.
-- `CricketScoreTicker`: a slim strip of live scores. `CricketTickerMode.rotate` shows one match at a time; `CricketTickerMode.crawl` scrolls them all past like a news ticker, at `crawlSpeed`. It pauses while held, a changed score is highlighted for a moment, and it collapses when nothing is live.
-- `CricketInlineScoreCarousel`: the match cards in a sideways-scrolling row for a section of a page. It sizes itself to the tallest card, snaps card by card with the next card peeking in (several cards at once on wide screens) or scrolls freely with `snap: false`, and takes page dots and auto-scroll.
-- `CricketScoreScaleScope`: turn screen-based scaling off, or set your own design size and wide canvas. `CricketScoreScale` gains `design` and `enabled`, and `CricketScoreScale.of` follows the nearest scope.
-- Dark mode: on a dark colour scheme the cards, the floating button, the close badge and the page dots default to raised container colours, so they stand apart from the page. Light defaults are unchanged. The README shows how to pass your own dark colours through `darkTheme`.
-- New theme fields for the score screen (`listGap`, `gridTileMinWidth`, `sheetTitleStyle`, `filterChipStyle` and the `filter…` colours and sizes) and the page dots (`pageDot…` and `pageIndicatorBackground`) and the ticker (`ticker…`, including `tickerAccentStart`, `tickerAccentEnd` and `tickerFlashColor`), and new labels for the filters, the sheet (`scoresTitle`, `refresh`) and the page dots (`formatPagePosition`).
-- **Breaking:** requires Flutter 3.27 / Dart 3.6 or later (was Flutter 3.24 / Dart 3.5).
+First release.
 
-## 0.1.0 — Initial release
+**Widgets**
 
-- `CricketLiveScoreCarousel`: polling match carousel with optional auto-scroll and loading, empty and error states.
-- `CricketMatchCard` and `CricketMatchFab` widgets.
-- `CricketScoreController` with sealed `CricketScoreState`; a failed poll keeps the last matches, and polling pauses while the app is in the background.
-- `CricketScoreSource` interface and `CricketDataWidgetSource` for cricketdata.org's website widget, with a default referrer used with cricketdata.org's permission.
-- `CricketDataHtmlParser`, `sortMatches` and `pickFeaturedMatch`.
-- `CricketScoreThemeData` theme extension and `CricketScoreLabels` for localization.
-- Default sizes and text sizes scale with the screen (`CricketScoreScale`).
-- `CricketBatsIcon`: crossed bats and ball, the default centre badge on match cards.
+- `CricketLiveScoreCarousel`: swipeable match cards for a dialog, with auto-scroll, page dots, and loading, empty and error states.
+- `CricketInlineScoreCarousel`: the match cards in a sideways-scrolling row for a section of a page. It sizes itself to the tallest card, and either snaps card by card with the next card peeking in (several cards at once on wide screens) or scrolls freely with `snap: false`. Page dots and auto-scroll are optional.
+- `CricketLiveScoreView`: the body of a full score screen, with a frosted floating filter header (phases and match types) and pull to refresh. It is a single column on phones and an adaptive grid on tablets, foldables and large windows (`CricketScoreLayout`).
+- `showCricketLiveScoreSheet` and `CricketLiveScoreSheet`: the score screen in a draggable bottom sheet with a pinned title bar and refresh and close buttons.
+- `CricketScoreTicker`: a slim strip of live scores that rotates one match at a time (`CricketTickerMode.rotate`) or scrolls them all past like a news ticker (`CricketTickerMode.crawl`). It pauses while held, highlights a changed score for a moment, and collapses when nothing is live.
+- `CricketMatchFab`: a small floating button with both team logos and a LIVE chip.
+- `CricketMatchCard` and `CricketBatsIcon` for building your own layouts.
+
+**Data**
+
+- `CricketScoreController` with a sealed `CricketScoreState`. A failed poll keeps the last matches, and polling pauses while the app is in the background.
+- `CricketScoreSource`, a one-method interface for your own data, and `CricketDataWidgetSource` for cricketdata.org's website widget, with a default referrer used with cricketdata.org's permission.
+- `CricketMatch.phase` (`MatchPhase`), `CricketMatchFilter`, `filterMatches`, `matchTypesOf`, `sortMatches` and `pickFeaturedMatch`.
+- `CricketDataHtmlParser`.
+
+**Customization**
+
+- `CricketScoreThemeData`, a theme extension where every field is optional and defaults come from your colour scheme and text theme, including dark mode.
+- `CricketScoreLabels` for every string the widgets show or announce to screen readers.
+- Sizes scale with the screen (`CricketScoreScale`). `CricketScoreScaleScope` turns scaling off, or sets your own design size and tablet canvas.
+
+Requires Flutter 3.27 / Dart 3.6 or later.
