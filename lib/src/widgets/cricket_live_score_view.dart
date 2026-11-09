@@ -14,6 +14,20 @@ import 'package:cricket_live_score/src/widgets/score_filter_bar.dart';
 import 'package:cricket_live_score/src/widgets/team_logo.dart';
 import 'package:flutter/material.dart';
 
+/// How [CricketLiveScoreView] lays out its cards.
+enum CricketScoreLayout {
+  /// As many columns as fit: one on a phone, two or more on a tablet, a
+  /// foldable's inner display or a large landscape window. Cards in a row
+  /// share its height.
+  adaptive,
+
+  /// Always one column, phone width, centred on wide windows.
+  phone,
+}
+
+/// The most columns the adaptive grid uses, however wide the window.
+const _maxColumns = 4;
+
 /// The body of a live score screen: filter chips above a list of
 /// [CricketMatchCard]s that keeps itself up to date.
 ///
@@ -35,9 +49,12 @@ import 'package:flutter/material.dart';
 /// A frosted header filters the list: a capsule of phases (All, Live,
 /// Upcoming, Done), then tabs of match types. It scrolls away as the list
 /// scrolls down and slides back in on the way up. Pulling down from the top
-/// fetches straight away. The view needs a bounded height. On a phone it
-/// fills the width it is given; on a wider window it is a centred,
-/// phone-width column.
+/// fetches straight away. The view needs a bounded height.
+///
+/// On a phone it is one column filling the width it is given. On a wider
+/// window the [layout] decides: by default a grid of as many columns as
+/// fit, with the filters on one row; [CricketScoreLayout.phone] keeps one
+/// centred, phone-width column.
 class CricketLiveScoreView extends StatefulWidget {
   /// Creates a score view. Exactly one of [controller] and [source] must be
   /// given.
@@ -45,6 +62,7 @@ class CricketLiveScoreView extends StatefulWidget {
     super.key,
     this.controller,
     this.source,
+    this.layout = CricketScoreLayout.adaptive,
     this.initialFilter = CricketMatchFilter.all,
     this.filter,
     this.onFilterChanged,
@@ -68,6 +86,9 @@ class CricketLiveScoreView extends StatefulWidget {
 
   /// Supplies the matches through a controller owned by the view.
   final CricketScoreSource? source;
+
+  /// How the cards are laid out on a window wider than a phone.
+  final CricketScoreLayout layout;
 
   /// The filter applied when the view first shows, while [filter] is `null`.
   final CricketMatchFilter initialFilter;
@@ -143,37 +164,56 @@ class _CricketLiveScoreViewState extends State<CricketLiveScoreView>
     final types =
         widget.showTypeFilter ? _typeChoices(matches) : const <String>[];
     final windowWidth = MediaQuery.sizeOf(context).width;
-    final maxWidth = CricketScoreScale.isCompactWidth(windowWidth)
-        ? double.infinity
-        : CricketScoreScale.of(context).dialogWidth(windowWidth);
+    final compact = CricketScoreScale.isCompactWidth(windowWidth);
 
-    return Align(
-      alignment: Alignment.topCenter,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: maxWidth),
-        child: RefreshIndicator(
-          onRefresh: controller.refresh,
-          child: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            slivers: [
-              if (widget.showPhaseFilter || types.isNotEmpty)
-                SliverFloatingHeader(
-                  child: ScoreFilterBar(
-                    filter: _filter,
-                    types: types,
-                    showPhases: widget.showPhaseFilter,
-                    hasLive: matches.any((m) => m.isLive),
-                    theme: theme,
-                    labels: widget.labels,
-                    onChanged: _setFilter,
-                  ),
-                ),
-              _content(context, theme, matches),
-            ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final columns = _columnsFor(constraints.maxWidth, theme, compact);
+        // One column on a wide window is capped at phone width; a grid
+        // uses all of it.
+        final maxWidth = compact || columns > 1
+            ? double.infinity
+            : CricketScoreScale.of(context).dialogWidth(windowWidth);
+        return Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: maxWidth),
+            child: RefreshIndicator(
+              onRefresh: controller.refresh,
+              child: CustomScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                slivers: [
+                  if (widget.showPhaseFilter || types.isNotEmpty)
+                    SliverFloatingHeader(
+                      child: ScoreFilterBar(
+                        inline: columns > 1,
+                        filter: _filter,
+                        types: types,
+                        showPhases: widget.showPhaseFilter,
+                        hasLive: matches.any((m) => m.isLive),
+                        theme: theme,
+                        labels: widget.labels,
+                        onChanged: _setFilter,
+                      ),
+                    ),
+                  _content(context, theme, matches, columns),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
+  }
+
+  int _columnsFor(double width, CricketScoreThemeData theme, bool compact) {
+    if (compact ||
+        widget.layout == CricketScoreLayout.phone ||
+        !width.isFinite) {
+      return 1;
+    }
+    final available = width - 2 * theme.outerPadding!;
+    return (available ~/ theme.gridTileMinWidth!).clamp(1, _maxColumns);
   }
 
   // The types in the data, plus any selected type the data no longer has,
@@ -191,6 +231,7 @@ class _CricketLiveScoreViewState extends State<CricketLiveScoreView>
     BuildContext context,
     CricketScoreThemeData theme,
     List<CricketMatch> matches,
+    int columns,
   ) {
     if (matches.isEmpty) {
       return _message(
@@ -230,26 +271,54 @@ class _CricketLiveScoreViewState extends State<CricketLiveScoreView>
       );
     }
 
+    final gap = theme.listGap!;
+    if (columns == 1) {
+      return SliverPadding(
+        padding: EdgeInsets.all(theme.outerPadding!),
+        sliver: SliverList.separated(
+          itemCount: shown.length,
+          separatorBuilder: (_, __) => SizedBox(height: gap),
+          itemBuilder: (_, index) => _card(theme, shown[index]),
+        ),
+      );
+    }
+
+    // Rows of [columns] cards; every card in a row is as tall as the
+    // tallest, and a short last row leaves its remaining cells empty.
+    final rows = (shown.length + columns - 1) ~/ columns;
     return SliverPadding(
       padding: EdgeInsets.all(theme.outerPadding!),
       sliver: SliverList.separated(
-        itemCount: shown.length,
-        separatorBuilder: (_, __) => SizedBox(height: theme.listGap),
-        itemBuilder: (_, index) {
-          final match = shown[index];
-          return CricketMatchCard(
-            key: ValueKey(match.id),
-            match: match,
-            onTap: widget.onMatchTap == null
-                ? null
-                : () => widget.onMatchTap!(match),
-            theme: theme,
-            labels: widget.labels,
-            logoBuilder: widget.logoBuilder,
-            centerBadge: widget.centerBadge,
-          );
-        },
+        itemCount: rows,
+        separatorBuilder: (_, __) => SizedBox(height: gap),
+        itemBuilder: (_, row) => IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (var column = 0; column < columns; column++) ...[
+                if (column > 0) SizedBox(width: gap),
+                Expanded(
+                  child: row * columns + column < shown.length
+                      ? _card(theme, shown[row * columns + column])
+                      : const SizedBox.shrink(),
+                ),
+              ],
+            ],
+          ),
+        ),
       ),
+    );
+  }
+
+  Widget _card(CricketScoreThemeData theme, CricketMatch match) {
+    return CricketMatchCard(
+      key: ValueKey(match.id),
+      match: match,
+      onTap: widget.onMatchTap == null ? null : () => widget.onMatchTap!(match),
+      theme: theme,
+      labels: widget.labels,
+      logoBuilder: widget.logoBuilder,
+      centerBadge: widget.centerBadge,
     );
   }
 

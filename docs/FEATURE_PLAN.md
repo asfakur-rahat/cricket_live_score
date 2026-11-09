@@ -58,14 +58,14 @@ Scaffold(
 
 ## 3. Phone or adaptive layout (foldables and tablets)
 
+**Done with Part 2 on 2026-11-09.** Changed from the original plan: `adaptive` is the default, because the single column looked bad on large landscape and foldable displays.
+
 A `layout:` option on the view:
 
-- `CricketScoreLayout.phone` (default): always a single phone-width column. On a tablet it is centred and capped, like the app's popup.
-- `CricketScoreLayout.adaptive`: follows window size like the app's `gridColumns`:
-  - compact (< 600): 1 column
-  - medium: 2 columns
-  - expanded: as many columns as fit
-  - Card sizes keep the scaling from the last change, so cards stay phone-sized and more of them fit across.
+- `CricketScoreLayout.adaptive` (default): one column on a phone. On a wider window, as many columns as fit (each at least `gridTileMinWidth`, at most 4). Cards in a row share its height. The phase capsule and the type tabs sit side by side on one row. In practice:
+  - a tablet in portrait or a foldable's inner display gets 2 columns;
+  - a large landscape window gets 3.
+- `CricketScoreLayout.phone`: always a single phone-width column, centred on wide windows.
 
 ## 4. Live score bottom sheet
 

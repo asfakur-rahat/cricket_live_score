@@ -75,7 +75,7 @@ Navigator.of(context).push(
 );
 ```
 
-On a phone it fills the width; on a tablet or unfolded foldable the list is a centred, phone-width column. Start from a filter with `initialFilter`, hide a chip row with `showPhaseFilter` / `showTypeFilter`, or keep the filter in your own state with `filter` and `onFilterChanged`.
+On a phone it is one column filling the width. On a tablet, a foldable's inner display or a large landscape window it becomes a grid of as many columns as fit (cards in a row share its height) and the filters move onto one row. Pass `layout: CricketScoreLayout.phone` to keep one centred, phone-width column instead. Start from a filter with `initialFilter`, hide a chip row with `showPhaseFilter` / `showTypeFilter`, or keep the filter in your own state with `filter` and `onFilterChanged`.
 
 ### Controlling polling yourself
 

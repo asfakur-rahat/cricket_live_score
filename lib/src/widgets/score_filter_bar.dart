@@ -42,11 +42,16 @@ class ScoreFilterBar extends StatelessWidget {
     required this.theme,
     required this.labels,
     required this.onChanged,
+    this.inline = false,
     super.key,
   });
 
   /// The filter in use.
   final CricketMatchFilter filter;
+
+  /// Whether the window is wide: the capsule keeps a capped width, and the
+  /// type tabs sit beside it on one row.
+  final bool inline;
 
   /// The match types to offer; empty hides the type tabs.
   final List<String> types;
@@ -81,6 +86,88 @@ class ScoreFilterBar extends StatelessWidget {
 
     final upperTypes = {for (final t in filter.types) t.toUpperCase()};
     final gap = theme.smallVerticalGap!;
+    final outer = theme.outerPadding!;
+    final capsule = showPhases
+        ? _GlassSegments(
+            label: labels.phaseFilter,
+            options: [
+              _Option(phaseFilterKey(null), labels.allMatches),
+              for (final phase in _phaseOrder)
+                _Option(
+                  phaseFilterKey(phase),
+                  labels.phaseLabel(phase),
+                  liveDot: phase == MatchPhase.live,
+                ),
+            ],
+            selected: selectedIndex(filter.phases, _phaseOrder),
+            hasLive: hasLive,
+            theme: theme,
+            onSelected: (i) => onChanged(
+              filter.copyWith(
+                phases: i == 0 ? const {} : {_phaseOrder[i - 1]},
+              ),
+            ),
+          )
+        : null;
+    _UnderlineTabs tabs({required bool besideCapsule}) => _UnderlineTabs(
+          label: labels.typeFilter,
+          options: [
+            _Option(typeFilterKey(null), labels.allMatches),
+            for (final type in types) _Option(typeFilterKey(type), type),
+          ],
+          selected: selectedIndex(upperTypes, types),
+          multiSelected: upperTypes,
+          theme: theme,
+          besideCapsule: besideCapsule,
+          onSelected: (i) => onChanged(
+            filter.copyWith(types: i == 0 ? const {} : {types[i - 1]}),
+          ),
+        );
+
+    final Widget content;
+    if (inline && capsule != null && types.isNotEmpty) {
+      // One row: the capsule at its natural width, the tabs in the rest.
+      content = Padding(
+        padding: EdgeInsets.only(left: outer),
+        child: Row(
+          children: [
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: theme.filterCapsuleMaxWidth!,
+              ),
+              child: capsule,
+            ),
+            SizedBox(width: theme.largeHorizontalGap),
+            Expanded(child: tabs(besideCapsule: true)),
+          ],
+        ),
+      );
+    } else {
+      content = Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (capsule != null)
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: outer),
+              child: inline
+                  ? Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: theme.filterCapsuleMaxWidth!,
+                        ),
+                        child: capsule,
+                      ),
+                    )
+                  : capsule,
+            ),
+          if (capsule != null && types.isNotEmpty) SizedBox(height: gap),
+          if (types.isNotEmpty) tabs(besideCapsule: false),
+        ],
+      );
+    }
+
     return ClipRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
@@ -88,56 +175,7 @@ class ScoreFilterBar extends StatelessWidget {
           color: theme.filterHeaderColor!,
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: gap),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (showPhases)
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: theme.outerPadding!,
-                    ),
-                    child: _GlassSegments(
-                      label: labels.phaseFilter,
-                      options: [
-                        _Option(phaseFilterKey(null), labels.allMatches),
-                        for (final phase in _phaseOrder)
-                          _Option(
-                            phaseFilterKey(phase),
-                            labels.phaseLabel(phase),
-                            liveDot: phase == MatchPhase.live,
-                          ),
-                      ],
-                      selected: selectedIndex(filter.phases, _phaseOrder),
-                      hasLive: hasLive,
-                      theme: theme,
-                      onSelected: (i) => onChanged(
-                        filter.copyWith(
-                          phases: i == 0 ? const {} : {_phaseOrder[i - 1]},
-                        ),
-                      ),
-                    ),
-                  ),
-                if (showPhases && types.isNotEmpty) SizedBox(height: gap),
-                if (types.isNotEmpty)
-                  _UnderlineTabs(
-                    label: labels.typeFilter,
-                    options: [
-                      _Option(typeFilterKey(null), labels.allMatches),
-                      for (final type in types)
-                        _Option(typeFilterKey(type), type),
-                    ],
-                    selected: selectedIndex(upperTypes, types),
-                    multiSelected: upperTypes,
-                    theme: theme,
-                    onSelected: (i) => onChanged(
-                      filter.copyWith(
-                        types: i == 0 ? const {} : {types[i - 1]},
-                      ),
-                    ),
-                  ),
-              ],
-            ),
+            child: content,
           ),
         ),
       ),
@@ -296,12 +334,17 @@ class _UnderlineTabs extends StatefulWidget {
     required this.selected,
     required this.multiSelected,
     required this.theme,
+    required this.besideCapsule,
     required this.onSelected,
   });
 
   final String label;
   final List<_Option> options;
   final int selected;
+
+  /// Whether the tabs sit beside the capsule, which already provides the
+  /// space at their start.
+  final bool besideCapsule;
 
   /// Upper-case types selected together, which are highlighted without an
   /// underline.
@@ -380,8 +423,11 @@ class _UnderlineTabsState extends State<_UnderlineTabs> {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         // The tabs' own padding lines the text up with the capsule above.
-        padding: EdgeInsets.symmetric(
-          horizontal: math.max(0, theme.outerPadding! - padX),
+        padding: EdgeInsetsDirectional.only(
+          start: widget.besideCapsule
+              ? 0
+              : math.max(0, theme.outerPadding! - padX),
+          end: math.max(0, theme.outerPadding! - padX),
         ),
         child: Stack(
           key: _stackKey,

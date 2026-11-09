@@ -123,40 +123,35 @@ class CricketMatchCard extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: theme.mediumVerticalGap),
-              ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: match.teamScores.length,
-                itemBuilder: (context, i) {
-                  final teamScore = match.teamScores[i];
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child: Text(
-                              teamScore.teamName,
-                              style: theme.scoreStyle,
-                            ),
+              // A Column, not a ListView, so a grid can ask the card for its
+              // intrinsic height.
+              for (final teamScore in match.teamScores)
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: Text(
+                            teamScore.teamName,
+                            style: theme.scoreStyle,
                           ),
-                          const Spacer(),
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              teamScore.scoreText ?? labels.notAvailable,
-                              style: theme.scoreStyle,
-                              textAlign: TextAlign.end,
-                            ),
+                        ),
+                        const Spacer(),
+                        Expanded(
+                          flex: 2,
+                          child: Text(
+                            teamScore.scoreText ?? labels.notAvailable,
+                            style: theme.scoreStyle,
+                            textAlign: TextAlign.end,
                           ),
-                        ],
-                      ),
-                      const Divider(),
-                    ],
-                  );
-                },
-              ),
+                        ),
+                      ],
+                    ),
+                    const Divider(),
+                  ],
+                ),
             ],
           ),
         ),
@@ -168,6 +163,9 @@ class CricketMatchCard extends StatelessWidget {
       label: labels.matchSemantics(match),
       child: Stack(
         clipBehavior: Clip.none,
+        // A tight height, such as a grid row's, stretches the card; the
+        // carousel's loose constraints leave it as tall as its content.
+        fit: StackFit.passthrough,
         children: [
           if (onTap == null)
             card

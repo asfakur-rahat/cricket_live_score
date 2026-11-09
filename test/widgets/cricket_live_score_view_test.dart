@@ -362,25 +362,100 @@ void main() {
     expect(find.text('Aucun match'), findsOneWidget);
   });
 
-  testWidgets('a phone fills the width; a wide window centres a column',
+  /// The distinct left edges of the cards: one per column.
+  Set<double> columnsOf(WidgetTester tester) => {
+        for (final e in find.byType(CricketMatchCard).evaluate())
+          tester.getRect(find.byWidget(e.widget)).left.roundToDouble(),
+      };
+
+  testWidgets('a phone is one column filling the width', (tester) async {
+    await _pumpView(tester, CricketLiveScoreView(source: FakeSource(_all())));
+    await tester.pump();
+    expect(tester.getSize(_list).width, 400);
+    expect(columnsOf(tester), hasLength(1));
+  });
+
+  for (final (name, window, columns) in [
+    ('narrow tablet window', const Size(620, 2400), 1),
+    ('tablet in portrait', const Size(720, 2400), 2),
+    ('foldable inner display', const Size(840, 2400), 2),
+    ('large landscape window', const Size(1280, 2400), 3),
+  ]) {
+    testWidgets('adaptive: $columns column(s) on a $name', (tester) async {
+      await _pumpView(
+        tester,
+        CricketLiveScoreView(source: FakeSource(_all())),
+        window: window,
+      );
+      await tester.pump();
+      expect(columnsOf(tester), hasLength(columns));
+      if (columns == 1) {
+        // A single column on a wide window stays phone width.
+        expect(tester.getRect(_list).width, 560);
+        expect(tester.getRect(_list).center.dx, window.width / 2);
+      } else {
+        expect(tester.getRect(_list).width, window.width);
+      }
+    });
+  }
+
+  testWidgets('adaptive: cards in a row share its height', (tester) async {
+    await _pumpView(
+      tester,
+      CricketLiveScoreView(source: FakeSource(_all())),
+      window: const Size(1280, 2400),
+    );
+    await tester.pump();
+    // The live match has logos and two score rows; the upcoming one has
+    // neither, so it is shorter on its own.
+    final heights = {
+      for (final venue in [_liveVenue, _finishedVenue, _upcomingVenue])
+        tester
+            .getSize(
+              find.ancestor(
+                of: find.text(venue),
+                matching: find.byType(CricketMatchCard),
+              ),
+            )
+            .height,
+    };
+    expect(heights, hasLength(1));
+  });
+
+  testWidgets('adaptive: the filters share one row on a wide window',
       (tester) async {
     await _pumpView(
       tester,
       CricketLiveScoreView(source: FakeSource(_all())),
-      window: const Size(400, 900),
+      window: const Size(1280, 2400),
     );
     await tester.pump();
-    expect(tester.getSize(_list).width, 400);
+    final phases = tester.getRect(_allChip(types: false));
+    final types = tester.getRect(_allChip(types: true));
+    expect(types.left, greaterThan(phases.right));
+    expect((types.center.dy - phases.center.dy).abs(), lessThan(phases.height));
+  });
 
+  testWidgets('phone layout keeps one centred column on a wide window',
+      (tester) async {
     await _pumpView(
       tester,
-      CricketLiveScoreView(source: FakeSource(_all())),
-      window: const Size(1280, 800),
+      CricketLiveScoreView(
+        source: FakeSource(_all()),
+        layout: CricketScoreLayout.phone,
+      ),
+      window: const Size(1280, 2400),
     );
     await tester.pump();
+    expect(columnsOf(tester), hasLength(1));
     final list = tester.getRect(_list);
     expect(list.width, 560);
     expect(list.center.dx, 640);
+    // The filters stack, as on a phone.
+    expect(
+      tester.getRect(_allChip(types: true)).top,
+      greaterThan(tester.getRect(_allChip(types: false)).bottom),
+    );
   });
 
   testWidgets('an injected controller is neither started nor disposed',

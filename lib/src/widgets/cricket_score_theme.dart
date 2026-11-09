@@ -74,6 +74,8 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
     this.filterForeground,
     this.filterTrackHeight,
     this.filterUnderlineHeight,
+    this.filterCapsuleMaxWidth,
+    this.gridTileMinWidth,
   });
 
   /// The defaults derived from [theme]'s colour scheme and text theme, with
@@ -149,6 +151,8 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       filterForeground: cs.onSurfaceVariant,
       filterTrackHeight: w(44),
       filterUnderlineHeight: w(3),
+      filterCapsuleMaxWidth: w(420),
+      gridTileMinWidth: w(300),
     );
   }
 
@@ -344,6 +348,13 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
   /// Thickness of the underline under the selected match type.
   final double? filterUnderlineHeight;
 
+  /// Widest the phase capsule grows; on a wide screen it sits beside the
+  /// type tabs.
+  final double? filterCapsuleMaxWidth;
+
+  /// Narrowest a card may be in the adaptive grid; the grid fits as many\n  /// columns as this allows.
+  final double? gridTileMinWidth;
+
   /// Returns a copy in which every non-null field of [other] replaces the
   /// field of this theme.
   CricketScoreThemeData merge(CricketScoreThemeData? other) {
@@ -407,6 +418,8 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       filterForeground: other.filterForeground,
       filterTrackHeight: other.filterTrackHeight,
       filterUnderlineHeight: other.filterUnderlineHeight,
+      filterCapsuleMaxWidth: other.filterCapsuleMaxWidth,
+      gridTileMinWidth: other.gridTileMinWidth,
     );
   }
 
@@ -470,6 +483,8 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
     Color? filterForeground,
     double? filterTrackHeight,
     double? filterUnderlineHeight,
+    double? filterCapsuleMaxWidth,
+    double? gridTileMinWidth,
   }) {
     return CricketScoreThemeData(
       cardColor: cardColor ?? this.cardColor,
@@ -534,6 +549,9 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       filterTrackHeight: filterTrackHeight ?? this.filterTrackHeight,
       filterUnderlineHeight:
           filterUnderlineHeight ?? this.filterUnderlineHeight,
+      filterCapsuleMaxWidth:
+          filterCapsuleMaxWidth ?? this.filterCapsuleMaxWidth,
+      gridTileMinWidth: gridTileMinWidth ?? this.gridTileMinWidth,
     );
   }
 
@@ -624,6 +642,9 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
           lerpDouble(filterTrackHeight, other.filterTrackHeight, t),
       filterUnderlineHeight:
           lerpDouble(filterUnderlineHeight, other.filterUnderlineHeight, t),
+      filterCapsuleMaxWidth:
+          lerpDouble(filterCapsuleMaxWidth, other.filterCapsuleMaxWidth, t),
+      gridTileMinWidth: lerpDouble(gridTileMinWidth, other.gridTileMinWidth, t),
     );
   }
 
@@ -688,7 +709,9 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
           other.filterSelectedForeground == filterSelectedForeground &&
           other.filterForeground == filterForeground &&
           other.filterTrackHeight == filterTrackHeight &&
-          other.filterUnderlineHeight == filterUnderlineHeight;
+          other.filterUnderlineHeight == filterUnderlineHeight &&
+          other.filterCapsuleMaxWidth == filterCapsuleMaxWidth &&
+          other.gridTileMinWidth == gridTileMinWidth;
 
   @override
   int get hashCode => Object.hashAll([
@@ -750,5 +773,7 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
         filterForeground,
         filterTrackHeight,
         filterUnderlineHeight,
+        filterCapsuleMaxWidth,
+        gridTileMinWidth,
       ]);
 }
