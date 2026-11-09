@@ -1,6 +1,7 @@
-// Golden images are platform-sensitive (font rasterisation differs between
-// macOS and Linux). Regenerate with `fvm flutter test --update-goldens
-// test/widgets/goldens_test.dart` on the platform that runs CI.
+// Golden images are platform-sensitive: anti-aliasing differs between
+// operating systems and even macOS versions. They run locally and CI skips
+// them (`--exclude-tags golden`). Regenerate with
+// `fvm flutter test --update-goldens test/widgets/goldens_test.dart`.
 @Tags(['golden'])
 library;
 

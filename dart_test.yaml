@@ -1,0 +1,4 @@
+tags:
+  # Pixel comparisons against images in test/widgets/goldens; run locally,
+  # skipped in CI.
+  golden:

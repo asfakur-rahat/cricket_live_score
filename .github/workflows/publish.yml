@@ -13,15 +13,13 @@ on:
 jobs:
   publish:
     name: Check and publish
-    # The golden images are rendered on macOS; Linux draws text slightly
-    # differently, so the golden tests would fail there.
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     environment: pub.dev
     permissions:
       contents: read
       id-token: write # pub.dev checks this token instead of a password
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # Sets up the token pub.dev accepts from GitHub Actions.
       - uses: dart-lang/setup-dart@v1
@@ -43,6 +41,17 @@ jobs:
       - run: flutter pub get
       - run: dart format --output=none --set-exit-if-changed lib test tool
       - run: flutter analyze
-      - run: flutter test
+      # Golden images differ slightly between machines, so they are checked
+      # locally only.
+      - run: flutter test --exclude-tags golden
+
+      - name: Keep the failure images of a failed test run
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: test-failures
+          path: test/**/failures/
+          if-no-files-found: ignore
+
       - run: dart pub publish --dry-run
       - run: dart pub publish --force
