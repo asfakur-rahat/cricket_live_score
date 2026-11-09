@@ -77,9 +77,6 @@ class _HomePageState extends State<HomePage> {
           child: CricketLiveScoreCarousel(
             source: _source,
             autoScroll: true,
-            // Phones use the full dialog width; wider windows cap it.
-            maxWidth: 480,
-            maxHeight: MediaQuery.sizeOf(context).height * 0.8,
             onClose: () => Navigator.pop(context),
           ),
         ),

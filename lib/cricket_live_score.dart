@@ -19,5 +19,6 @@ export 'src/widgets/cricket_live_score_carousel.dart';
 export 'src/widgets/cricket_match_card.dart';
 export 'src/widgets/cricket_match_fab.dart';
 export 'src/widgets/cricket_score_labels.dart';
+export 'src/widgets/cricket_score_scale.dart';
 export 'src/widgets/cricket_score_theme.dart';
 export 'src/widgets/team_logo.dart';

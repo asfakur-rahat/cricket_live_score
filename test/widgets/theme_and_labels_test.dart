@@ -82,7 +82,27 @@ void main() {
       );
       expect(resolved.cardPadding, 3);
       expect(resolved.outerPadding, 2);
-      expect(resolved.closeButtonSize, 40);
+      // The 800-wide test window is not compact, so the fallback is scaled
+      // to the wide canvas.
+      expect(resolved.closeButtonSize, 40 * 430 / 390);
+    });
+
+    test('fallback scales sizes and text sizes with the scale', () {
+      const half = CricketScoreScale(canvas: Size(195, 425));
+      final small = CricketScoreThemeData.fallback(ThemeData.light(), half);
+      expect(small.closeButtonSize, 20);
+      expect(small.cardBorderRadius, 6 + 2);
+      expect(small.fabHeight, 27.5);
+      expect(small.mediumVerticalGap, 8);
+      expect(
+        small.fabPadding,
+        const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+      );
+      expect(small.scoreStyle!.fontSize, half.fontSize(14));
+      expect(
+        small.scoreStyle!.fontSize,
+        lessThan(fallback.scoreStyle!.fontSize!),
+      );
     });
   });
 

@@ -340,6 +340,35 @@ void main() {
     expect(tester.getSize(find.byType(PageView)), const Size(300, 400));
   });
 
+  testWidgets('without maxWidth, a phone keeps the full width', (tester) async {
+    tester.view.physicalSize = const Size(360, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      app(CricketLiveScoreCarousel(source: FakeSource([finishedMatch()]))),
+    );
+    await tester.pump();
+    expect(tester.getSize(find.byType(PageView)).width, 360);
+  });
+
+  testWidgets('without maxWidth, a wide window caps it at the dialog width',
+      (tester) async {
+    tester.view.physicalSize = const Size(1280, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      app(
+        Align(
+          child:
+              CricketLiveScoreCarousel(source: FakeSource([finishedMatch()])),
+        ),
+        width: 1000,
+      ),
+    );
+    await tester.pump();
+    expect(tester.getSize(find.byType(PageView)).width, 560);
+  });
+
   testWidgets('passes theme, labels, logoBuilder and centerBadge to cards',
       (tester) async {
     await tester.pumpWidget(

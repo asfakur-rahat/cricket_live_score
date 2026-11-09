@@ -7,6 +7,7 @@ import 'package:cricket_live_score/src/sources/cricket_score_source.dart';
 import 'package:cricket_live_score/src/widgets/close_badge.dart';
 import 'package:cricket_live_score/src/widgets/cricket_match_card.dart';
 import 'package:cricket_live_score/src/widgets/cricket_score_labels.dart';
+import 'package:cricket_live_score/src/widgets/cricket_score_scale.dart';
 import 'package:cricket_live_score/src/widgets/cricket_score_theme.dart';
 import 'package:cricket_live_score/src/widgets/team_logo.dart';
 import 'package:flutter/material.dart';
@@ -74,14 +75,16 @@ class CricketLiveScoreCarousel extends StatefulWidget {
   /// Called by the close button on every card; `null` hides the button.
   final VoidCallback? onClose;
 
-  /// Maximum width of the carousel; `null` uses the incoming constraints.
+  /// Maximum width of the carousel.
+  ///
+  /// `null` uses the incoming width on a phone and caps it at the Material
+  /// dialog width on a wider window ([CricketScoreScale.dialogWidth]).
   final double? maxWidth;
 
   /// Maximum height of the carousel; `null` uses the incoming constraints.
   ///
   /// Each card is only as tall as its content, centred in this height, and
-  /// scrolls when its content does not fit. A card with logos and two score
-  /// lines needs about 350 logical pixels with default text sizes.
+  /// scrolls when its content does not fit.
   final double? maxHeight;
 
   /// Overrides the ambient [CricketScoreThemeData].
@@ -269,12 +272,16 @@ class _CricketLiveScoreCarouselState extends State<CricketLiveScoreCarousel>
       );
     }
 
+    final windowWidth = MediaQuery.sizeOf(context).width;
     return ConstrainedBox(
       // PageView fills the width it is offered, so cap it to the popup
       // width on wider windows; a phone keeps the full padded width.
       constraints: BoxConstraints(
         maxHeight: widget.maxHeight ?? double.infinity,
-        maxWidth: widget.maxWidth ?? double.infinity,
+        maxWidth: widget.maxWidth ??
+            (CricketScoreScale.isCompactWidth(windowWidth)
+                ? double.infinity
+                : CricketScoreScale.of(context).dialogWidth(windowWidth)),
       ),
       child: NotificationListener<ScrollNotification>(
         onNotification: _onScrollNotification,

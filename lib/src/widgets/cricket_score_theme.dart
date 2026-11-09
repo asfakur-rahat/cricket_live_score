@@ -1,5 +1,6 @@
 import 'dart:ui' show lerpDouble;
 
+import 'package:cricket_live_score/src/widgets/cricket_score_scale.dart';
 import 'package:flutter/material.dart';
 
 /// Colours, sizes and text styles of the cricket score widgets.
@@ -9,8 +10,8 @@ import 'package:flutter/material.dart';
 /// [ThemeData.extensions], and defaults derived from the ambient
 /// [ColorScheme] and [TextTheme]. See [CricketScoreThemeData.resolve].
 ///
-/// Sizes are logical pixels; an app that scales its layout passes its scaled
-/// values here.
+/// Sizes are logical pixels. The defaults scale with the screen (see
+/// [CricketScoreScale]); a size set here is used as given.
 @immutable
 class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
   /// Creates a theme; unset fields fall back as described on the class.
@@ -64,13 +65,20 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
     this.messageStyle,
   });
 
-  /// The defaults derived from [theme]'s colour scheme and text theme.
+  /// The defaults derived from [theme]'s colour scheme and text theme, with
+  /// sizes and text sizes scaled by [scale].
   ///
   /// Every field of the result is non-null, except text styles that
   /// [theme]'s text theme leaves null.
-  factory CricketScoreThemeData.fallback(ThemeData theme) {
+  factory CricketScoreThemeData.fallback(
+    ThemeData theme, [
+    CricketScoreScale scale = const CricketScoreScale(),
+  ]) {
     final cs = theme.colorScheme;
     final tt = theme.textTheme;
+    final w = scale.width;
+    TextStyle? text(TextStyle? style, double size, [FontWeight? weight]) =>
+        style?.copyWith(fontSize: scale.fontSize(size), fontWeight: weight);
     return CricketScoreThemeData(
       cardColor: cs.surface,
       shadowColor: cs.shadow,
@@ -84,54 +92,56 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       fabBorderColor: cs.primary,
       liveChipColor: cs.error,
       liveChipForeground: cs.onError,
-      cardPadding: 12,
-      outerPadding: 12,
-      cardBorderRadius: 14,
+      cardPadding: w(12),
+      outerPadding: w(12),
+      cardBorderRadius: w(12) + 2,
       cardElevation: 0,
-      closeButtonSize: 40,
-      closeButtonOffset: 12,
-      closeButtonBorderWidth: 2,
-      logoRadius: 24,
-      badgeRadius: 16,
-      dividerHeight: 24,
-      loadingCardSize: 300,
-      smallHorizontalGap: 4,
-      mediumHorizontalGap: 8,
-      largeHorizontalGap: 16,
-      smallVerticalGap: 8,
-      mediumVerticalGap: 16,
-      headerTrailingGap: 32,
-      fabLogoRadius: 16,
-      fabHeight: 55,
-      fabBorderRadius: 14,
-      fabElevation: 16,
-      liveChipTop: -10,
-      liveChipEnd: 40,
-      fabPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      liveChipPadding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
-      matchTypeStyle: tt.labelMedium,
-      liveStyle: tt.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-      startTimeStyle: tt.bodyMedium,
-      venueStyle: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-      teamNameStyle: tt.titleSmall?.copyWith(fontWeight: FontWeight.w700),
-      statusStyle: tt.titleSmall,
-      scoreStyle: tt.titleSmall,
-      versusStyle: tt.labelMedium?.copyWith(fontWeight: FontWeight.w900),
-      liveChipStyle: tt.labelSmall,
-      messageStyle: tt.bodyMedium,
+      closeButtonSize: w(40),
+      closeButtonOffset: w(12),
+      closeButtonBorderWidth: w(2),
+      logoRadius: w(48) / 2,
+      badgeRadius: w(32) / 2,
+      dividerHeight: w(24),
+      loadingCardSize: w(300),
+      smallHorizontalGap: w(4),
+      mediumHorizontalGap: w(8),
+      largeHorizontalGap: w(16),
+      smallVerticalGap: scale.height(8),
+      mediumVerticalGap: scale.height(16),
+      headerTrailingGap: w(32),
+      fabLogoRadius: w(32) / 2,
+      fabHeight: scale.height(55),
+      fabBorderRadius: w(12) + 2,
+      fabElevation: w(16),
+      liveChipTop: -w(10),
+      liveChipEnd: w(40),
+      fabPadding: EdgeInsets.symmetric(vertical: w(8), horizontal: w(12)),
+      liveChipPadding: EdgeInsets.symmetric(vertical: w(3), horizontal: w(8)),
+      matchTypeStyle: text(tt.labelMedium, 13),
+      liveStyle: text(tt.titleMedium, 16, FontWeight.w700),
+      startTimeStyle: text(tt.bodyMedium, 14),
+      venueStyle: text(tt.titleMedium, 16, FontWeight.w600),
+      teamNameStyle: text(tt.titleSmall, 14, FontWeight.w700),
+      statusStyle: text(tt.titleSmall, 14),
+      scoreStyle: text(tt.titleSmall, 14),
+      versusStyle: text(tt.labelMedium, 13, FontWeight.w900),
+      liveChipStyle: text(tt.labelSmall, 11),
+      messageStyle: text(tt.bodyMedium, 14),
     );
   }
 
   /// The fully resolved theme for widgets under [context]: [override], then
-  /// the [ThemeData.extensions] entry, then [CricketScoreThemeData.fallback].
+  /// the [ThemeData.extensions] entry, then [CricketScoreThemeData.fallback]
+  /// scaled to the window ([CricketScoreScale.of]).
   factory CricketScoreThemeData.resolve(
     BuildContext context, [
     CricketScoreThemeData? override,
   ]) {
     final theme = Theme.of(context);
-    return CricketScoreThemeData.fallback(theme)
-        .merge(theme.extension<CricketScoreThemeData>())
-        .merge(override);
+    return CricketScoreThemeData.fallback(
+      theme,
+      CricketScoreScale.of(context),
+    ).merge(theme.extension<CricketScoreThemeData>()).merge(override);
   }
 
   /// Background of the match card and the status card.

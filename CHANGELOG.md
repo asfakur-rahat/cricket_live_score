@@ -6,4 +6,5 @@
 - `CricketScoreSource` interface and `CricketDataWidgetSource` for cricketdata.org's website widget, with a default referrer used with cricketdata.org's permission.
 - `CricketDataHtmlParser`, `sortMatches` and `pickFeaturedMatch`.
 - `CricketScoreThemeData` theme extension and `CricketScoreLabels` for localization.
+- Default sizes and text sizes scale with the screen (`CricketScoreScale`).
 - `CricketBatsIcon`: crossed bats and ball, the default centre badge on match cards.

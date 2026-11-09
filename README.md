@@ -37,14 +37,13 @@ showDialog<void>(
     backgroundColor: Colors.transparent,
     child: CricketLiveScoreCarousel(
       source: source,
-      maxHeight: MediaQuery.sizeOf(context).height * 0.8,
       onClose: () => Navigator.pop(context),
     ),
   ),
 );
 ```
 
-The carousel needs a bounded height: pass `maxHeight` or put it where the height is constrained. Each card is only as tall as its content and scrolls when it doesn't fit, so leave room for a card with logos and two score lines (about 350 dp with default text sizes). A small fraction of the screen height, such as 45%, is too short on a landscape tablet.
+The carousel needs a bounded height, such as a dialog's; pass `maxHeight` to cap it. Each card is only as tall as its content, centred in that height, and scrolls only when it doesn't fit. On a phone the carousel takes the full width it is given; on a wider window it is capped at the Material dialog width, unless you pass `maxWidth`.
 
 Feature one match on a floating button:
 
@@ -83,6 +82,8 @@ controller.dispose(); // you own it, so you dispose it
 ## Theming
 
 Every field of `CricketScoreThemeData` is optional. Each one is resolved from the widget's `theme` argument, then a `CricketScoreThemeData` in your `ThemeData.extensions`, then defaults derived from your `ColorScheme` and `TextTheme`.
+
+The default sizes and text sizes scale with the screen, from a 390 × 850 design: a smaller phone gets smaller cards and a larger phone larger ones. A tablet or unfolded foldable uses a fixed phone-sized canvas (430 × 937), so the cards don't grow into a giant phone. `CricketScoreScale` does the arithmetic; a size you set in the theme is used as given.
 
 ```dart
 MaterialApp(
