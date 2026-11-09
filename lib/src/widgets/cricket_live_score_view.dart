@@ -63,6 +63,9 @@ class CricketLiveScoreView extends StatefulWidget {
     this.controller,
     this.source,
     this.layout = CricketScoreLayout.adaptive,
+    this.scrollController,
+    this.pinnedHeader,
+    this.enablePullToRefresh = true,
     this.initialFilter = CricketMatchFilter.all,
     this.filter,
     this.onFilterChanged,
@@ -89,6 +92,22 @@ class CricketLiveScoreView extends StatefulWidget {
 
   /// How the cards are laid out on a window wider than a phone.
   final CricketScoreLayout layout;
+
+  /// Controls the view's scrolling, for example a
+  /// `DraggableScrollableSheet`'s controller so dragging the list resizes
+  /// the sheet.
+  final ScrollController? scrollController;
+
+  /// Shown above the filters and kept there while the list scrolls, for
+  /// example a title bar. Give it an opaque or frosted background: the
+  /// cards scroll under it.
+  final Widget? pinnedHeader;
+
+  /// Whether pulling down from the top fetches straight away.
+  ///
+  /// Turn it off where the pull means something else, such as in a
+  /// draggable sheet, where it resizes the sheet.
+  final bool enablePullToRefresh;
 
   /// The filter applied when the view first shows, while [filter] is `null`.
   final CricketMatchFilter initialFilter;
@@ -178,11 +197,13 @@ class _CricketLiveScoreViewState extends State<CricketLiveScoreView>
           alignment: Alignment.topCenter,
           child: ConstrainedBox(
             constraints: BoxConstraints(maxWidth: maxWidth),
-            child: RefreshIndicator(
-              onRefresh: controller.refresh,
-              child: CustomScrollView(
+            child: _withPullToRefresh(
+              CustomScrollView(
+                controller: widget.scrollController,
                 physics: const AlwaysScrollableScrollPhysics(),
                 slivers: [
+                  if (widget.pinnedHeader != null)
+                    PinnedHeaderSliver(child: widget.pinnedHeader),
                   if (widget.showPhaseFilter || types.isNotEmpty)
                     SliverFloatingHeader(
                       child: ScoreFilterBar(
@@ -205,6 +226,10 @@ class _CricketLiveScoreViewState extends State<CricketLiveScoreView>
       },
     );
   }
+
+  Widget _withPullToRefresh(Widget scrollView) => widget.enablePullToRefresh
+      ? RefreshIndicator(onRefresh: controller.refresh, child: scrollView)
+      : scrollView;
 
   int _columnsFor(double width, CricketScoreThemeData theme, bool compact) {
     if (compact ||

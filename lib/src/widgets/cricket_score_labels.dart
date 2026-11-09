@@ -25,6 +25,8 @@ class CricketScoreLabels {
     this.noFilteredMatches = 'No matches for this filter',
     this.phaseFilter = 'Match status',
     this.typeFilter = 'Match type',
+    this.scoresTitle = 'Live scores',
+    this.refresh = 'Refresh',
     this.formatVenue,
   });
 
@@ -82,6 +84,13 @@ class CricketScoreLabels {
   /// Screen-reader label of the row of match-type filter chips.
   final String typeFilter;
 
+  /// Title of the score sheet.
+  final String scoresTitle;
+
+  /// Tooltip and screen-reader label of the refresh button on the score
+  /// sheet.
+  final String refresh;
+
   /// Builds the venue line; when `null` it is `'$venuePrefix $venue'`.
   final String Function(String venue)? formatVenue;
 
@@ -122,6 +131,8 @@ class CricketScoreLabels {
     String? noFilteredMatches,
     String? phaseFilter,
     String? typeFilter,
+    String? scoresTitle,
+    String? refresh,
     String Function(String venue)? formatVenue,
   }) {
     return CricketScoreLabels(
@@ -142,6 +153,8 @@ class CricketScoreLabels {
       noFilteredMatches: noFilteredMatches ?? this.noFilteredMatches,
       phaseFilter: phaseFilter ?? this.phaseFilter,
       typeFilter: typeFilter ?? this.typeFilter,
+      scoresTitle: scoresTitle ?? this.scoresTitle,
+      refresh: refresh ?? this.refresh,
       formatVenue: formatVenue ?? this.formatVenue,
     );
   }

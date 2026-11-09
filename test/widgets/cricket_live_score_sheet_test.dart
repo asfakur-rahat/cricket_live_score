@@ -1,0 +1,195 @@
+import 'package:cricket_live_score/cricket_live_score.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import '../helpers.dart';
+
+/// Pumps an app whose button opens the sheet through [open], in a phone
+/// window unless [window] says otherwise, and taps the button.
+Future<void> _open(
+  WidgetTester tester,
+  Future<void> Function(BuildContext context) open, {
+  Size window = const Size(400, 900),
+}) async {
+  tester.view.physicalSize = window;
+  tester.view.devicePixelRatio = 1;
+  addTearDown(tester.view.reset);
+  await tester.pumpWidget(
+    MaterialApp(
+      home: Scaffold(
+        body: Builder(
+          builder: (context) => TextButton(
+            onPressed: () => open(context),
+            child: const Text('open'),
+          ),
+        ),
+      ),
+    ),
+  );
+  await tester.tap(find.text('open'));
+  await _settle(tester);
+}
+
+/// Lets route and sheet animations finish; the pulsing Live dot never
+/// settles, so pumpAndSettle would time out.
+Future<void> _settle(WidgetTester tester) async {
+  for (var i = 0; i < 6; i++) {
+    await tester.pump(const Duration(milliseconds: 300));
+  }
+}
+
+void main() {
+  testWidgets('opens with a title, the filters and the cards', (tester) async {
+    await _open(
+      tester,
+      (context) => showCricketLiveScoreSheet(
+        context,
+        source: FakeSource([liveMatch(), finishedMatch()]),
+      ),
+    );
+    expect(find.text('Live scores'), findsOneWidget);
+    expect(find.text('Upcoming'), findsOneWidget);
+    expect(find.byType(CricketMatchCard), findsWidgets);
+    // Pulling down drags the sheet, so there is no pull to refresh.
+    expect(find.byType(RefreshIndicator), findsNothing);
+  });
+
+  testWidgets('the close button closes it and completes the future',
+      (tester) async {
+    var closed = false;
+    await _open(
+      tester,
+      (context) => showCricketLiveScoreSheet(
+        context,
+        source: FakeSource([finishedMatch()]),
+      ).then((_) => closed = true),
+    );
+    await tester.tap(find.byTooltip('Close'));
+    await _settle(tester);
+    expect(find.text('Live scores'), findsNothing);
+    expect(closed, isTrue);
+  });
+
+  testWidgets('the refresh button fetches and spins until done',
+      (tester) async {
+    final source = FakeSource([finishedMatch()]);
+    await _open(
+      tester,
+      (context) => showCricketLiveScoreSheet(context, source: source),
+    );
+    expect(source.calls, 1);
+
+    source.pending = true;
+    await tester.tap(find.byTooltip('Refresh'));
+    await tester.pump();
+    expect(source.calls, 2);
+    expect(find.byTooltip('Refresh'), findsNothing);
+    expect(
+      find.descendant(
+        of: find.byType(CricketLiveScoreSheet),
+        matching: find.byType(CircularProgressIndicator),
+      ),
+      findsOneWidget,
+    );
+
+    source.complete([finishedMatch()]);
+    await tester.pump();
+    expect(find.byTooltip('Refresh'), findsOneWidget);
+  });
+
+  testWidgets('closing stops the polling it started', (tester) async {
+    final source = FakeSource([finishedMatch()]);
+    await _open(
+      tester,
+      (context) => showCricketLiveScoreSheet(context, source: source),
+    );
+    await tester.tap(find.byTooltip('Close'));
+    await _settle(tester);
+    final calls = source.calls;
+    await tester.pump(const Duration(minutes: 2));
+    expect(source.calls, calls);
+  });
+
+  testWidgets('an injected controller is neither started nor disposed',
+      (tester) async {
+    final source = FakeSource([finishedMatch()]);
+    final controller = CricketScoreController(source: source)..start();
+    await _open(
+      tester,
+      (context) => showCricketLiveScoreSheet(context, controller: controller),
+    );
+    expect(source.calls, 1);
+    await tester.tap(find.byTooltip('Close'));
+    await _settle(tester);
+    await controller.refresh();
+    expect(source.calls, 2);
+    controller.dispose();
+  });
+
+  testWidgets('a custom title and labels', (tester) async {
+    await _open(
+      tester,
+      (context) => showCricketLiveScoreSheet(
+        context,
+        source: FakeSource([finishedMatch()]),
+        title: 'Scores',
+        labels: const CricketScoreLabels(refresh: 'Actualiser'),
+      ),
+    );
+    expect(find.text('Scores'), findsOneWidget);
+    expect(find.byTooltip('Actualiser'), findsOneWidget);
+  });
+
+  testWidgets('dragging it down closes it', (tester) async {
+    await _open(
+      tester,
+      (context) => showCricketLiveScoreSheet(
+        context,
+        source: FakeSource([finishedMatch()]),
+      ),
+    );
+    await tester.drag(find.text('Live scores'), const Offset(0, 700));
+    await _settle(tester);
+    expect(find.text('Live scores'), findsNothing);
+  });
+
+  testWidgets('dragging it up expands it', (tester) async {
+    await _open(
+      tester,
+      (context) => showCricketLiveScoreSheet(
+        context,
+        source: FakeSource([finishedMatch()]),
+      ),
+    );
+    final before = tester.getTopLeft(find.text('Live scores')).dy;
+    await tester.drag(find.text('Live scores'), const Offset(0, -300));
+    await _settle(tester);
+    expect(tester.getTopLeft(find.text('Live scores')).dy, lessThan(before));
+  });
+
+  testWidgets('a phone gets a full-width sheet', (tester) async {
+    await _open(
+      tester,
+      (context) => showCricketLiveScoreSheet(
+        context,
+        source: FakeSource([finishedMatch()]),
+      ),
+    );
+    expect(tester.getSize(find.byType(CricketLiveScoreSheet)).width, 400);
+  });
+
+  testWidgets('a wide window gets a centred, dialog-width sheet',
+      (tester) async {
+    await _open(
+      tester,
+      (context) => showCricketLiveScoreSheet(
+        context,
+        source: FakeSource([liveMatch(), finishedMatch()]),
+      ),
+      window: const Size(1280, 800),
+    );
+    final sheet = tester.getRect(find.byType(CricketLiveScoreSheet));
+    expect(sheet.width, 560);
+    expect(sheet.center.dx, 640);
+  });
+}

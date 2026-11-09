@@ -76,6 +76,7 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
     this.filterUnderlineHeight,
     this.filterCapsuleMaxWidth,
     this.gridTileMinWidth,
+    this.sheetTitleStyle,
   });
 
   /// The defaults derived from [theme]'s colour scheme and text theme, with
@@ -153,6 +154,7 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       filterUnderlineHeight: w(3),
       filterCapsuleMaxWidth: w(420),
       gridTileMinWidth: w(300),
+      sheetTitleStyle: text(tt.titleLarge, 20, FontWeight.w700),
     );
   }
 
@@ -355,6 +357,9 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
   /// Narrowest a card may be in the adaptive grid; the grid fits as many\n  /// columns as this allows.
   final double? gridTileMinWidth;
 
+  /// Style of the title in the score sheet.
+  final TextStyle? sheetTitleStyle;
+
   /// Returns a copy in which every non-null field of [other] replaces the
   /// field of this theme.
   CricketScoreThemeData merge(CricketScoreThemeData? other) {
@@ -420,6 +425,7 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       filterUnderlineHeight: other.filterUnderlineHeight,
       filterCapsuleMaxWidth: other.filterCapsuleMaxWidth,
       gridTileMinWidth: other.gridTileMinWidth,
+      sheetTitleStyle: other.sheetTitleStyle,
     );
   }
 
@@ -485,6 +491,7 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
     double? filterUnderlineHeight,
     double? filterCapsuleMaxWidth,
     double? gridTileMinWidth,
+    TextStyle? sheetTitleStyle,
   }) {
     return CricketScoreThemeData(
       cardColor: cardColor ?? this.cardColor,
@@ -552,6 +559,7 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       filterCapsuleMaxWidth:
           filterCapsuleMaxWidth ?? this.filterCapsuleMaxWidth,
       gridTileMinWidth: gridTileMinWidth ?? this.gridTileMinWidth,
+      sheetTitleStyle: sheetTitleStyle ?? this.sheetTitleStyle,
     );
   }
 
@@ -645,6 +653,8 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       filterCapsuleMaxWidth:
           lerpDouble(filterCapsuleMaxWidth, other.filterCapsuleMaxWidth, t),
       gridTileMinWidth: lerpDouble(gridTileMinWidth, other.gridTileMinWidth, t),
+      sheetTitleStyle:
+          TextStyle.lerp(sheetTitleStyle, other.sheetTitleStyle, t),
     );
   }
 
@@ -711,7 +721,8 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
           other.filterTrackHeight == filterTrackHeight &&
           other.filterUnderlineHeight == filterUnderlineHeight &&
           other.filterCapsuleMaxWidth == filterCapsuleMaxWidth &&
-          other.gridTileMinWidth == gridTileMinWidth;
+          other.gridTileMinWidth == gridTileMinWidth &&
+          other.sheetTitleStyle == sheetTitleStyle;
 
   @override
   int get hashCode => Object.hashAll([
@@ -775,5 +786,6 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
         filterUnderlineHeight,
         filterCapsuleMaxWidth,
         gridTileMinWidth,
+        sheetTitleStyle,
       ]);
 }

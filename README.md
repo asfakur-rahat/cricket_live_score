@@ -77,6 +77,16 @@ Navigator.of(context).push(
 
 On a phone it is one column filling the width. On a tablet, a foldable's inner display or a large landscape window it becomes a grid of as many columns as fit (cards in a row share its height) and the filters move onto one row. Pass `layout: CricketScoreLayout.phone` to keep one centred, phone-width column instead. Start from a filter with `initialFilter`, hide a chip row with `showPhaseFilter` / `showTypeFilter`, or keep the filter in your own state with `filter` and `onFilterChanged`.
 
+### A score sheet
+
+`showCricketLiveScoreSheet` shows the same view in a draggable bottom sheet and completes when it closes:
+
+```dart
+await showCricketLiveScoreSheet(context, source: source, title: 'Live scores');
+```
+
+It opens at 60% of the screen height; drag it up to full height, or down to close it. A title bar with a drag handle, a refresh button and a close button stays pinned while the filters scroll away under it. Pulling down drags the sheet, so the refresh button fetches instead of pull to refresh. On a phone the sheet is as wide as the screen; on a wider window it is capped at the dialog width and centred. Change the sizes with `initialChildSize`, `minChildSize` and `maxChildSize`, or put `CricketLiveScoreSheet` in a sheet you open yourself, passing it the sheet's scroll controller.
+
 ### Controlling polling yourself
 
 Pass a `source` and the carousel owns its controller. To share one controller, or to start and stop polling yourself, pass a `controller` instead:

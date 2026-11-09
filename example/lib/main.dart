@@ -150,6 +150,12 @@ class _HomePageState extends State<HomePage> {
             onTap: _openScreen,
           ),
           ListTile(
+            leading: const Icon(Icons.vertical_align_top),
+            title: const Text('Open the score sheet'),
+            onTap: () =>
+                unawaited(showCricketLiveScoreSheet(context, source: _source)),
+          ),
+          ListTile(
             leading: const Icon(Icons.filter_alt_outlined),
             title: const Text('Open live matches only'),
             onTap: () => _openScores(

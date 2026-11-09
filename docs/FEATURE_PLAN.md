@@ -69,6 +69,12 @@ A `layout:` option on the view:
 
 ## 4. Live score bottom sheet
 
+**Done on 2026-11-09.** Changed from the original plan:
+
+- Pull to refresh is replaced by a refresh button in the sheet's title bar, because pulling down drags the sheet.
+- On a wide window the sheet is capped at the same dialog width as the carousel (560), not 640.
+- The title bar (handle, title, refresh, close) stays pinned while the filters float under it.
+
 ```dart
 showCricketLiveScoreSheet(context, source: source);   // one-liner
 ```

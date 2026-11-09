@@ -259,6 +259,29 @@ void main() {
     expect(all.hitTestable(), findsOneWidget);
   });
 
+  testWidgets('a pinned header stays while the list scrolls', (tester) async {
+    await _pumpView(
+      tester,
+      CricketLiveScoreView(
+        source: FakeSource(_all()),
+        pinnedHeader: const ColoredBox(
+          color: Colors.white,
+          child: SizedBox(height: 40, child: Text('Pinned')),
+        ),
+        enablePullToRefresh: false,
+      ),
+      window: const Size(400, 700),
+    );
+    await tester.pump();
+    expect(find.byType(RefreshIndicator), findsNothing);
+    expect(tester.getTopLeft(find.text('Pinned')).dy, 0);
+
+    await tester.drag(_list, const Offset(0, -500));
+    await _settle(tester);
+    expect(tester.getTopLeft(find.text('Pinned')).dy, 0);
+    expect(find.text('Pinned').hitTestable(), findsOneWidget);
+  });
+
   testWidgets('pull to refresh fetches again', (tester) async {
     final source = FakeSource(_all());
     await _pumpView(tester, CricketLiveScoreView(source: source));
