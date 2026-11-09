@@ -4,11 +4,6 @@ import 'package:cricket_live_score/cricket_live_score.dart';
 import 'package:cricket_live_score_example/fake_source.dart';
 import 'package:flutter/material.dart';
 
-// Live data needs the URL of the page the widget is embedded on:
-//   flutter run --dart-define=CRICKET_REFERRER=https://your.site/page
-// Check cricketdata.org's terms before using their widget feed.
-const _referrer = String.fromEnvironment('CRICKET_REFERRER');
-
 void main() => runApp(const ExampleApp());
 
 class ExampleApp extends StatelessWidget {
@@ -42,8 +37,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool _live = false;
-  late CricketScoreSource _source = FakeSource();
+  bool _live = true;
+  late CricketScoreSource _source = CricketDataWidgetSource();
   CricketMatch? _featured;
 
   @override
@@ -66,8 +61,7 @@ class _HomePageState extends State<HomePage> {
     if (old is CricketDataWidgetSource) old.close();
     setState(() {
       _live = live;
-      _source =
-          live ? CricketDataWidgetSource(referrer: _referrer) : FakeSource();
+      _source = live ? CricketDataWidgetSource() : FakeSource();
       _featured = null;
     });
     unawaited(_loadFeatured());
@@ -103,15 +97,10 @@ class _HomePageState extends State<HomePage> {
           SwitchListTile(
             title: const Text('Live data from cricketdata.org'),
             subtitle: Text(
-              _referrer.isEmpty
-                  ? 'Run with --dart-define=CRICKET_REFERRER=… to enable'
-                  : _live
-                      ? 'cricketdata.org widget feed'
-                      : 'Offline sample data',
+              _live ? 'cricketdata.org widget feed' : 'Offline sample data',
             ),
             value: _live,
-            onChanged:
-                _referrer.isEmpty ? null : (live) => _setLive(live: live),
+            onChanged: (live) => _setLive(live: live),
           ),
           ListTile(
             leading: CricketBatsIcon(

@@ -29,9 +29,7 @@ Show the carousel in a dialog:
 ```dart
 import 'package:cricket_live_score/cricket_live_score.dart';
 
-final source = CricketDataWidgetSource(
-  referrer: 'https://your.site/page-with-the-widget',
-);
+final source = CricketDataWidgetSource();
 
 showDialog<void>(
   context: context,
@@ -162,9 +160,15 @@ Throw `CricketScoreException` on failure; the controller turns it into a `Cricke
 
 ## Data source
 
-`CricketDataWidgetSource` reads the HTML that [cricketdata.org](https://cricketdata.org)'s free embeddable website widget serves. The data belongs to cricketdata.org, and **you are responsible for using it within their terms**. The source has no default `referrer`: you must pass the URL of the page you embed the widget on. For production apps, consider cricketdata.org's official keyed API with a `CricketScoreSource` of your own.
+`CricketDataWidgetSource` reads the HTML that [cricketdata.org](https://cricketdata.org)'s free embeddable website widget serves. The data belongs to cricketdata.org, and its default `referrer` (`https://cricketdata.org/widgets-for-your-website-blog/`) is used with their permission. If cricketdata.org gives you a referrer of your own, pass it:
 
-This package is not affiliated with or endorsed by cricketdata.org.
+```dart
+CricketDataWidgetSource(referrer: 'https://your.site/page-with-the-widget');
+```
+
+You remain responsible for using the data within cricketdata.org's terms. For more control over the data, consider their official keyed API with a `CricketScoreSource` of your own.
+
+This package is not affiliated with cricketdata.org.
 
 ## Limitations
 
@@ -174,4 +178,4 @@ This package is not affiliated with or endorsed by cricketdata.org.
 
 ## Example
 
-See [`example/`](example/) for a runnable app with the carousel in a dialog, the floating button, a custom theme, and an offline sample-data source.
+See [`example/`](example/) for a runnable app with live scores, the carousel in a dialog, the floating button, a custom theme, and a switch to offline sample data.

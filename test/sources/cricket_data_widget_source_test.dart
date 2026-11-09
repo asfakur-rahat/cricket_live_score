@@ -26,11 +26,11 @@ void main() {
   ).readAsBytesSync();
 
   group('requestUri', () {
-    test('matches the URL the app built before the package', () {
+    test('by default matches the URL the app built before the package', () {
       final source = CricketDataWidgetSource(
-        referrer: _referrer,
         client: MockClient((_) async => http.Response('', 200)),
       );
+      expect(source.referrer, CricketDataWidgetSource.defaultReferrer);
       final now = DateTime.utc(2026, 11, 9, 10);
       final k = now.millisecondsSinceEpoch ~/ 5000;
       expect(
@@ -42,7 +42,6 @@ void main() {
 
     test('k changes every five seconds', () {
       final source = CricketDataWidgetSource(
-        referrer: _referrer,
         client: MockClient((_) async => http.Response('', 200)),
       );
       final t0 = DateTime.utc(2026, 11, 9, 10);
@@ -70,7 +69,6 @@ void main() {
       late Uri requested;
       final logs = <String>[];
       final source = CricketDataWidgetSource(
-        referrer: _referrer,
         onLog: logs.add,
         client: MockClient((request) async {
           requested = request.url;
@@ -101,7 +99,6 @@ void main() {
 
     test('decodes the body as UTF-8 without a charset header', () async {
       final source = CricketDataWidgetSource(
-        referrer: _referrer,
         client: MockClient(
           (_) async => http.Response.bytes(
             utf8.encode(
@@ -118,7 +115,6 @@ void main() {
 
     test('returns an empty list when there are no matches', () async {
       final source = CricketDataWidgetSource(
-        referrer: _referrer,
         client: MockClient((_) async => http.Response('', 200)),
       );
       expect(await source.fetchMatches(), isEmpty);
@@ -126,7 +122,6 @@ void main() {
 
     test('a non-200 response throws CricketScoreException', () async {
       final source = CricketDataWidgetSource(
-        referrer: _referrer,
         client: MockClient((_) async => http.Response('busy', 503)),
       );
       await expectLater(
@@ -144,7 +139,6 @@ void main() {
     test('a transport error throws CricketScoreException', () async {
       const failure = SocketException('no network');
       final source = CricketDataWidgetSource(
-        referrer: _referrer,
         client: MockClient((_) async => throw failure),
       );
       await expectLater(
@@ -157,7 +151,6 @@ void main() {
 
     test('a slow response times out with CricketScoreException', () async {
       final source = CricketDataWidgetSource(
-        referrer: _referrer,
         timeout: const Duration(milliseconds: 10),
         client: MockClient((_) => Completer<http.Response>().future),
       );
@@ -177,13 +170,13 @@ void main() {
   group('close', () {
     test('leaves an injected client open', () {
       final client = _RecordingClient();
-      CricketDataWidgetSource(referrer: _referrer, client: client).close();
+      CricketDataWidgetSource(client: client).close();
       expect(client.closed, isFalse);
     });
 
     test('closes a client it created', () {
       // Nothing to observe from outside; this must simply not throw.
-      CricketDataWidgetSource(referrer: _referrer).close();
+      CricketDataWidgetSource().close();
     });
   });
 

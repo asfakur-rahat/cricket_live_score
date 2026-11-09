@@ -9,22 +9,21 @@ import 'package:http/http.dart' as http;
 
 /// Reads matches from cricketdata.org's embeddable website score widget.
 ///
-/// This scrapes the HTML the widget serves, not a documented API, so it can
-/// break when the upstream markup changes. You are responsible for complying
-/// with the data provider's terms; for production use consider their official
-/// keyed API and a [CricketScoreSource] of your own.
+/// The default [referrer] is used with cricketdata.org's permission. This
+/// reads the HTML the widget serves, not a documented API, so it can break
+/// when the upstream markup changes.
 class CricketDataWidgetSource implements CricketScoreSource {
   /// Creates a source that sends [referrer] as the widget's `r` parameter.
   ///
-  /// [referrer] is the URL of the page the widget is embedded on; it has no
-  /// default on purpose.
+  /// [referrer] defaults to [defaultReferrer]; pass the URL of the page you
+  /// embed the widget on if cricketdata.org gave you a different one.
   ///
   /// Pass a [client] to control HTTP (for example in tests); otherwise the
   /// source creates one and [close] closes it. [endpoint] overrides the
   /// widget URL. [onLog] receives debug messages. A request that takes
   /// longer than [timeout] fails with a [CricketScoreException].
   CricketDataWidgetSource({
-    required this.referrer,
+    this.referrer = defaultReferrer,
     http.Client? client,
     Uri? endpoint,
     this.onLog,
@@ -32,6 +31,11 @@ class CricketDataWidgetSource implements CricketScoreSource {
   })  : _client = client ?? http.Client(),
         _ownsClient = client == null,
         endpoint = endpoint ?? defaultEndpoint;
+
+  /// The referrer used when none is given, sent percent-encoded as
+  /// `r=https%3A%2F%2Fcricketdata.org%2Fwidgets-for-your-website-blog%2F`.
+  static const defaultReferrer =
+      'https://cricketdata.org/widgets-for-your-website-blog/';
 
   /// The widget URL used when no `endpoint` is given.
   static final Uri defaultEndpoint = Uri.parse(
