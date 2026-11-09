@@ -37,14 +37,14 @@ showDialog<void>(
     backgroundColor: Colors.transparent,
     child: CricketLiveScoreCarousel(
       source: source,
-      maxHeight: MediaQuery.sizeOf(context).height * 0.45,
+      maxHeight: MediaQuery.sizeOf(context).height * 0.8,
       onClose: () => Navigator.pop(context),
     ),
   ),
 );
 ```
 
-The carousel needs a bounded height: pass `maxHeight` or put it where the height is constrained.
+The carousel needs a bounded height: pass `maxHeight` or put it where the height is constrained. Each card is only as tall as its content and scrolls when it doesn't fit, so leave room for a card with logos and two score lines (about 350 dp with default text sizes). A small fraction of the screen height, such as 45%, is too short on a landscape tablet.
 
 Feature one match on a floating button:
 

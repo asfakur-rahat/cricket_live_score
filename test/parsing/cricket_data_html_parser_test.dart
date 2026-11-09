@@ -62,8 +62,8 @@ void main() {
           fullScorecardUrl:
               'https://cricketdata.org/cricket-data-formats/matches/central-stags-vs-canterbury-12th-match-the-ford-trophy-2026-27-03fa5b0e-8c0a-45c7-b998-d2082fa85673',
           teamScores: const [
-            TeamScore(teamName: 'central stags', scoreText: '129/10 (41.2)'),
-            TeamScore(teamName: 'canterbury', scoreText: '130/8 (33.2)'),
+            TeamScore(teamName: 'Central Stags', scoreText: '129/10 (41.2)'),
+            TeamScore(teamName: 'Canterbury', scoreText: '130/8 (33.2)'),
           ],
         ),
       );
@@ -99,8 +99,8 @@ void main() {
       expect(live.single.team2.name, 'New Zealand A');
       expect(live.single.hasBothLogos, isTrue);
       expect(live.single.teamScores, const [
-        TeamScore(teamName: 'india a', scoreText: '464/5 (146)'),
-        TeamScore(teamName: 'new zealand a', scoreText: '36/2 (14)'),
+        TeamScore(teamName: 'India A', scoreText: '464/5 (146)'),
+        TeamScore(teamName: 'New Zealand A', scoreText: '36/2 (14)'),
       ]);
     });
   });
@@ -202,5 +202,25 @@ void main() {
     );
     expect(printed, isEmpty);
     expect(logged, ['Parsed 26 of 26 matches']);
+  });
+
+  test('score-table cells honour CSS text-transform', () {
+    String name(String style, String text) {
+      final html = [
+        '<div class="slab"><table><tr>',
+        '<td style="$style">$text</td>',
+        '<td>1/0</td></tr></table></div>',
+      ].join();
+      return CricketDataHtmlParser.parse(html).teamScores.single.teamName;
+    }
+
+    expect(
+      name('text-transform:capitalize', ' united states of america women '),
+      'United States Of America Women',
+    );
+    expect(name('text-transform: capitalize', 'india a'), 'India A');
+    expect(name('text-transform:uppercase', 'nepal'), 'NEPAL');
+    expect(name('text-transform:lowercase', 'OMAN'), 'oman');
+    expect(name('color:red', 'nepal'), 'nepal');
   });
 }

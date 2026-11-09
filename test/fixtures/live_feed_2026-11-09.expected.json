@@ -19,11 +19,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/central-stags-vs-canterbury-12th-match-the-ford-trophy-2026-27-03fa5b0e-8c0a-45c7-b998-d2082fa85673",
     "teamScores": [
       {
-        "teamName": "central stags",
+        "teamName": "Central Stags",
         "scoreText": "129/10 (41.2)"
       },
       {
-        "teamName": "canterbury",
+        "teamName": "Canterbury",
         "scoreText": "130/8 (33.2)"
       }
     ],
@@ -49,11 +49,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/northern-districts-vs-otago-10th-match-the-ford-trophy-2026-27-000cee00-1deb-409b-a5f6-bd44c3d571b7",
     "teamScores": [
       {
-        "teamName": "otago",
+        "teamName": "Otago",
         "scoreText": "258/9 (50)"
       },
       {
-        "teamName": "northern districts",
+        "teamName": "Northern Districts",
         "scoreText": "259/7 (50)"
       }
     ],
@@ -79,11 +79,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/wellington-vs-auckland-11th-match-the-ford-trophy-2026-27-577521e3-11da-4afc-b9cc-48f961d8497c",
     "teamScores": [
       {
-        "teamName": "wellington",
+        "teamName": "Wellington",
         "scoreText": "205/10 (44.3)"
       },
       {
-        "teamName": "auckland",
+        "teamName": "Auckland",
         "scoreText": "177/10 (43.4)"
       }
     ],
@@ -109,11 +109,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/arabian-aces-vs-royal-desert-champions-6th-match-abu-dhabi-t10-league-2026-8fab1286-a770-4021-af36-e469c49f9f1b",
     "teamScores": [
       {
-        "teamName": "royal desert champions",
+        "teamName": "Royal Desert Champions",
         "scoreText": "112/6 (10)"
       },
       {
-        "teamName": "arabian aces",
+        "teamName": "Arabian Aces",
         "scoreText": "114/1 (9)"
       }
     ],
@@ -139,11 +139,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/united-tigers-vs-uae-bulls-5th-match-abu-dhabi-t10-league-2026-34fcd8aa-3b5e-4dd8-b520-1595e878ed0b",
     "teamScores": [
       {
-        "teamName": "united tigers",
+        "teamName": "United Tigers",
         "scoreText": "126/6 (10)"
       },
       {
-        "teamName": "uae bulls",
+        "teamName": "Uae Bulls",
         "scoreText": "101/4 (10)"
       }
     ],
@@ -169,11 +169,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/yas-lions-vs-emirates-eagles-4th-match-abu-dhabi-t10-league-2026-a172aa1d-a718-473e-8df2-5be778936b9d",
     "teamScores": [
       {
-        "teamName": "emirates eagles",
+        "teamName": "Emirates Eagles",
         "scoreText": "115/4 (10)"
       },
       {
-        "teamName": "yas lions",
+        "teamName": "Yas Lions",
         "scoreText": "117/4 (8.4)"
       }
     ],
@@ -199,11 +199,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/uganda-women-vs-united-states-of-america-women-6th-match-womens-victoria-t20i-series-2026-958aa945-930f-4e17-af8a-c8966226ec1e",
     "teamScores": [
       {
-        "teamName": "united states of america women",
+        "teamName": "United States Of America Women",
         "scoreText": "93/7 (20)"
       },
       {
-        "teamName": "uganda women",
+        "teamName": "Uganda Women",
         "scoreText": "94/3 (15.2)"
       }
     ],
@@ -229,11 +229,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/namibia-women-vs-rwanda-women-5th-match-womens-victoria-t20i-series-2026-df484f6c-3c1d-4128-9f3e-4520ad03ba3c",
     "teamScores": [
       {
-        "teamName": "namibia women",
+        "teamName": "Namibia Women",
         "scoreText": "98/8 (20)"
       },
       {
-        "teamName": "rwanda women",
+        "teamName": "Rwanda Women",
         "scoreText": "59/10 (17.5)"
       }
     ],
@@ -259,11 +259,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/perth-scorchers-women-vs-melbourne-stars-women-16th-match-womens-big-bash-league-2026-6f39b06b-e2b7-4a2b-ad14-88b29a3769f2",
     "teamScores": [
       {
-        "teamName": "melbourne stars women",
+        "teamName": "Melbourne Stars Women",
         "scoreText": "136/6 (20)"
       },
       {
-        "teamName": "perth scorchers women",
+        "teamName": "Perth Scorchers Women",
         "scoreText": "137/4 (15)"
       }
     ],
@@ -289,11 +289,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/india-u19-vs-pakistan-u19-8th-match-group-a-acc-mens-u19-asia-cup-2026-8d42f9d6-64ba-40b9-80fc-d9b5f3b7c076",
     "teamScores": [
       {
-        "teamName": "india u19",
+        "teamName": "India U19",
         "scoreText": "208/10 (46.3)"
       },
       {
-        "teamName": "pakistan u19",
+        "teamName": "Pakistan U19",
         "scoreText": "209/7 (48.1)"
       }
     ],
@@ -319,11 +319,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/united-arab-emirates-u19-vs-nepal-u19-7th-match-group-a-acc-mens-u19-asia-cup-2026-322865ca-688c-40d4-a7f0-275bd612abf2",
     "teamScores": [
       {
-        "teamName": "nepal u19",
+        "teamName": "Nepal U19",
         "scoreText": "152/10 (41)"
       },
       {
-        "teamName": "united arab emirates u19",
+        "teamName": "United Arab Emirates U19",
         "scoreText": "158/3 (34.4)"
       }
     ],
@@ -349,11 +349,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/sydney-sixers-women-vs-sydney-thunder-women-15th-match-womens-big-bash-league-2026-f9366950-2ae6-4b00-968c-4c6c8462e489",
     "teamScores": [
       {
-        "teamName": "sydney sixers women",
+        "teamName": "Sydney Sixers Women",
         "scoreText": "162/2 (16)"
       },
       {
-        "teamName": "sydney thunder women",
+        "teamName": "Sydney Thunder Women",
         "scoreText": "158/10 (15.3)"
       }
     ],
@@ -379,11 +379,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/new-zealand-a-vs-india-a-3rd-unofficial-test-india-a-tour-of-new-zealand-2026-9bdb29a3-e23d-4400-b4d9-86a8f857d0ba",
     "teamScores": [
       {
-        "teamName": "india a",
+        "teamName": "India A",
         "scoreText": "464/5 (146)"
       },
       {
-        "teamName": "new zealand a",
+        "teamName": "New Zealand A",
         "scoreText": "36/2 (14)"
       }
     ],
@@ -409,11 +409,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/united-tigers-vs-arabian-aces-3rd-match-abu-dhabi-t10-league-2026-d6fd3ae2-02cf-47f1-ae7b-316ec369a44c",
     "teamScores": [
       {
-        "teamName": "united tigers",
+        "teamName": "United Tigers",
         "scoreText": "140/6 (10)"
       },
       {
-        "teamName": "arabian aces",
+        "teamName": "Arabian Aces",
         "scoreText": "89/9 (10)"
       }
     ],
@@ -439,11 +439,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/royal-desert-champions-vs-emirates-eagles-2nd-match-abu-dhabi-t10-league-2026-217d000e-eaa3-4f72-a11b-cd4260956de3",
     "teamScores": [
       {
-        "teamName": "emirates eagles",
+        "teamName": "Emirates Eagles",
         "scoreText": "125/2 (10)"
       },
       {
-        "teamName": "royal desert champions",
+        "teamName": "Royal Desert Champions",
         "scoreText": "109/7 (10)"
       }
     ],
@@ -469,11 +469,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/uae-bulls-vs-yas-lions-1st-match-abu-dhabi-t10-league-2026-5cd5763c-6470-44a6-a184-c4869454280b",
     "teamScores": [
       {
-        "teamName": "yas lions",
+        "teamName": "Yas Lions",
         "scoreText": "120/3 (10)"
       },
       {
-        "teamName": "uae bulls",
+        "teamName": "Uae Bulls",
         "scoreText": "121/3 (9.4)"
       }
     ],
@@ -499,11 +499,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/brisbane-heat-women-vs-hobart-hurricanes-women-14th-match-womens-big-bash-league-2026-1f4f3716-c5f2-44e7-9a35-056e63a2b1cf",
     "teamScores": [
       {
-        "teamName": "hobart hurricanes women",
+        "teamName": "Hobart Hurricanes Women",
         "scoreText": "116/9 (20)"
       },
       {
-        "teamName": "brisbane heat women",
+        "teamName": "Brisbane Heat Women",
         "scoreText": "119/6 (18.2)"
       }
     ],
@@ -529,11 +529,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/sri-lanka-u19-vs-bangladesh-u19-6th-match-group-b-acc-mens-u19-asia-cup-2026-298fc307-6208-44b7-b2ed-b8a73d32627b",
     "teamScores": [
       {
-        "teamName": "bangladesh u19",
+        "teamName": "Bangladesh U19",
         "scoreText": "245/10 (49.4)"
       },
       {
-        "teamName": "sri lanka u19",
+        "teamName": "Sri Lanka U19",
         "scoreText": "200/10 (46.1)"
       }
     ],
@@ -559,11 +559,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/afghanistan-u19-vs-malaysia-u19-5th-match-group-b-acc-mens-u19-asia-cup-2026-7b6de40a-6d62-4b83-aaaf-3b42e4a81f8a",
     "teamScores": [
       {
-        "teamName": "malaysia u19",
+        "teamName": "Malaysia U19",
         "scoreText": "42/10 (22.3)"
       },
       {
-        "teamName": "afghanistan u19",
+        "teamName": "Afghanistan U19",
         "scoreText": "47/0 (3)"
       }
     ],
@@ -589,11 +589,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/melbourne-renegades-women-vs-adelaide-strikers-women-13th-match-womens-big-bash-league-2026-300f2828-e1c8-44ad-8a74-be0a54ec4e02",
     "teamScores": [
       {
-        "teamName": "melbourne renegades women",
+        "teamName": "Melbourne Renegades Women",
         "scoreText": "188/3 (20)"
       },
       {
-        "teamName": "adelaide strikers women",
+        "teamName": "Adelaide Strikers Women",
         "scoreText": "152/8 (20)"
       }
     ],
@@ -619,11 +619,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/melbourne-stars-women-vs-sydney-sixers-women-12th-match-womens-big-bash-league-2026-0e3699f8-43b2-461b-a659-4d38daf9bf35",
     "teamScores": [
       {
-        "teamName": "sydney sixers women",
+        "teamName": "Sydney Sixers Women",
         "scoreText": "160/5 (20)"
       },
       {
-        "teamName": "melbourne stars women",
+        "teamName": "Melbourne Stars Women",
         "scoreText": "159/7 (20)"
       }
     ],
@@ -649,11 +649,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/pakistan-u19-vs-united-arab-emirates-u19-3rd-match-group-a-acc-mens-u19-asia-cup-2026-8073572e-2b62-4837-ad19-42e9f644276d",
     "teamScores": [
       {
-        "teamName": "united arab emirates u19",
+        "teamName": "United Arab Emirates U19",
         "scoreText": "224/10 (50)"
       },
       {
-        "teamName": "pakistan u19",
+        "teamName": "Pakistan U19",
         "scoreText": "225/1 (37.3)"
       }
     ],
@@ -679,11 +679,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/india-u19-vs-nepal-u19-4th-match-group-a-acc-mens-u19-asia-cup-2026-8cab6ab0-4760-429b-8bc7-1fb8d9d24b9e",
     "teamScores": [
       {
-        "teamName": "nepal u19",
+        "teamName": "Nepal U19",
         "scoreText": "128/10 (42.3)"
       },
       {
-        "teamName": "india u19",
+        "teamName": "India U19",
         "scoreText": "129/0 (19.1)"
       }
     ],
@@ -709,11 +709,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/biratnagar-kings-vs-kathmandu-gorkhas-15th-match-nepal-premier-league-2026-22508d08-daf1-4a48-a83b-5d3084d2a7bc",
     "teamScores": [
       {
-        "teamName": "biratnagar kings",
+        "teamName": "Biratnagar Kings",
         "scoreText": "83/10 (18.3)"
       },
       {
-        "teamName": "kathmandu gorkhas",
+        "teamName": "Kathmandu Gorkhas",
         "scoreText": "86/1 (9.4)"
       }
     ],
@@ -739,11 +739,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/sydney-thunder-women-vs-perth-scorchers-women-11th-match-womens-big-bash-league-2026-f6bfa913-6f79-4fd9-ab8a-fe0b4cf5a456",
     "teamScores": [
       {
-        "teamName": "perth scorchers women",
+        "teamName": "Perth Scorchers Women",
         "scoreText": "183/2 (20)"
       },
       {
-        "teamName": "sydney thunder women",
+        "teamName": "Sydney Thunder Women",
         "scoreText": "166/10 (19)"
       }
     ],
@@ -769,11 +769,11 @@
     "fullScorecardUrl": "https://cricketdata.org/cricket-data-formats/matches/janakpur-bolts-vs-lumbini-lions-14th-match-nepal-premier-league-2026-a8e562f2-154c-4af1-84d1-9b346393678b",
     "teamScores": [
       {
-        "teamName": "lumbini lions",
+        "teamName": "Lumbini Lions",
         "scoreText": "149/8 (20)"
       },
       {
-        "teamName": "janakpur bolts",
+        "teamName": "Janakpur Bolts",
         "scoreText": "133/8 (20)"
       }
     ],

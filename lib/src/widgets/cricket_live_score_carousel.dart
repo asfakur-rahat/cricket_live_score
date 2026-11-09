@@ -78,6 +78,10 @@ class CricketLiveScoreCarousel extends StatefulWidget {
   final double? maxWidth;
 
   /// Maximum height of the carousel; `null` uses the incoming constraints.
+  ///
+  /// Each card is only as tall as its content, centred in this height, and
+  /// scrolls when its content does not fit. A card with logos and two score
+  /// lines needs about 350 logical pixels with default text sizes.
   final double? maxHeight;
 
   /// Overrides the ambient [CricketScoreThemeData].

@@ -79,7 +79,7 @@ class _HomePageState extends State<HomePage> {
             autoScroll: true,
             // Phones use the full dialog width; wider windows cap it.
             maxWidth: 480,
-            maxHeight: MediaQuery.sizeOf(context).height * 0.45,
+            maxHeight: MediaQuery.sizeOf(context).height * 0.8,
             onClose: () => Navigator.pop(context),
           ),
         ),

@@ -174,12 +174,30 @@ abstract final class CricketDataHtmlParser {
     for (final row in scoreRows) {
       final cells = row.querySelectorAll('td');
       if (cells.length >= 2) {
-        final teamName = cells[0].text.trim();
-        final scoreText = cells[1].text.trim();
+        final teamName = _cellText(cells[0]);
+        final scoreText = _cellText(cells[1]);
         teamScores.add(TeamScore(teamName: teamName, scoreText: scoreText));
       }
     }
     return teamScores;
+  }
+
+  static final _wordStart = RegExp(r'(^|\s)(\S)');
+
+  // The widget sends score-table team names in lower case and relies on
+  // CSS `text-transform` to display them, so apply it here.
+  static String _cellText(Element cell) {
+    final text = cell.text.trim();
+    final style = (cell.attributes['style'] ?? '').replaceAll(' ', '');
+    if (style.contains('text-transform:capitalize')) {
+      return text.replaceAllMapped(
+        _wordStart,
+        (m) => '${m[1]}${m[2]!.toUpperCase()}',
+      );
+    }
+    if (style.contains('text-transform:uppercase')) return text.toUpperCase();
+    if (style.contains('text-transform:lowercase')) return text.toLowerCase();
+    return text;
   }
 
   static List<TeamInfo> _extractTeams(
