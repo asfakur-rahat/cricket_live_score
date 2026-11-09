@@ -1,3 +1,4 @@
+import 'package:cricket_live_score/src/models/concluded_status.dart';
 import 'package:cricket_live_score/src/models/cricket_match.dart';
 import 'package:cricket_live_score/src/models/team_info.dart';
 import 'package:cricket_live_score/src/models/team_score.dart';
@@ -95,10 +96,7 @@ abstract final class CricketDataHtmlParser {
     final scoreTable = document.querySelector('table');
     final hasScoreRows = scoreTable?.querySelectorAll('tr').isNotEmpty ?? false;
     if (!hasScoreRows) return false;
-
-    final lowerStatus = status.toLowerCase();
-    const concluded = ['won', 'tied', 'drawn', 'no result', 'abandoned'];
-    return !concluded.any(lowerStatus.contains);
+    return !isConcludedStatus(status);
   }
 
   // Matches "19 Jul 2026, Sun 10:00 GMT" (day can be 1 or 2 digits).

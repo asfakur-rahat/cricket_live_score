@@ -79,6 +79,21 @@ controller.dispose(); // you own it, so you dispose it
 
 `controller.state` is one of `CricketScoreLoading`, `CricketScoreLoaded`, `CricketScoreEmpty` or `CricketScoreFailure` (which keeps `lastMatches`).
 
+### Filtering matches
+
+Every match has a `phase`: `MatchPhase.live`, `.upcoming` (no score and no result yet) or `.finished` (a result, or a score without being live). Filter by phase and match type:
+
+```dart
+const filter = CricketMatchFilter(
+  types: {'T20', 'ODI'},          // compared ignoring case; empty = all
+  phases: {MatchPhase.live},      // empty = all
+);
+final shown = filterMatches(matches, filter);
+
+// Types present in the data, common formats first: [T20, ODI, TEST, T10, ...]
+final choices = matchTypesOf(matches);
+```
+
 ## Theming
 
 Every field of `CricketScoreThemeData` is optional. Each one is resolved from the widget's `theme` argument, then a `CricketScoreThemeData` in your `ThemeData.extensions`, then defaults derived from your `ColorScheme` and `TextTheme`.

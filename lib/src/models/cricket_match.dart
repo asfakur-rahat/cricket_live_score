@@ -1,3 +1,5 @@
+import 'package:cricket_live_score/src/models/concluded_status.dart';
+import 'package:cricket_live_score/src/models/match_phase.dart';
 import 'package:cricket_live_score/src/models/team_info.dart';
 import 'package:cricket_live_score/src/models/team_score.dart';
 import 'package:flutter/foundation.dart';
@@ -78,6 +80,20 @@ class CricketMatch {
 
   /// Whether the match is in progress.
   final bool isLive;
+
+  /// Whether the match is upcoming, live or finished.
+  ///
+  /// A match is [MatchPhase.live] when [isLive] is set. Otherwise it is
+  /// [MatchPhase.finished] when its [status] reports a result (won, tied,
+  /// drawn, no result or abandoned) or it has a score, and
+  /// [MatchPhase.upcoming] when it has neither.
+  MatchPhase get phase {
+    if (isLive) return MatchPhase.live;
+    if (isConcludedStatus(status) || teamScores.isNotEmpty) {
+      return MatchPhase.finished;
+    }
+    return MatchPhase.upcoming;
+  }
 
   /// Whether both teams have a logo URL.
   bool get hasBothLogos => team1.logoUrl.isNotEmpty && team2.logoUrl.isNotEmpty;

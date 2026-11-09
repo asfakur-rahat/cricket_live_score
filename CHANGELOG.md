@@ -1,3 +1,8 @@
+## 0.2.0 — Unreleased
+
+- `CricketMatch.phase` and `MatchPhase`: upcoming, live or finished.
+- `CricketMatchFilter`, `filterMatches` and `matchTypesOf` for filtering matches by phase and match type.
+
 ## 0.1.0 — Initial release
 
 - `CricketLiveScoreCarousel`: polling match carousel with optional auto-scroll and loading, empty and error states.
