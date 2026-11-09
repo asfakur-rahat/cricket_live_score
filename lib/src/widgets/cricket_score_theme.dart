@@ -89,10 +89,8 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
     this.tickerBackground,
     this.tickerTextStyle,
     this.tickerScoreStyle,
-    this.tickerEdgeStart,
-    this.tickerEdgeEnd,
-    this.tickerGlowColor,
-    this.tickerBlur,
+    this.tickerAccentStart,
+    this.tickerAccentEnd,
     this.tickerFlashColor,
   });
 
@@ -181,13 +179,11 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       tickerHeight: w(44),
       tickerPadding: EdgeInsets.symmetric(horizontal: w(12)),
       tickerBorderRadius: w(12),
-      tickerBackground: cs.surface.withValues(alpha: 0.72),
+      tickerBackground: cs.surfaceContainerHigh,
       tickerTextStyle: text(tt.bodyMedium, 13, FontWeight.w500),
       tickerScoreStyle: text(tt.bodyMedium, 13, FontWeight.w700),
-      tickerEdgeStart: cs.primary,
-      tickerEdgeEnd: cs.tertiary,
-      tickerGlowColor: cs.primary.withValues(alpha: 0.35),
-      tickerBlur: 16,
+      tickerAccentStart: cs.primary,
+      tickerAccentEnd: cs.tertiary,
       tickerFlashColor: cs.tertiary,
     );
   }
@@ -430,18 +426,13 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
   /// Scores on the score ticker.
   final TextStyle? tickerScoreStyle;
 
-  /// Start colour of the gradient edge around the score ticker, also used
-  /// by its progress line and the separators of the crawl.
-  final Color? tickerEdgeStart;
+  /// Start colour of the gradient on the score ticker's progress line and
+  /// the separators of its crawl.
+  final Color? tickerAccentStart;
 
-  /// End colour of the gradient edge around the score ticker.
-  final Color? tickerEdgeEnd;
-
-  /// Soft glow around the edge of the score ticker.
-  final Color? tickerGlowColor;
-
-  /// Blur of whatever shows through the score ticker.
-  final double? tickerBlur;
+  /// End colour of the gradient on the score ticker's progress line and
+  /// the separators of its crawl.
+  final Color? tickerAccentEnd;
 
   /// Glow behind a score on the ticker just after it changes.
   final Color? tickerFlashColor;
@@ -524,10 +515,8 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       tickerBackground: other.tickerBackground,
       tickerTextStyle: other.tickerTextStyle,
       tickerScoreStyle: other.tickerScoreStyle,
-      tickerEdgeStart: other.tickerEdgeStart,
-      tickerEdgeEnd: other.tickerEdgeEnd,
-      tickerGlowColor: other.tickerGlowColor,
-      tickerBlur: other.tickerBlur,
+      tickerAccentStart: other.tickerAccentStart,
+      tickerAccentEnd: other.tickerAccentEnd,
       tickerFlashColor: other.tickerFlashColor,
     );
   }
@@ -607,10 +596,8 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
     Color? tickerBackground,
     TextStyle? tickerTextStyle,
     TextStyle? tickerScoreStyle,
-    Color? tickerEdgeStart,
-    Color? tickerEdgeEnd,
-    Color? tickerGlowColor,
-    double? tickerBlur,
+    Color? tickerAccentStart,
+    Color? tickerAccentEnd,
     Color? tickerFlashColor,
   }) {
     return CricketScoreThemeData(
@@ -693,10 +680,8 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       tickerBackground: tickerBackground ?? this.tickerBackground,
       tickerTextStyle: tickerTextStyle ?? this.tickerTextStyle,
       tickerScoreStyle: tickerScoreStyle ?? this.tickerScoreStyle,
-      tickerEdgeStart: tickerEdgeStart ?? this.tickerEdgeStart,
-      tickerEdgeEnd: tickerEdgeEnd ?? this.tickerEdgeEnd,
-      tickerGlowColor: tickerGlowColor ?? this.tickerGlowColor,
-      tickerBlur: tickerBlur ?? this.tickerBlur,
+      tickerAccentStart: tickerAccentStart ?? this.tickerAccentStart,
+      tickerAccentEnd: tickerAccentEnd ?? this.tickerAccentEnd,
       tickerFlashColor: tickerFlashColor ?? this.tickerFlashColor,
     );
   }
@@ -812,10 +797,9 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
           TextStyle.lerp(tickerTextStyle, other.tickerTextStyle, t),
       tickerScoreStyle:
           TextStyle.lerp(tickerScoreStyle, other.tickerScoreStyle, t),
-      tickerEdgeStart: Color.lerp(tickerEdgeStart, other.tickerEdgeStart, t),
-      tickerEdgeEnd: Color.lerp(tickerEdgeEnd, other.tickerEdgeEnd, t),
-      tickerGlowColor: Color.lerp(tickerGlowColor, other.tickerGlowColor, t),
-      tickerBlur: lerpDouble(tickerBlur, other.tickerBlur, t),
+      tickerAccentStart:
+          Color.lerp(tickerAccentStart, other.tickerAccentStart, t),
+      tickerAccentEnd: Color.lerp(tickerAccentEnd, other.tickerAccentEnd, t),
       tickerFlashColor: Color.lerp(tickerFlashColor, other.tickerFlashColor, t),
     );
   }
@@ -897,10 +881,8 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
           other.tickerBackground == tickerBackground &&
           other.tickerTextStyle == tickerTextStyle &&
           other.tickerScoreStyle == tickerScoreStyle &&
-          other.tickerEdgeStart == tickerEdgeStart &&
-          other.tickerEdgeEnd == tickerEdgeEnd &&
-          other.tickerGlowColor == tickerGlowColor &&
-          other.tickerBlur == tickerBlur &&
+          other.tickerAccentStart == tickerAccentStart &&
+          other.tickerAccentEnd == tickerAccentEnd &&
           other.tickerFlashColor == tickerFlashColor;
 
   @override
@@ -978,10 +960,8 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
         tickerBackground,
         tickerTextStyle,
         tickerScoreStyle,
-        tickerEdgeStart,
-        tickerEdgeEnd,
-        tickerGlowColor,
-        tickerBlur,
+        tickerAccentStart,
+        tickerAccentEnd,
         tickerFlashColor,
       ]);
 }

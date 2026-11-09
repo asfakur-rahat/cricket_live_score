@@ -116,7 +116,8 @@ A slim strip for the top of a home screen, showing one live match at a time:
 
 **Done on 2026-11-09.** Differences from the plan:
 
-- `tickerProgressColor` is gone too; the progress line uses the edge gradient.
+- `tickerProgressColor` is gone too; the progress line uses the accent gradient.
+- **Design changed after review:** the user didn't like the glass card's glow and shadow, and chose a flat tint instead. The card is now a solid `tickerBackground` (`surfaceContainerHigh`) with rounded corners and no border, shadow, glow or blur. The LIVE chip, progress line, diamonds and score flash have no shadows either. The theme has `tickerAccentStart` and `tickerAccentEnd` (for the progress line and diamonds) and `tickerFlashColor`; `tickerGlowColor` and `tickerBlur` are gone.
 - On a narrow screen the team names shorten in proportion to their length, so the chip, logos and scores always fit. If even those don't fit, for example with very large text, the line scales down.
 
 Asked for after Part 6. The choices made were: news crawl and rotate modes, the glass design, a flash when a score changes, and crawl speed control.

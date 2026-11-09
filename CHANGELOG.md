@@ -7,8 +7,8 @@
 - `showCricketLiveScoreSheet` and `CricketLiveScoreSheet`: the live scores in a draggable bottom sheet, with a pinned title bar and refresh and close buttons. On a wide window it is capped at the dialog width and centred.
 - `CricketLiveScoreView` takes a `scrollController`, a `pinnedHeader` that stays above the filters, and `enablePullToRefresh`.
 - `CricketLiveScoreCarousel(showPageIndicator: true)`: page dots under the card, sliding along when there are more than seven matches. Tap a dot to jump to its match.
-- `CricketScoreTicker`: a slim frosted-glass strip of live scores with a glowing gradient edge. `CricketTickerMode.rotate` shows one match at a time; `CricketTickerMode.crawl` scrolls them all past like a news ticker, at `crawlSpeed`. It pauses while held, a changed score glows for a moment, and it collapses when nothing is live.
-- New theme fields for the score screen (`listGap`, `gridTileMinWidth`, `sheetTitleStyle`, `filterChipStyle` and the `filter…` colours and sizes) and the page dots (`pageDot…` and `pageIndicatorBackground`) and the ticker (`ticker…`, including `tickerEdgeStart`, `tickerEdgeEnd`, `tickerGlowColor`, `tickerBlur` and `tickerFlashColor`), and new labels for the filters, the sheet (`scoresTitle`, `refresh`) and the page dots (`formatPagePosition`).
+- `CricketScoreTicker`: a slim strip of live scores. `CricketTickerMode.rotate` shows one match at a time; `CricketTickerMode.crawl` scrolls them all past like a news ticker, at `crawlSpeed`. It pauses while held, a changed score is highlighted for a moment, and it collapses when nothing is live.
+- New theme fields for the score screen (`listGap`, `gridTileMinWidth`, `sheetTitleStyle`, `filterChipStyle` and the `filter…` colours and sizes) and the page dots (`pageDot…` and `pageIndicatorBackground`) and the ticker (`ticker…`, including `tickerAccentStart`, `tickerAccentEnd` and `tickerFlashColor`), and new labels for the filters, the sheet (`scoresTitle`, `refresh`) and the page dots (`formatPagePosition`).
 - **Breaking:** requires Flutter 3.27 / Dart 3.6 or later (was Flutter 3.24 / Dart 3.5).
 
 ## 0.1.0 — Initial release

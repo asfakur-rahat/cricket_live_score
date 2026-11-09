@@ -15,7 +15,6 @@ import 'package:cricket_live_score/src/widgets/pulsing_dot.dart';
 import 'package:cricket_live_score/src/widgets/score_controller_host.dart';
 import 'package:cricket_live_score/src/widgets/team_logo.dart';
 import 'package:cricket_live_score/src/widgets/ticker_crawl.dart';
-import 'package:cricket_live_score/src/widgets/ticker_glass.dart';
 import 'package:flutter/gestures.dart' show kLongPressTimeout;
 import 'package:flutter/material.dart';
 
@@ -35,7 +34,7 @@ enum CricketTickerMode {
 ///
 /// `LIVE  T20 · Bangladesh 168/6 (20) vs Sri Lanka 131/4 (16)`
 ///
-/// It sits on frosted glass inside a thin glowing gradient edge. In
+/// It sits on a soft tint of the surface colour, with rounded corners. In
 /// [CricketTickerMode.rotate], the default, it shows one match at a time
 /// and moves to the next every [interval]. In [CricketTickerMode.crawl] it
 /// scrolls every match past at [crawlSpeed], or falls back to rotating
@@ -298,8 +297,10 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
         onPointerDown: _setTouched,
         onPointerUp: _setTouched,
         onPointerCancel: _setTouched,
-        child: TickerGlassFrame(
-          theme: theme,
+        child: Material(
+          color: theme.tickerBackground,
+          borderRadius: BorderRadius.circular(theme.tickerBorderRadius!),
+          clipBehavior: Clip.antiAlias,
           child: SizedBox(
             height: theme.tickerHeight,
             width: double.infinity,
@@ -453,11 +454,8 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
         child: DecoratedBox(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [theme.tickerEdgeStart!, theme.tickerEdgeEnd!],
+              colors: [theme.tickerAccentStart!, theme.tickerAccentEnd!],
             ),
-            boxShadow: [
-              BoxShadow(color: theme.tickerGlowColor!, blurRadius: 6),
-            ],
           ),
           child: SizedBox(height: CricketScoreScale.of(context).width(2)),
         ),
@@ -615,13 +613,8 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
     final dot = (style?.fontSize ?? 11) * 0.55;
     return DecoratedBox(
       decoration: ShapeDecoration(
-        gradient: LinearGradient(
-          colors: [color, Color.lerp(color, const Color(0xFF000000), 0.18)!],
-        ),
+        color: color,
         shape: const StadiumBorder(),
-        shadows: [
-          BoxShadow(color: color.withValues(alpha: 0.45), blurRadius: 8),
-        ],
       ),
       child: Padding(
         padding: theme.liveChipPadding!,
@@ -662,7 +655,7 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
   }
 }
 
-/// The small glowing diamond between matches in the crawl.
+/// The small diamond between matches in the crawl.
 class _Diamond extends StatelessWidget {
   const _Diamond({required this.theme});
 
@@ -676,9 +669,8 @@ class _Diamond extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [theme.tickerEdgeStart!, theme.tickerEdgeEnd!],
+            colors: [theme.tickerAccentStart!, theme.tickerAccentEnd!],
           ),
-          boxShadow: [BoxShadow(color: theme.tickerGlowColor!, blurRadius: 6)],
         ),
         child: SizedBox.square(dimension: size),
       ),

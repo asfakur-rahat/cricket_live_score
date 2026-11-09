@@ -3,8 +3,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-/// A score that glows briefly in [color] when [flash] is set, to draw the
-/// eye to new runs or a wicket.
+/// A score that is briefly highlighted in [color] when [flash] is set, to
+/// draw the eye to new runs or a wicket.
 ///
 /// It flashes when it first shows with [flash] set, and again whenever
 /// [text] changes while [flash] is set. [onFlashed] is called as the flash
@@ -94,14 +94,6 @@ class _FlashingScoreState extends State<FlashingScore>
           decoration: BoxDecoration(
             color: color.withValues(alpha: 0.22 * glow),
             borderRadius: BorderRadius.circular(4),
-            boxShadow: glow == 0
-                ? null
-                : [
-                    BoxShadow(
-                      color: color.withValues(alpha: 0.45 * glow),
-                      blurRadius: 10 * glow,
-                    ),
-                  ],
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 2),
