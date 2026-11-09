@@ -1,4 +1,6 @@
 import 'package:cricket_live_score/src/models/team_info.dart';
+import 'package:cricket_live_score/src/widgets/team_logo_slot.dart';
+import 'package:cricket_live_score/src/widgets/team_monogram.dart';
 import 'package:flutter/material.dart';
 
 /// Builds the logo of [team] as a circle of [radius].
@@ -11,23 +13,12 @@ typedef TeamLogoBuilder = Widget Function(
   double radius,
 );
 
-/// The default [TeamLogoBuilder]: a [CircleAvatar] with the logo loaded by
-/// [Image.network], or a flag icon when there is no logo or it fails to load.
+/// The default [TeamLogoBuilder]: the logo loaded by [Image.network] in a
+/// [CircleAvatar], with a [TeamMonogram] of the team's initials while it
+/// loads, when it fails to load, and when there is no logo.
 Widget defaultTeamLogoBuilder(
   BuildContext context,
   TeamInfo team,
   double radius,
-) {
-  final fallback = Icon(Icons.flag_outlined, size: radius);
-  return CircleAvatar(
-    radius: radius,
-    child: ClipOval(
-      child: team.logoUrl.isEmpty
-          ? fallback
-          : Image.network(
-              team.logoUrl,
-              errorBuilder: (_, __, ___) => fallback,
-            ),
-    ),
-  );
-}
+) =>
+    NetworkTeamLogo(team: team, radius: radius);

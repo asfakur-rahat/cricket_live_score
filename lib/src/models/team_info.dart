@@ -1,3 +1,4 @@
+import 'package:cricket_live_score/src/models/team_initials.dart';
 import 'package:flutter/foundation.dart';
 
 /// One side of a cricket match: its name, logo and whether it won.
@@ -27,6 +28,17 @@ class TeamInfo {
 
   /// Whether the match status names this team as the winner.
   final bool isWinner;
+
+  /// Up to three letters for the team, shown in a circle when it has no
+  /// logo: `"AUS"` for Australia, `"NZ"` for New Zealand.
+  ///
+  /// A one-word name gives its first three letters, or the word itself when
+  /// it is already two to four capitals (`"USA"`). Several words give the
+  /// first letter of each, up to three (`"PNG"` for Papua New Guinea).
+  /// Trailing qualifiers such as `A`, `U19` or `Women` and the joining words
+  /// `of`, `and` and `the` are left out, so India A is `"IND"`. An empty name
+  /// gives `"?"`.
+  String get initials => teamInitials(name);
 
   /// Returns a copy of this team with the given fields replaced.
   TeamInfo copyWith({String? name, String? logoUrl, bool? isWinner}) {

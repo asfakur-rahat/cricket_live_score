@@ -33,41 +33,9 @@ Future<void> _loadFonts() async {
       .load();
 }
 
-/// Short codes and colours for the made-up logos.
-const _teams = {
-  'Bangladesh': ('BAN', Color(0xFF006A4E)),
-  'Sri Lanka': ('SL', Color(0xFF0D47A1)),
-  'India': ('IND', Color(0xFFEF6C00)),
-  'Australia': ('AUS', Color(0xFF00843D)),
-  'England': ('ENG', Color(0xFF1A237E)),
-  'New Zealand': ('NZ', Color(0xFF212121)),
-  'Pakistan': ('PAK', Color(0xFF01411C)),
-  'South Africa': ('SA', Color(0xFF00695C)),
-  'West Indies': ('WI', Color(0xFF7B1E3A)),
-  'Afghanistan': ('AFG', Color(0xFF1565C0)),
-  'Ireland': ('IRE', Color(0xFF43A047)),
-  'Zimbabwe': ('ZIM', Color(0xFFC62828)),
-};
-
-/// A coloured disc with the team's short code, instead of a network logo.
-Widget _logo(BuildContext context, TeamInfo team, double radius) {
-  final (code, color) = _teams[team.name] ?? ('?', Colors.blueGrey);
-  return CircleAvatar(
-    radius: radius,
-    backgroundColor: color,
-    child: Text(
-      code,
-      style: TextStyle(
-        color: Colors.white,
-        fontSize: radius * (code.length > 2 ? 0.55 : 0.7),
-        fontWeight: FontWeight.w700,
-      ),
-    ),
-  );
-}
-
+// No logo URLs: the cards show the package's own team initials.
 TeamInfo _team(String name, {bool winner = false}) =>
-    TeamInfo(name: name, logoUrl: 'demo://$name', isWinner: winner);
+    TeamInfo(name: name, logoUrl: '', isWinner: winner);
 
 final _matches = [
   CricketMatch(
@@ -200,7 +168,7 @@ Widget _home(BuildContext context) {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-          child: CricketScoreTicker(source: _Source(), logoBuilder: _logo),
+          child: CricketScoreTicker(source: _Source()),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 8, 0),
@@ -213,7 +181,6 @@ Widget _home(BuildContext context) {
         ),
         CricketInlineScoreCarousel(
           source: _Source(),
-          logoBuilder: _logo,
           showPageIndicator: true,
         ),
         const SizedBox(height: 8),
@@ -227,7 +194,6 @@ Widget _home(BuildContext context) {
     ),
     floatingActionButton: CricketMatchFab(
       match: _matches.first,
-      logoBuilder: _logo,
       onTap: () {},
     ),
   );
@@ -316,7 +282,6 @@ void main() {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: CricketLiveScoreCarousel(
                   source: _Source(),
-                  logoBuilder: _logo,
                   showPageIndicator: true,
                   maxHeight: 520,
                   onClose: () {},
@@ -348,7 +313,6 @@ void main() {
               ),
               CricketInlineScoreCarousel(
                 source: _Source(),
-                logoBuilder: _logo,
                 showPageIndicator: true,
               ),
               const SizedBox(height: 12),
@@ -383,11 +347,10 @@ void main() {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 label('CricketTickerMode.rotate'),
-                CricketScoreTicker(source: _Source(), logoBuilder: _logo),
+                CricketScoreTicker(source: _Source()),
                 label('CricketTickerMode.crawl'),
                 CricketScoreTicker(
                   source: _Source(),
-                  logoBuilder: _logo,
                   mode: CricketTickerMode.crawl,
                 ),
               ],
@@ -413,7 +376,7 @@ void main() {
       _app(
         Scaffold(
           appBar: AppBar(title: const Text('Live scores')),
-          body: CricketLiveScoreView(source: _Source(), logoBuilder: _logo),
+          body: CricketLiveScoreView(source: _Source()),
         ),
       ),
       'screen',
@@ -426,7 +389,7 @@ void main() {
       _app(
         Scaffold(
           appBar: AppBar(title: const Text('Live scores')),
-          body: CricketLiveScoreView(source: _Source(), logoBuilder: _logo),
+          body: CricketLiveScoreView(source: _Source()),
         ),
       ),
       'screen_tablet',
@@ -446,7 +409,6 @@ void main() {
             tester.element(find.byType(ListView)),
             source: _Source(),
             title: 'Live scores',
-            logoBuilder: _logo,
           ),
         );
         for (var i = 0; i < 8; i++) {
@@ -465,7 +427,6 @@ void main() {
           body: const Center(child: Text('Your app content')),
           floatingActionButton: CricketMatchFab(
             match: _matches.first,
-            logoBuilder: _logo,
             onTap: () {},
           ),
         ),

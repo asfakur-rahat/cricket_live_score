@@ -54,12 +54,34 @@ void main() {
     expect(find.byKey(const ValueKey('logo:New Zealand A')), findsOneWidget);
   });
 
-  testWidgets('the default logo falls back to a flag icon', (tester) async {
+  testWidgets('a logo that fails to load shows the initials', (tester) async {
     // Network images fail in widget tests, which exercises the fallback.
     await tester.pumpWidget(app(CricketMatchCard(match: liveMatch())));
     await tester.pumpAndSettle();
     expect(find.byType(Image), findsNWidgets(2));
-    expect(find.byIcon(Icons.flag_outlined), findsNWidgets(2));
+    expect(find.byType(TeamMonogram), findsNWidgets(2));
+    expect(find.text('IND'), findsOneWidget);
+    expect(find.text('NZ'), findsOneWidget);
+  });
+
+  testWidgets('teams without a logo show their initials', (tester) async {
+    var calls = 0;
+    await tester.pumpWidget(
+      app(
+        CricketMatchCard(
+          match: finishedMatch(),
+          logoBuilder: (context, team, radius) {
+            calls++;
+            return const SizedBox();
+          },
+        ),
+      ),
+    );
+    // Canterbury and Central Stags have no logo URL.
+    expect(find.text('CAN'), findsOneWidget);
+    expect(find.text('CS'), findsOneWidget);
+    // A custom builder is only asked for logos it can load.
+    expect(calls, 0);
   });
 
   testWidgets('the default centre badge is crossed bats filling the badge',

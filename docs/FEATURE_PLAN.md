@@ -242,6 +242,60 @@ CricketInlineScoreCarousel(
 
 **Version:** 0.2.0 isn't published yet, so this goes into 0.2.0 too.
 
+## 10. Team initials instead of a missing logo (1.1.0)
+
+**Done on 2026-11-09.** As planned, with one addition: when the two teams of a match get the same palette colour, the team whose name sorts later takes the next colour, so the two sides always differ. Checked on the tablet with live data (U19, domestic and T10 teams) in light and dark.
+
+Asked for after 1.0.1. Today a team with no logo URL shows nothing in the cards and the ticker, so those cards look different from the rest. A logo that fails to load shows a generic flag icon. The choices made were: a colour per team, qualifiers dropped, and initials in the ticker too.
+
+**What changes:**
+
+- Every place that shows a team logo shows a circle with the team's initials instead when the team has no logo URL. That covers cards, the ticker and the floating button, in every widget that uses them, so all cards look alike.
+- The default logo builder shows the initials while the logo loads and if it fails to load. The flag icon goes.
+- A custom `logoBuilder` is still only called for teams that have a logo URL, so existing builders that load `team.logoUrl` don't break.
+
+**How the initials are made** (`TeamInfo.initials`):
+
+1. Strip punctuation, split on spaces, and drop trailing qualifiers: `A`, `B`, `W`, `XI`, `Women`, `Men`, `U19` / `U-19` / `Under-19` and similar. Then drop the joining words `of`, `and`, `the` and `&`. Each of these is dropped only when something is left.
+2. **One word:** a word that is already 2–4 capital letters is kept as it is (`USA`, `UAE`, `MSW`). Otherwise it's the first three letters, upper-cased.
+3. **Several words:** the first letter of each word, up to three.
+4. Letters are counted as characters a reader sees, so names in other scripts work. An empty name gives `?`.
+
+| Team | Initials |
+|---|---|
+| Australia, Bangladesh, India, Afghanistan | AUS, BAN, IND, AFG |
+| New Zealand, Sri Lanka, West Indies, South Africa | NZ, SL, WI, SA |
+| Papua New Guinea, United Arab Emirates | PNG, UAE |
+| United States of America | USA |
+| Chennai Super Kings, Royal Challengers Bengaluru | CSK, RCB |
+| India A, Afghanistan U19, Namibia Women | IND, AFG, NAM |
+
+`CricketScoreLabels.formatTeamInitials` replaces the rule, for example to use your own codes (`'Bangladesh' → 'BNG'`) or for another language.
+
+**The circle** (`TeamMonogram`, public, so custom builders can use it as their own placeholder):
+
+- Each team gets a colour from a built-in palette of 12, picked from its name, so it's always the same for that team. The letters are white and readable on every palette colour, in light and dark mode.
+- The letters are bold and shrink to fit, including the small circles in the ticker.
+- Screen readers skip it, since the team name is read already.
+- New theme fields: `monogramBackground` (one colour for every team instead of the palette), `monogramForeground` and `monogramTextStyle`.
+
+**Also:**
+
+- The README screenshots use the package's own initials instead of the made-up logos in the screenshot script.
+- The README "Logos and badges" section explains the fallback.
+
+**Tests and device check:**
+
+- The initials rule against the table above, plus edge cases: an empty name, extra spaces, all capitals, and other scripts.
+- The same team always gets the same colour, and the theme overrides work.
+- No logo URL shows initials in the card, the ticker and the floating button.
+- A logo that fails to load shows initials.
+- A custom `logoBuilder` isn't called for a team without a URL.
+- Updated golden images.
+- Then on the tablet with live data, which has teams without logos, in light and dark.
+
+**Version:** 1.1.0, since it adds public API (`TeamMonogram`, `TeamInfo.initials`, theme and label fields) and changes how cards look. Released through the tag workflow.
+
 ---
 
 ## Proposed order
@@ -257,5 +311,6 @@ CricketInlineScoreCarousel(
 | 7 | Scaling control | – |
 | 8 | Dark mode | – |
 | 9 | Inline score carousel | 5 |
+| 10 | Team initials instead of a missing logo (1.1.0) | – |
 
 Parts 5, 7 and 8 stand alone and can move anywhere in the order.

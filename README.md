@@ -407,7 +407,9 @@ With `enabled: false` nothing scales: every default size is its plain design val
 
 ### Logos and badges
 
-Team logos load with `Image.network` and fall back to a flag icon. To use an image cache or your own assets, pass a `logoBuilder`:
+Team logos load with `Image.network`. A team without a logo URL, or whose logo is still loading or fails to load, shows a coloured circle with its initials: AUS for Australia, SL for Sri Lanka, CSK for Chennai Super Kings. Qualifiers are dropped, so India A shows IND and Afghanistan U19 shows AFG. Each team keeps the same colour everywhere, and the two teams in a match never share one.
+
+To use an image cache or your own assets, pass a `logoBuilder`. It is only called for teams that have a logo URL; the others still get their initials:
 
 ```dart
 CricketLiveScoreView(
@@ -418,6 +420,21 @@ CricketLiveScoreView(
   ),
   centerBadge: Image.asset('assets/cricket.png'),
 );
+```
+
+`TeamMonogram(team: team, radius: radius)` is the initials circle, so a custom builder can use it as its own placeholder. To use your own codes, pass `formatTeamInitials` in the labels; to change the circle, set the theme fields:
+
+```dart
+const codes = {'Bangladesh': 'BNG', 'Sri Lanka': 'SRI'};
+
+labels: CricketScoreLabels(
+  formatTeamInitials: (name) =>
+      codes[name] ?? TeamInfo(name: name, logoUrl: '').initials,
+),
+theme: const CricketScoreThemeData(
+  monogramBackground: Colors.blueGrey, // one colour for every team instead of a colour per team
+  monogramForeground: Colors.white,
+),
 ```
 
 ### Labels and localization

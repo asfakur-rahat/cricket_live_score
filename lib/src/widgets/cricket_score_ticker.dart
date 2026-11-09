@@ -13,6 +13,7 @@ import 'package:cricket_live_score/src/widgets/flashing_score.dart';
 import 'package:cricket_live_score/src/widgets/pulsing_dot.dart';
 import 'package:cricket_live_score/src/widgets/score_controller_host.dart';
 import 'package:cricket_live_score/src/widgets/team_logo.dart';
+import 'package:cricket_live_score/src/widgets/team_logo_slot.dart';
 import 'package:cricket_live_score/src/widgets/ticker_crawl.dart';
 import 'package:flutter/gestures.dart' show kLongPressTimeout;
 import 'package:flutter/material.dart';
@@ -494,12 +495,20 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
       return Flexible(flex: _naturalWidth(context, text, style), child: label);
     }
 
-    List<Widget> team(TeamInfo team) {
+    List<Widget> team(TeamInfo team, TeamInfo opponent) {
       final score = _scoreOf(match, team);
       final key = _scoreKey(match, team.name);
       return [
-        if (widget.showLogos && team.logoUrl.isNotEmpty) ...[
-          widget.logoBuilder(context, team, theme.tickerHeight! * 0.22),
+        if (widget.showLogos) ...[
+          buildTeamLogo(
+            context,
+            team,
+            theme.tickerHeight! * 0.22,
+            opponent: opponent,
+            logoBuilder: widget.logoBuilder,
+            theme: theme,
+            labels: widget.labels,
+          ),
           SizedBox(width: theme.smallHorizontalGap),
         ],
         shrinkable(team.name, textStyle),
@@ -530,9 +539,9 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
           ),
           Text(' · ', style: muted),
         ],
-        ...team(match.team1),
+        ...team(match.team1, match.team2),
         Text(' ${widget.labels.versus.toLowerCase()} ', style: muted),
-        ...team(match.team2),
+        ...team(match.team2, match.team1),
         if (!hasScores && match.status.isNotEmpty) ...[
           Text(' · ', style: muted),
           shrinkable(match.status, muted),
@@ -574,7 +583,7 @@ class _CricketScoreTickerState extends State<CricketScoreTicker>
           text(match.matchType.toUpperCase(), textStyle) + text(' · ', muted);
     }
     for (final team in [match.team1, match.team2]) {
-      if (widget.showLogos && team.logoUrl.isNotEmpty) {
+      if (widget.showLogos) {
         width += theme.tickerHeight! * 0.44 + small;
       }
       final score = _scoreOf(match, team);

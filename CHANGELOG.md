@@ -1,3 +1,13 @@
+## 1.1.0
+
+- A team without a logo now shows a coloured circle with its initials (AUS, SL, CSK) in the cards, the ticker and the floating button, instead of nothing. The same circle shows while a logo loads and when it fails to load, in place of the flag icon.
+- `TeamInfo.initials` makes the initials from the team name. It drops qualifiers such as A, U19 and Women, and works with names in other scripts.
+- `TeamMonogram`, the initials circle, for use in your own logo builders. Each team keeps the same colour from a palette of 12, and the two teams in a match never share one.
+- `CricketScoreLabels.formatTeamInitials` for your own codes or another language.
+- New theme fields: `monogramBackground`, `monogramForeground` and `monogramTextStyle`.
+- A custom `logoBuilder` is still only called for teams that have a logo URL.
+- The README screenshots show the initials.
+
 ## 1.0.1
 
 - Fixes the static analysis issues pub.dev reports with Flutter 3.47: animation calls that no longer need `unawaited`. No change in behaviour.

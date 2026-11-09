@@ -92,6 +92,9 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
     this.tickerAccentStart,
     this.tickerAccentEnd,
     this.tickerFlashColor,
+    this.monogramBackground,
+    this.monogramForeground,
+    this.monogramTextStyle,
   });
 
   /// The defaults derived from [theme]'s colour scheme and text theme, with
@@ -195,6 +198,8 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       tickerAccentStart: cs.primary,
       tickerAccentEnd: cs.tertiary,
       tickerFlashColor: cs.tertiary,
+      monogramForeground: const Color(0xFFFFFFFF),
+      monogramTextStyle: tt.labelLarge?.copyWith(fontWeight: FontWeight.w700),
     );
   }
 
@@ -447,6 +452,17 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
   /// Glow behind a score on the ticker just after it changes.
   final Color? tickerFlashColor;
 
+  /// The colour of every team-initials circle; `null` gives each team its
+  /// own colour from a built-in palette.
+  final Color? monogramBackground;
+
+  /// The colour of the letters in a team-initials circle.
+  final Color? monogramForeground;
+
+  /// The style of the letters in a team-initials circle; the size is set to
+  /// fit the circle.
+  final TextStyle? monogramTextStyle;
+
   /// Returns a copy in which every non-null field of [other] replaces the
   /// field of this theme.
   CricketScoreThemeData merge(CricketScoreThemeData? other) {
@@ -528,6 +544,9 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       tickerAccentStart: other.tickerAccentStart,
       tickerAccentEnd: other.tickerAccentEnd,
       tickerFlashColor: other.tickerFlashColor,
+      monogramBackground: other.monogramBackground,
+      monogramForeground: other.monogramForeground,
+      monogramTextStyle: other.monogramTextStyle,
     );
   }
 
@@ -609,6 +628,9 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
     Color? tickerAccentStart,
     Color? tickerAccentEnd,
     Color? tickerFlashColor,
+    Color? monogramBackground,
+    Color? monogramForeground,
+    TextStyle? monogramTextStyle,
   }) {
     return CricketScoreThemeData(
       cardColor: cardColor ?? this.cardColor,
@@ -693,6 +715,9 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
       tickerAccentStart: tickerAccentStart ?? this.tickerAccentStart,
       tickerAccentEnd: tickerAccentEnd ?? this.tickerAccentEnd,
       tickerFlashColor: tickerFlashColor ?? this.tickerFlashColor,
+      monogramBackground: monogramBackground ?? this.monogramBackground,
+      monogramForeground: monogramForeground ?? this.monogramForeground,
+      monogramTextStyle: monogramTextStyle ?? this.monogramTextStyle,
     );
   }
 
@@ -811,6 +836,12 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
           Color.lerp(tickerAccentStart, other.tickerAccentStart, t),
       tickerAccentEnd: Color.lerp(tickerAccentEnd, other.tickerAccentEnd, t),
       tickerFlashColor: Color.lerp(tickerFlashColor, other.tickerFlashColor, t),
+      monogramBackground:
+          Color.lerp(monogramBackground, other.monogramBackground, t),
+      monogramForeground:
+          Color.lerp(monogramForeground, other.monogramForeground, t),
+      monogramTextStyle:
+          TextStyle.lerp(monogramTextStyle, other.monogramTextStyle, t),
     );
   }
 
@@ -893,7 +924,10 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
           other.tickerScoreStyle == tickerScoreStyle &&
           other.tickerAccentStart == tickerAccentStart &&
           other.tickerAccentEnd == tickerAccentEnd &&
-          other.tickerFlashColor == tickerFlashColor;
+          other.tickerFlashColor == tickerFlashColor &&
+          other.monogramBackground == monogramBackground &&
+          other.monogramForeground == monogramForeground &&
+          other.monogramTextStyle == monogramTextStyle;
 
   @override
   int get hashCode => Object.hashAll([
@@ -973,5 +1007,8 @@ class CricketScoreThemeData extends ThemeExtension<CricketScoreThemeData> {
         tickerAccentStart,
         tickerAccentEnd,
         tickerFlashColor,
+        monogramBackground,
+        monogramForeground,
+        monogramTextStyle,
       ]);
 }

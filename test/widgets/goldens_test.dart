@@ -29,6 +29,24 @@ void main() {
     );
   });
 
+  testWidgets('match card with team initials at 360 dp', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(360, 720));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      app(
+        Padding(
+          padding: const EdgeInsets.all(16),
+          // Neither team has a logo URL.
+          child: CricketMatchCard(match: finishedMatch()),
+        ),
+      ),
+    );
+    await expectLater(
+      find.byType(CricketMatchCard),
+      matchesGoldenFile('goldens/card_initials_360.png'),
+    );
+  });
+
   for (final width in [360.0, 600.0]) {
     final size = width.toInt();
 

@@ -1,5 +1,6 @@
 import 'package:cricket_live_score/src/models/cricket_match.dart';
 import 'package:cricket_live_score/src/models/match_phase.dart';
+import 'package:cricket_live_score/src/models/team_info.dart';
 
 /// The text shown by the cricket score widgets.
 ///
@@ -29,6 +30,7 @@ class CricketScoreLabels {
     this.refresh = 'Refresh',
     this.formatVenue,
     this.formatPagePosition,
+    this.formatTeamInitials,
   });
 
   /// Marks a live match: the card heading and the floating button's chip.
@@ -100,6 +102,11 @@ class CricketScoreLabels {
   /// `'Match $page of $count'`.
   final String Function(int page, int count)? formatPagePosition;
 
+  /// Builds the letters in the circle shown for a team without a logo from
+  /// the team's name; when `null` it is [TeamInfo.initials]. Use it for your
+  /// own team codes or another language.
+  final String Function(String teamName)? formatTeamInitials;
+
   /// The venue line for [venue].
   String venueLine(String venue) =>
       formatVenue?.call(venue) ?? '$venuePrefix $venue';
@@ -115,6 +122,10 @@ class CricketScoreLabels {
   /// example `"Match 3 of 26"`.
   String pagePosition(int page, int count) =>
       formatPagePosition?.call(page, count) ?? 'Match $page of $count';
+
+  /// The letters in the circle shown for [team] when it has no logo.
+  String teamInitials(TeamInfo team) =>
+      formatTeamInitials?.call(team.name) ?? team.initials;
 
   /// The filter chip label for [phase].
   String phaseLabel(MatchPhase phase) => switch (phase) {
@@ -146,6 +157,7 @@ class CricketScoreLabels {
     String? refresh,
     String Function(String venue)? formatVenue,
     String Function(int page, int count)? formatPagePosition,
+    String Function(String teamName)? formatTeamInitials,
   }) {
     return CricketScoreLabels(
       live: live ?? this.live,
@@ -169,6 +181,7 @@ class CricketScoreLabels {
       refresh: refresh ?? this.refresh,
       formatVenue: formatVenue ?? this.formatVenue,
       formatPagePosition: formatPagePosition ?? this.formatPagePosition,
+      formatTeamInitials: formatTeamInitials ?? this.formatTeamInitials,
     );
   }
 }

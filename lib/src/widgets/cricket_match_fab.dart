@@ -2,6 +2,7 @@ import 'package:cricket_live_score/src/models/cricket_match.dart';
 import 'package:cricket_live_score/src/widgets/cricket_score_labels.dart';
 import 'package:cricket_live_score/src/widgets/cricket_score_theme.dart';
 import 'package:cricket_live_score/src/widgets/team_logo.dart';
+import 'package:cricket_live_score/src/widgets/team_logo_slot.dart';
 import 'package:flutter/material.dart';
 
 /// A compact floating button showing both team logos around "VS", with a
@@ -102,18 +103,26 @@ class _CricketMatchFabState extends State<CricketMatchFab> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    widget.logoBuilder(
+                    buildTeamLogo(
                       context,
                       match.team1,
                       theme.fabLogoRadius!,
+                      opponent: match.team2,
+                      logoBuilder: widget.logoBuilder,
+                      theme: theme,
+                      labels: widget.labels,
                     ),
                     SizedBox(width: theme.mediumHorizontalGap),
                     Text(widget.labels.versus, style: theme.versusStyle),
                     SizedBox(width: theme.mediumHorizontalGap),
-                    widget.logoBuilder(
+                    buildTeamLogo(
                       context,
                       match.team2,
                       theme.fabLogoRadius!,
+                      opponent: match.team1,
+                      logoBuilder: widget.logoBuilder,
+                      theme: theme,
+                      labels: widget.labels,
                     ),
                   ],
                 ),

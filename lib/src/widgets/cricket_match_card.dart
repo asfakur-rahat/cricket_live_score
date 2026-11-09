@@ -5,6 +5,7 @@ import 'package:cricket_live_score/src/widgets/cricket_bats_icon.dart';
 import 'package:cricket_live_score/src/widgets/cricket_score_labels.dart';
 import 'package:cricket_live_score/src/widgets/cricket_score_theme.dart';
 import 'package:cricket_live_score/src/widgets/team_logo.dart';
+import 'package:cricket_live_score/src/widgets/team_logo_slot.dart';
 import 'package:flutter/material.dart';
 
 /// A card showing one match: type, start time or LIVE, venue, both teams,
@@ -101,7 +102,14 @@ class CricketMatchCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Expanded(child: _team(context, theme, match.team1)),
+                  Expanded(
+                    child: _team(
+                      context,
+                      theme,
+                      match.team1,
+                      match.team2,
+                    ),
+                  ),
                   SizedBox(width: theme.largeHorizontalGap),
                   CircleAvatar(
                     radius: theme.badgeRadius,
@@ -113,7 +121,14 @@ class CricketMatchCard extends StatelessWidget {
                         ),
                   ),
                   SizedBox(width: theme.largeHorizontalGap),
-                  Expanded(child: _team(context, theme, match.team2)),
+                  Expanded(
+                    child: _team(
+                      context,
+                      theme,
+                      match.team2,
+                      match.team1,
+                    ),
+                  ),
                 ],
               ),
               Divider(height: theme.dividerHeight),
@@ -182,12 +197,20 @@ class CricketMatchCard extends StatelessWidget {
     BuildContext context,
     CricketScoreThemeData theme,
     TeamInfo team,
+    TeamInfo opponent,
   ) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (team.logoUrl.isNotEmpty)
-          logoBuilder(context, team, theme.logoRadius!),
+        buildTeamLogo(
+          context,
+          team,
+          theme.logoRadius!,
+          opponent: opponent,
+          logoBuilder: logoBuilder,
+          theme: theme,
+          labels: labels,
+        ),
         SizedBox(height: theme.smallVerticalGap),
         Text(team.name, style: theme.teamNameStyle),
       ],

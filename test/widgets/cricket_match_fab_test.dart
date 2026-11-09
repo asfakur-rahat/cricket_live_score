@@ -77,8 +77,10 @@ void main() {
     await tester.pumpWidget(
       app(Center(child: CricketMatchFab(match: finishedMatch()))),
     );
-    // Neither team has a logo URL, so both show the fallback flag.
-    expect(find.byIcon(Icons.flag_outlined), findsNWidgets(2));
+    // Neither team has a logo URL, so both show their initials.
+    expect(find.byType(TeamMonogram), findsNWidgets(2));
+    expect(find.text('CAN'), findsOneWidget);
+    expect(find.text('CS'), findsOneWidget);
   });
 
   testWidgets('has a screen-reader label', (tester) async {
