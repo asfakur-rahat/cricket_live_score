@@ -1,0 +1,34 @@
+name: cricket_live_score
+# TODO(G3): package name defaults to `cricket_live_score` (free on pub.dev as
+# of 2026-11-09). Confirm with the owner before release.
+description: >-
+  Live cricket score widgets for Flutter: an auto-refreshing match carousel,
+  a compact live-match FAB, and a pluggable score source with an HTML parser.
+version: 0.1.0
+# TODO(G4): fill in once the GitHub repo and pub.dev publisher are decided.
+# homepage: https://github.com/<owner>/cricket_live_score
+# repository: https://github.com/<owner>/cricket_live_score
+# issue_tracker: https://github.com/<owner>/cricket_live_score/issues
+
+topics:
+  - cricket
+  - sports
+  - live-score
+  - widget
+
+environment:
+  sdk: ^3.5.0
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  html: ^0.15.4
+  http: ^1.2.0
+
+dev_dependencies:
+  fake_async: ^1.3.1
+  flutter_test:
+    sdk: flutter
+  mocktail: ^1.0.4
+  very_good_analysis: ^10.3.0
