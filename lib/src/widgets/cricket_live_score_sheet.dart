@@ -5,6 +5,7 @@ import 'package:cricket_live_score/src/controller/cricket_score_controller.dart'
 import 'package:cricket_live_score/src/models/cricket_match.dart';
 import 'package:cricket_live_score/src/selection/match_filter.dart';
 import 'package:cricket_live_score/src/sources/cricket_score_source.dart';
+import 'package:cricket_live_score/src/widgets/blurred_routes.dart';
 import 'package:cricket_live_score/src/widgets/cricket_live_score_carousel.dart';
 import 'package:cricket_live_score/src/widgets/cricket_live_score_view.dart';
 import 'package:cricket_live_score/src/widgets/cricket_score_labels.dart';
@@ -29,6 +30,11 @@ import 'package:flutter/material.dart';
 /// instead of closing it. The close button in the title bar and the back
 /// button always close it.
 ///
+/// [barrierBlur] blurs the page behind the sheet by that sigma, in logical
+/// pixels, fading in and out with the sheet; `0` only dims it with
+/// [barrierColor]. Blurring costs more to draw, which shows on low-end
+/// phones.
+///
 /// Pass exactly one of [controller] and [source]; the other arguments are
 /// those of [CricketLiveScoreView].
 Future<void> showCricketLiveScoreSheet(
@@ -52,50 +58,83 @@ Future<void> showCricketLiveScoreSheet(
   double maxChildSize = 1,
   bool isDismissible = true,
   bool enableDrag = true,
+  Color? barrierColor,
+  double barrierBlur = 0,
 }) {
   assert(
     (controller == null) != (source == null),
     'Pass exactly one of controller and source.',
   );
+  assert(barrierBlur >= 0, 'barrierBlur must not be negative.');
   final windowWidth = MediaQuery.sizeOf(context).width;
   final maxWidth = CricketScoreScale.isCompactWidth(windowWidth)
       ? double.infinity
       : CricketScoreScale.of(context).dialogWidth(windowWidth);
-  return showModalBottomSheet<void>(
-    context: context,
-    isScrollControlled: true,
-    isDismissible: isDismissible,
-    enableDrag: enableDrag,
-    useSafeArea: true,
-    // Keeps the frosted top bar inside the sheet's rounded corners.
-    clipBehavior: Clip.antiAlias,
-    constraints: BoxConstraints(maxWidth: maxWidth),
-    builder: (context) => DraggableScrollableSheet(
-      expand: false,
-      snap: true,
-      initialChildSize: initialChildSize,
-      minChildSize: minChildSize,
-      maxChildSize: maxChildSize,
-      // The modal sheet closes when this one reaches its smallest size,
-      // whatever enableDrag says, so turn that off too.
-      shouldCloseOnMinExtent: enableDrag,
-      builder: (context, scrollController) => CricketLiveScoreSheet(
-        controller: controller,
-        source: source,
-        scrollController: scrollController,
-        title: title,
-        initialFilter: initialFilter,
-        showPhaseFilter: showPhaseFilter,
-        showTypeFilter: showTypeFilter,
-        onMatchTap: onMatchTap,
-        theme: theme,
-        labels: labels,
-        logoBuilder: logoBuilder,
-        centerBadge: centerBadge,
-        loadingBuilder: loadingBuilder,
-        emptyBuilder: emptyBuilder,
-        errorBuilder: errorBuilder,
+  Widget builder(BuildContext context) => DraggableScrollableSheet(
+        expand: false,
+        snap: true,
+        initialChildSize: initialChildSize,
+        minChildSize: minChildSize,
+        maxChildSize: maxChildSize,
+        // The modal sheet closes when this one reaches its smallest size,
+        // whatever enableDrag says, so turn that off too.
+        shouldCloseOnMinExtent: enableDrag,
+        builder: (context, scrollController) => CricketLiveScoreSheet(
+          controller: controller,
+          source: source,
+          scrollController: scrollController,
+          title: title,
+          initialFilter: initialFilter,
+          showPhaseFilter: showPhaseFilter,
+          showTypeFilter: showTypeFilter,
+          onMatchTap: onMatchTap,
+          theme: theme,
+          labels: labels,
+          logoBuilder: logoBuilder,
+          centerBadge: centerBadge,
+          loadingBuilder: loadingBuilder,
+          emptyBuilder: emptyBuilder,
+          errorBuilder: errorBuilder,
+        ),
+      );
+
+  if (barrierBlur == 0) {
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: isDismissible,
+      enableDrag: enableDrag,
+      useSafeArea: true,
+      // Keeps the frosted top bar inside the sheet's rounded corners.
+      clipBehavior: Clip.antiAlias,
+      constraints: BoxConstraints(maxWidth: maxWidth),
+      barrierColor: barrierColor,
+      builder: builder,
+    );
+  }
+  // showModalBottomSheet has no blur, so open the same route it does, with a
+  // blurred barrier.
+  final navigator = Navigator.of(context);
+  final localizations = MaterialLocalizations.of(context);
+  return navigator.push(
+    BlurredBottomSheetRoute<void>(
+      builder: builder,
+      blur: barrierBlur,
+      capturedThemes: InheritedTheme.capture(
+        from: context,
+        to: navigator.context,
       ),
+      isScrollControlled: true,
+      barrierLabel: localizations.scrimLabel,
+      barrierOnTapHint:
+          localizations.scrimOnTapHint(localizations.bottomSheetLabel),
+      isDismissible: isDismissible,
+      enableDrag: enableDrag,
+      useSafeArea: true,
+      clipBehavior: Clip.antiAlias,
+      constraints: BoxConstraints(maxWidth: maxWidth),
+      modalBarrierColor:
+          barrierColor ?? Theme.of(context).bottomSheetTheme.modalBarrierColor,
     ),
   );
 }

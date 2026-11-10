@@ -332,6 +332,37 @@ Asked for after 1.1.0. The score sheet always closes on a tap outside it or a dr
 
 **Version:** 1.2.0, since it adds public API without changing any default. Released through the tag workflow.
 
+## 12. A blurred background behind the popup and the sheet
+
+**Done on 2026-11-10, in 1.2.0.** As planned, with one correction. While the sheet is dragged down the blur stays, because the drag resizes the draggable sheet rather than moving the route; the blur fades once the sheet lets go and closes. Checked on the tablet with the app's values, in light and dark.
+
+Asked for after Part 11. In the MyRace app, the page behind a popup or bottom sheet is blurred, not just dimmed. The package's popup and sheet only dim it, so they look different from the app's own popups.
+
+**What the app does** (`app_alerts.dart`, read only):
+
+- Popups (`showPopupDialog`): a strong blur (28) and a light white wash on top of Flutter's default dimming.
+- Bottom sheets (`openBottomSheet`): a light blur (6) and a faint navy barrier (`0x1A1925A6`).
+- In both, the blur appears at full strength the moment the popup opens instead of fading in. The popup's blur also stops at the status and navigation bars, since it sits inside the dialog's safe area.
+
+**What changes:**
+
+- `showCricketLiveScoreDialog` and `showCricketLiveScoreSheet` take `barrierBlur`, the blur strength (the sigma in logical pixels). The default `0` means no blur, so nothing changes for existing apps.
+- The blur fades in and out with the popup or sheet. It covers the whole screen, the status bar included, and taps on it behave as before (they close the popup or sheet unless that's turned off).
+- `showCricketLiveScoreSheet` also takes `barrierColor`, like the popup already does, so an app can match its own tint.
+- The README shows how to match the app: `barrierBlur: 28` for the popup and `barrierBlur: 6, barrierColor: Color(0x1A1925A6)` for the sheet. It also notes that blurring costs more to draw on low-end phones.
+
+**How:** neither `showDialog` nor `showModalBottomSheet` accepts a blur. Flutter's routes have one, but it doesn't fade with the route. The blur can't go inside the sheet either, since the sheet clips its content to its rounded shape. So with a blur, the helpers open Flutter's own `DialogRoute` and `ModalBottomSheetRoute` with the blur added to their barrier. These constructors are the same in Flutter 3.27 and 3.47. Without a blur, the helpers keep calling `showDialog` and `showModalBottomSheet` exactly as now.
+
+**Tests and device check:**
+
+- No blur by default; with `barrierBlur` the barrier has a blur that grows as the route opens and goes when it closes.
+- A tap outside, `barrierDismissible`, `isDismissible`, `enableDrag`, the close buttons and the back button behave the same with a blur.
+- `barrierColor` reaches the sheet's barrier.
+- The theme, text direction and scaling still reach the popup and sheet when they open through the new route.
+- Then on the tablet: both with the app's values, in light and dark, including dragging the sheet down.
+
+**Version:** joins 1.2.0, which hadn't been pushed; the local `v1.2.0` tag moves to the new commit.
+
 ---
 
 ## Proposed order
@@ -349,5 +380,6 @@ Asked for after 1.1.0. The score sheet always closes on a tap outside it or a dr
 | 9 | Inline score carousel | 5 |
 | 10 | Team initials instead of a missing logo (1.1.0) | – |
 | 11 | Control over closing the popup and the sheet (1.2.0) | 4 |
+| 12 | A blurred background behind the popup and the sheet | 11 |
 
 Parts 5, 7 and 8 stand alone and can move anywhere in the order.

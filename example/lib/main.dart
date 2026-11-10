@@ -79,6 +79,7 @@ class _HomePageState extends State<HomePage> {
   CricketTickerMode _tickerMode = CricketTickerMode.rotate;
   bool _snap = true;
   bool _closeOnlyByButton = false;
+  bool _blur = false;
 
   @override
   void initState() {
@@ -125,6 +126,7 @@ class _HomePageState extends State<HomePage> {
         autoScroll: true,
         showPageIndicator: true,
         barrierDismissible: !_closeOnlyByButton,
+        barrierBlur: _blur ? 28 : 0,
       ),
     );
   }
@@ -286,6 +288,8 @@ class _HomePageState extends State<HomePage> {
                 source: _source,
                 isDismissible: !_closeOnlyByButton,
                 enableDrag: !_closeOnlyByButton,
+                barrierBlur: _blur ? 6 : 0,
+                barrierColor: _blur ? const Color(0x1A1925A6) : null,
               ),
             ),
           ),
@@ -298,6 +302,14 @@ class _HomePageState extends State<HomePage> {
             ),
             value: _closeOnlyByButton,
             onChanged: (value) => setState(() => _closeOnlyByButton = value),
+          ),
+          SwitchListTile(
+            title: const Text('Blur the page behind the popup and sheet'),
+            subtitle: Text(
+              _blur ? 'Blurred as well as dimmed' : 'Dimmed only',
+            ),
+            value: _blur,
+            onChanged: (value) => setState(() => _blur = value),
           ),
           ListTile(
             leading: const Icon(Icons.filter_alt_outlined),

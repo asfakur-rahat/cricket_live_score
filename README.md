@@ -151,6 +151,12 @@ await showCricketLiveScoreDialog(
 
 A tap outside the cards closes the popup. To make the user close it on purpose, pass `barrierDismissible: false`; the close buttons and the back button still close it.
 
+To blur the page behind the popup as well as dimming it, pass `barrierBlur`, the blur strength in logical pixels. The blur fades in and out with the popup. Blurring costs more to draw, which shows on low-end phones.
+
+```dart
+showCricketLiveScoreDialog(context, source: source, barrierBlur: 28);
+```
+
 To build the dialog yourself, put a `CricketLiveScoreCarousel` in your own `Dialog` and close it from `onClose`. That is also the way to stop the back button, with a `PopScope(canPop: false)` around the carousel:
 
 ```dart
@@ -171,6 +177,7 @@ showDialog<void>(
 |---|---|---|
 | `barrierDismissible` | `true` | `showCricketLiveScoreDialog` only: a tap outside the cards closes the popup |
 | `barrierColor` | the dialog theme's | `showCricketLiveScoreDialog` only: the colour behind the popup |
+| `barrierBlur` | `0` | `showCricketLiveScoreDialog` only: how strongly to blur the page behind the popup; `0` only dims it |
 | `onClose` | – | `CricketLiveScoreCarousel` only: called by the close button on every card; `null` hides the button |
 | `autoScroll` | `false` | Move to the next match every `autoScrollInterval`; waits while the user swipes |
 | `autoScrollInterval` | 5 s | |
@@ -235,6 +242,17 @@ showCricketLiveScoreSheet(
   source: source,
   isDismissible: false, // a tap outside does nothing
   enableDrag: false, // dragging down stops at minChildSize instead of closing
+);
+```
+
+`barrierColor` tints the page behind the sheet, and `barrierBlur` blurs it as well; the blur fades in and out with the sheet:
+
+```dart
+showCricketLiveScoreSheet(
+  context,
+  source: source,
+  barrierBlur: 6,
+  barrierColor: const Color(0x1A1925A6),
 );
 ```
 

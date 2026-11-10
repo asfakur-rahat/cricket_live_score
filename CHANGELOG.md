@@ -3,6 +3,7 @@
 - `showCricketLiveScoreDialog` opens the match carousel in a popup, with a close button on every card that closes it. `barrierDismissible: false` stops a tap outside from closing it.
 - `showCricketLiveScoreSheet` takes `isDismissible` and `enableDrag`. With `isDismissible: false` a tap outside doesn't close the sheet; with `enableDrag: false` dragging it down stops at its smallest size instead of closing it.
 - The close buttons and the back button always close both. The README shows how to block the back button too.
+- Both helpers take `barrierBlur` to blur the page behind them as well as dimming it. The blur fades in and out with the popup or sheet. `showCricketLiveScoreSheet` also takes `barrierColor`.
 
 ## 1.1.0
 

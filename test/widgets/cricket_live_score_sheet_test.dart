@@ -1,3 +1,5 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:cricket_live_score/cricket_live_score.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,6 +12,7 @@ Future<void> _open(
   WidgetTester tester,
   Future<void> Function(BuildContext context) open, {
   Size window = const Size(400, 900),
+  Widget Function(BuildContext context, Widget child)? wrap,
 }) async {
   tester.view.physicalSize = window;
   tester.view.devicePixelRatio = 1;
@@ -18,10 +21,15 @@ Future<void> _open(
     MaterialApp(
       home: Scaffold(
         body: Builder(
-          builder: (context) => TextButton(
-            onPressed: () => open(context),
-            child: const Text('open'),
-          ),
+          builder: (context) {
+            final button = Builder(
+              builder: (context) => TextButton(
+                onPressed: () => open(context),
+                child: const Text('open'),
+              ),
+            );
+            return wrap?.call(context, button) ?? button;
+          },
         ),
       ),
     ),
@@ -36,6 +44,16 @@ Future<void> _settle(WidgetTester tester) async {
   for (var i = 0; i < 6; i++) {
     await tester.pump(const Duration(milliseconds: 300));
   }
+}
+
+/// The blur over the route's barrier, or `null` when there is none.
+BackdropFilter? _barrierBlur(WidgetTester tester) {
+  final filters = find.ancestor(
+    of: find.byType(ModalBarrier).last,
+    matching: find.byType(BackdropFilter),
+  );
+  if (filters.evaluate().isEmpty) return null;
+  return tester.widget<BackdropFilter>(filters.first);
 }
 
 void main() {
@@ -298,4 +316,141 @@ void main() {
     expect(sheet.width, 560);
     expect(sheet.center.dx, 640);
   });
+
+  group('with barrierBlur', () {
+    Future<void> openBlurred(
+      WidgetTester tester, {
+      bool isDismissible = true,
+      bool enableDrag = true,
+      Color? barrierColor,
+      void Function()? onDone,
+    }) =>
+        _open(
+          tester,
+          (context) => showCricketLiveScoreSheet(
+            context,
+            source: FakeSource([finishedMatch()]),
+            barrierBlur: 6,
+            barrierColor: barrierColor,
+            isDismissible: isDismissible,
+            enableDrag: enableDrag,
+          ).then((_) => onDone?.call()),
+        );
+
+    testWidgets('there is no blur by default', (tester) async {
+      await _open(
+        tester,
+        (context) => showCricketLiveScoreSheet(
+          context,
+          source: FakeSource([finishedMatch()]),
+        ),
+      );
+      expect(_barrierBlur(tester), isNull);
+    });
+
+    testWidgets('the page behind is blurred once it is open', (tester) async {
+      await openBlurred(tester);
+      final blur = _barrierBlur(tester)!;
+      expect(blur.enabled, isTrue);
+      expect(blur.filter, ImageFilter.blur(sigmaX: 6, sigmaY: 6));
+      // The sheet looks the same as without a blur.
+      expect(find.text('Live scores'), findsOneWidget);
+      expect(tester.getSize(find.byType(CricketLiveScoreSheet)).width, 400);
+    });
+
+    testWidgets('the blur fades out as it closes', (tester) async {
+      var closed = false;
+      await openBlurred(tester, onDone: () => closed = true);
+      await tester.tap(find.byTooltip('Close'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 60));
+      expect(
+        _barrierBlur(tester)!.filter,
+        isNot(ImageFilter.blur(sigmaX: 6, sigmaY: 6)),
+      );
+      await _settle(tester);
+      expect(find.text('Live scores'), findsNothing);
+      expect(closed, isTrue);
+    });
+
+    testWidgets('a tap outside and a drag down still close it', (tester) async {
+      await openBlurred(tester);
+      await tester.tapAt(const Offset(200, 20));
+      await _settle(tester);
+      expect(find.text('Live scores'), findsNothing);
+
+      await tester.tap(find.text('open'));
+      await _settle(tester);
+      await tester.drag(find.text('Live scores'), const Offset(0, 700));
+      await _settle(tester);
+      expect(find.text('Live scores'), findsNothing);
+    });
+
+    testWidgets('isDismissible and enableDrag false still hold',
+        (tester) async {
+      await openBlurred(tester, isDismissible: false, enableDrag: false);
+      await tester.tapAt(const Offset(200, 20));
+      await _settle(tester);
+      await tester.drag(find.text('Live scores'), const Offset(0, 700));
+      await _settle(tester);
+      expect(find.text('Live scores'), findsOneWidget);
+      await tester.binding.handlePopRoute();
+      await _settle(tester);
+      expect(find.text('Live scores'), findsNothing);
+    });
+
+    testWidgets('a wide window still gets a dialog-width sheet',
+        (tester) async {
+      await _open(
+        tester,
+        (context) => showCricketLiveScoreSheet(
+          context,
+          source: FakeSource([finishedMatch()]),
+          barrierBlur: 6,
+        ),
+        window: const Size(1280, 800),
+      );
+      expect(tester.getSize(find.byType(CricketLiveScoreSheet)).width, 560);
+    });
+  });
+
+  for (final blur in [0.0, 6.0]) {
+    testWidgets('barrierColor tints the barrier (blur $blur)', (tester) async {
+      await _open(
+        tester,
+        (context) => showCricketLiveScoreSheet(
+          context,
+          source: FakeSource([finishedMatch()]),
+          barrierBlur: blur,
+          barrierColor: const Color(0x1A1925A6),
+        ),
+      );
+      expect(
+        tester.widget<ModalBarrier>(find.byType(ModalBarrier).last).color,
+        const Color(0x1A1925A6),
+      );
+    });
+
+    testWidgets('the theme where it opens reaches the sheet (blur $blur)',
+        (tester) async {
+      const primary = Color(0xFF123456);
+      await _open(
+        tester,
+        (context) => showCricketLiveScoreSheet(
+          context,
+          source: FakeSource([finishedMatch()]),
+          barrierBlur: blur,
+        ),
+        wrap: (context, child) => Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme:
+                Theme.of(context).colorScheme.copyWith(primary: primary),
+          ),
+          child: child,
+        ),
+      );
+      final sheet = tester.element(find.byType(CricketLiveScoreSheet));
+      expect(Theme.of(sheet).colorScheme.primary, primary);
+    });
+  }
 }
