@@ -24,6 +24,11 @@ import 'package:flutter/material.dart';
 /// a phone it is as wide as the screen; on a wider window it is capped at
 /// the Material dialog width and centred.
 ///
+/// With [isDismissible] `false`, a tap outside the sheet doesn't close it;
+/// with [enableDrag] `false`, dragging it down stops at [minChildSize]
+/// instead of closing it. The close button in the title bar and the back
+/// button always close it.
+///
 /// Pass exactly one of [controller] and [source]; the other arguments are
 /// those of [CricketLiveScoreView].
 Future<void> showCricketLiveScoreSheet(
@@ -45,6 +50,8 @@ Future<void> showCricketLiveScoreSheet(
   double initialChildSize = 0.6,
   double minChildSize = 0.3,
   double maxChildSize = 1,
+  bool isDismissible = true,
+  bool enableDrag = true,
 }) {
   assert(
     (controller == null) != (source == null),
@@ -57,6 +64,8 @@ Future<void> showCricketLiveScoreSheet(
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
+    isDismissible: isDismissible,
+    enableDrag: enableDrag,
     useSafeArea: true,
     // Keeps the frosted top bar inside the sheet's rounded corners.
     clipBehavior: Clip.antiAlias,
@@ -67,6 +76,9 @@ Future<void> showCricketLiveScoreSheet(
       initialChildSize: initialChildSize,
       minChildSize: minChildSize,
       maxChildSize: maxChildSize,
+      // The modal sheet closes when this one reaches its smallest size,
+      // whatever enableDrag says, so turn that off too.
+      shouldCloseOnMinExtent: enableDrag,
       builder: (context, scrollController) => CricketLiveScoreSheet(
         controller: controller,
         source: source,

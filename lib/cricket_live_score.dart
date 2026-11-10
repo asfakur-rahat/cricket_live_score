@@ -19,6 +19,7 @@ export 'src/sources/cricket_score_source.dart';
 export 'src/widgets/cricket_bats_icon.dart';
 export 'src/widgets/cricket_inline_score_carousel.dart';
 export 'src/widgets/cricket_live_score_carousel.dart';
+export 'src/widgets/cricket_live_score_dialog.dart';
 export 'src/widgets/cricket_live_score_sheet.dart';
 export 'src/widgets/cricket_live_score_view.dart';
 export 'src/widgets/cricket_match_card.dart';

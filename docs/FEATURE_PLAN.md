@@ -296,6 +296,42 @@ Asked for after 1.0.1. Today a team with no logo URL shows nothing in the cards 
 
 **Version:** 1.1.0, since it adds public API (`TeamMonogram`, `TeamInfo.initials`, theme and label fields) and changes how cards look. Released through the tag workflow.
 
+## 11. Control over closing the popup and the sheet (1.2.0)
+
+**Done on 2026-11-10.** As planned, with two details settled while building. Flutter's modal sheet also closes when the draggable sheet inside it reaches its smallest size, so `enableDrag: false` turns that off too (`shouldCloseOnMinExtent`). Blocking the back button needs a `PopScope` inside the popup or sheet, not around the page, and inside it the sheet needs `onClose: () => Navigator.pop(context)`, since its default close button respects the `PopScope`; the README shows this and tests cover it. Checked on the tablet with live data: a tap outside, a slow drag and a fast fling all leave the sheet open with the option off, and the close and back buttons close both.
+
+Asked for after 1.1.0. The score sheet always closes on a tap outside it or a drag down, and the app can't change that. Some apps want the user to close it on purpose, for example while a big match is on. The popup carousel has no helper at all: every app writes the same `showDialog`, transparent `Dialog` and close-button wiring by hand.
+
+**Sheet** (`showCricketLiveScoreSheet`):
+
+- `isDismissible` (default `true`): whether a tap outside the sheet closes it.
+- `enableDrag` (default `true`): whether dragging the sheet down closes it. With `false`, the sheet still drags between `minChildSize` and `maxChildSize`, but it stops at `minChildSize` instead of closing. The handle stays, since the sheet still resizes.
+- These are the names Flutter's `showModalBottomSheet` uses.
+- The close button in the title bar is always there, so a sheet that can't be tapped or dragged away can still be closed.
+
+**Popup** (new `showCricketLiveScoreDialog`):
+
+- Opens a `CricketLiveScoreCarousel` in a transparent dialog and completes when the dialog closes, like the sheet helper.
+- `barrierDismissible` (default `true`): whether a tap outside the cards closes the dialog.
+- Every card has a close button that closes the dialog, so there is always a way out.
+- It takes the carousel's options (`controller` or `source`, `autoScroll`, `autoScrollInterval`, `showPageIndicator`, `maxWidth`, `maxHeight`, `onMatchTap`, `theme`, `labels`, `logoBuilder`, `centerBadge` and the loading, empty and error builders), plus `barrierColor`.
+- `CricketLiveScoreCarousel` doesn't change. An app that opens its own dialog keeps doing so; the README shows both ways.
+
+**The back button:** it still closes both, as in Flutter's own dialogs and sheets even when tapping outside is off. Blocking it can trap the user. An app that really needs that opens the popup or sheet itself and puts a `PopScope` around the package's widget, and the README says so.
+
+**Also:**
+
+- The README popup section leads with `showCricketLiveScoreDialog`, and the sheet section lists the two new options.
+- The example app gets a switch to try both without tap-outside closing.
+
+**Tests and device check:**
+
+- Sheet: with the defaults a tap outside and a drag down close it. With `isDismissible: false` a tap outside doesn't, and with `enableDrag: false` a drag down doesn't. The close button and the back button close it in every case.
+- Dialog: it shows the cards with close buttons. A tap outside closes it, unless `barrierDismissible` is `false`. The close button and the back button close it, and the returned future completes.
+- Then on the tablet: the drag check matters most, since the sheet is a draggable sheet inside a modal sheet.
+
+**Version:** 1.2.0, since it adds public API without changing any default. Released through the tag workflow.
+
 ---
 
 ## Proposed order
@@ -312,5 +348,6 @@ Asked for after 1.0.1. Today a team with no logo URL shows nothing in the cards 
 | 8 | Dark mode | – |
 | 9 | Inline score carousel | 5 |
 | 10 | Team initials instead of a missing logo (1.1.0) | – |
+| 11 | Control over closing the popup and the sheet (1.2.0) | 4 |
 
 Parts 5, 7 and 8 stand alone and can move anywhere in the order.

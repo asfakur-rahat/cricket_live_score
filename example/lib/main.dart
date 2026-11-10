@@ -78,6 +78,7 @@ class _HomePageState extends State<HomePage> {
   List<CricketMatch> _matches = const [];
   CricketTickerMode _tickerMode = CricketTickerMode.rotate;
   bool _snap = true;
+  bool _closeOnlyByButton = false;
 
   @override
   void initState() {
@@ -118,18 +119,12 @@ class _HomePageState extends State<HomePage> {
 
   void _openScores({CricketMatchFilter filter = CricketMatchFilter.all}) {
     unawaited(
-      showDialog<void>(
-        context: context,
-        builder: (context) => Dialog(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          child: CricketLiveScoreCarousel(
-            source: filter.isAll ? _source : FilteredSource(_source, filter),
-            autoScroll: true,
-            showPageIndicator: true,
-            onClose: () => Navigator.pop(context),
-          ),
-        ),
+      showCricketLiveScoreDialog(
+        context,
+        source: filter.isAll ? _source : FilteredSource(_source, filter),
+        autoScroll: true,
+        showPageIndicator: true,
+        barrierDismissible: !_closeOnlyByButton,
       ),
     );
   }
@@ -285,8 +280,24 @@ class _HomePageState extends State<HomePage> {
           ListTile(
             leading: const Icon(Icons.vertical_align_top),
             title: const Text('Open the score sheet'),
-            onTap: () =>
-                unawaited(showCricketLiveScoreSheet(context, source: _source)),
+            onTap: () => unawaited(
+              showCricketLiveScoreSheet(
+                context,
+                source: _source,
+                isDismissible: !_closeOnlyByButton,
+                enableDrag: !_closeOnlyByButton,
+              ),
+            ),
+          ),
+          SwitchListTile(
+            title: const Text('Close only with the close button'),
+            subtitle: Text(
+              _closeOnlyByButton
+                  ? 'A tap outside or a drag down does nothing'
+                  : 'A tap outside or a drag down closes the popup and sheet',
+            ),
+            value: _closeOnlyByButton,
+            onChanged: (value) => setState(() => _closeOnlyByButton = value),
           ),
           ListTile(
             leading: const Icon(Icons.filter_alt_outlined),

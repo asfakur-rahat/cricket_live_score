@@ -1,3 +1,9 @@
+## 1.2.0
+
+- `showCricketLiveScoreDialog` opens the match carousel in a popup, with a close button on every card that closes it. `barrierDismissible: false` stops a tap outside from closing it.
+- `showCricketLiveScoreSheet` takes `isDismissible` and `enableDrag`. With `isDismissible: false` a tap outside doesn't close the sheet; with `enableDrag: false` dragging it down stops at its smallest size instead of closing it.
+- The close buttons and the back button always close both. The README shows how to block the back button too.
+
 ## 1.1.0
 
 - A team without a logo now shows a coloured circle with its initials (AUS, SL, CSK) in the cards, the ticker and the floating button, instead of nothing. The same circle shows while a logo loads and when it fails to load, in place of the flag icon.

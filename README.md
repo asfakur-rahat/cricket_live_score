@@ -35,7 +35,7 @@ Live cricket scores for Flutter apps. Drop in a score ticker, a carousel, a full
 |---|---|
 | A slim strip of live scores at the top of a screen | [`CricketScoreTicker`](#score-ticker) |
 | A row of match cards inside a page | [`CricketInlineScoreCarousel`](#inline-carousel) |
-| Swipeable match cards in a popup | [`CricketLiveScoreCarousel`](#popup-carousel) |
+| Swipeable match cards in a popup | [`showCricketLiveScoreDialog`](#popup-carousel), or `CricketLiveScoreCarousel` in your own dialog |
 | A full score screen with filters | [`CricketLiveScoreView`](#live-score-screen) |
 | The score screen in a bottom sheet | [`showCricketLiveScoreSheet`](#bottom-sheet) |
 | One featured match on a floating button | [`CricketMatchFab`](#floating-match-button) |
@@ -138,7 +138,20 @@ ListView(
 
 <img src="https://raw.githubusercontent.com/asfakur-rahat/cricket_live_score/main/screenshots/carousel.png" width="240" alt="The match carousel in a dialog, with page dots">
 
-Swipeable match cards for a dialog, with a close button on every card.
+Swipeable match cards in a popup, with a close button on every card. The returned future completes when the popup closes:
+
+```dart
+await showCricketLiveScoreDialog(
+  context,
+  source: source,
+  autoScroll: true,
+  showPageIndicator: true,
+);
+```
+
+A tap outside the cards closes the popup. To make the user close it on purpose, pass `barrierDismissible: false`; the close buttons and the back button still close it.
+
+To build the dialog yourself, put a `CricketLiveScoreCarousel` in your own `Dialog` and close it from `onClose`. That is also the way to stop the back button, with a `PopScope(canPop: false)` around the carousel:
 
 ```dart
 showDialog<void>(
@@ -148,8 +161,6 @@ showDialog<void>(
     elevation: 0,
     child: CricketLiveScoreCarousel(
       source: source,
-      autoScroll: true,
-      showPageIndicator: true,
       onClose: () => Navigator.pop(context),
     ),
   ),
@@ -158,7 +169,9 @@ showDialog<void>(
 
 | Option | Default | |
 |---|---|---|
-| `onClose` | – | Called by the close button on every card; `null` hides the button |
+| `barrierDismissible` | `true` | `showCricketLiveScoreDialog` only: a tap outside the cards closes the popup |
+| `barrierColor` | the dialog theme's | `showCricketLiveScoreDialog` only: the colour behind the popup |
+| `onClose` | – | `CricketLiveScoreCarousel` only: called by the close button on every card; `null` hides the button |
 | `autoScroll` | `false` | Move to the next match every `autoScrollInterval`; waits while the user swipes |
 | `autoScrollInterval` | 5 s | |
 | `showPageIndicator` | `false` | Page dots under the card; at most seven show, sliding along with many matches. Tap one to jump to its match |
@@ -214,7 +227,20 @@ await showCricketLiveScoreSheet(
 );
 ```
 
-It opens at 60% of the screen height; drag it up to full height, or down to close it. A title bar with a drag handle, a refresh button and a close button stays pinned while the filters scroll away under it. On a wider window the sheet is capped at the dialog width and centred. It takes the same filter options as the score screen, plus `initialChildSize`, `minChildSize` and `maxChildSize`. To open the sheet yourself, put a `CricketLiveScoreSheet` in it and pass it the sheet's scroll controller.
+It opens at 60% of the screen height; drag it up to full height, or down to close it. A tap outside it closes it too. To make the user close it on purpose, turn either off:
+
+```dart
+showCricketLiveScoreSheet(
+  context,
+  source: source,
+  isDismissible: false, // a tap outside does nothing
+  enableDrag: false, // dragging down stops at minChildSize instead of closing
+);
+```
+
+The close button and the back button always close it. To stop the back button too, open the sheet yourself (below), put a `PopScope(canPop: false)` around the `CricketLiveScoreSheet`, and pass it `onClose: () => Navigator.pop(context)`, since the default close button respects the `PopScope` too.
+
+A title bar with a drag handle, a refresh button and a close button stays pinned while the filters scroll away under it. On a wider window the sheet is capped at the dialog width and centred. It takes the same filter options as the score screen, plus `initialChildSize`, `minChildSize` and `maxChildSize`. To open the sheet yourself, put a `CricketLiveScoreSheet` in it and pass it the sheet's scroll controller.
 
 ### Floating match button
 

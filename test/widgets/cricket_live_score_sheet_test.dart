@@ -153,6 +153,112 @@ void main() {
     expect(find.text('Live scores'), findsNothing);
   });
 
+  testWidgets('a tap outside closes it', (tester) async {
+    await _open(
+      tester,
+      (context) => showCricketLiveScoreSheet(
+        context,
+        source: FakeSource([finishedMatch()]),
+      ),
+    );
+    await tester.tapAt(const Offset(200, 20));
+    await _settle(tester);
+    expect(find.text('Live scores'), findsNothing);
+  });
+
+  group('when it can only be closed on purpose', () {
+    Future<void> openFixed(WidgetTester tester, {void Function()? onDone}) =>
+        _open(
+          tester,
+          (context) => showCricketLiveScoreSheet(
+            context,
+            source: FakeSource([finishedMatch()]),
+            isDismissible: false,
+            enableDrag: false,
+          ).then((_) => onDone?.call()),
+        );
+
+    testWidgets('a tap outside does nothing', (tester) async {
+      await openFixed(tester);
+      await tester.tapAt(const Offset(200, 20));
+      await _settle(tester);
+      expect(find.text('Live scores'), findsOneWidget);
+    });
+
+    testWidgets('dragging or flinging it down stops at its smallest size',
+        (tester) async {
+      await openFixed(tester);
+      final opened = tester.getTopLeft(find.text('Live scores')).dy;
+      await tester.drag(find.text('Live scores'), const Offset(0, 700));
+      await _settle(tester);
+      expect(find.text('Live scores'), findsOneWidget);
+      // minChildSize is 0.3 of the 900-high window.
+      final lowest = tester.getTopLeft(find.text('Live scores')).dy;
+      expect(lowest, greaterThan(opened));
+      expect(lowest, lessThan(900 - 0.3 * 900 + 40));
+
+      await tester.fling(
+        find.text('Live scores'),
+        const Offset(0, 400),
+        3000,
+      );
+      await _settle(tester);
+      expect(find.text('Live scores'), findsOneWidget);
+    });
+
+    testWidgets('it still resizes upwards', (tester) async {
+      await openFixed(tester);
+      final before = tester.getTopLeft(find.text('Live scores')).dy;
+      await tester.drag(find.text('Live scores'), const Offset(0, -300));
+      await _settle(tester);
+      expect(tester.getTopLeft(find.text('Live scores')).dy, lessThan(before));
+    });
+
+    testWidgets('the close button closes it', (tester) async {
+      var closed = false;
+      await openFixed(tester, onDone: () => closed = true);
+      await tester.tap(find.byTooltip('Close'));
+      await _settle(tester);
+      expect(find.text('Live scores'), findsNothing);
+      expect(closed, isTrue);
+    });
+
+    testWidgets('the back button closes it', (tester) async {
+      await openFixed(tester);
+      await tester.binding.handlePopRoute();
+      await _settle(tester);
+      expect(find.text('Live scores'), findsNothing);
+    });
+  });
+
+  testWidgets(
+      'opened by the app inside a PopScope, back is blocked and the close '
+      'button still works', (tester) async {
+    await _open(
+      tester,
+      (context) => showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        builder: (context) => PopScope(
+          canPop: false,
+          child: SizedBox(
+            height: 600,
+            child: CricketLiveScoreSheet(
+              source: FakeSource([finishedMatch()]),
+              onClose: () => Navigator.pop(context),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.binding.handlePopRoute();
+    await _settle(tester);
+    expect(find.text('Live scores'), findsOneWidget);
+    await tester.tap(find.byTooltip('Close'));
+    await _settle(tester);
+    expect(find.text('Live scores'), findsNothing);
+  });
+
   testWidgets('dragging it up expands it', (tester) async {
     await _open(
       tester,
